@@ -7,36 +7,48 @@
     <RelativeLayout
         android:id="@+id/home_page_title"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="80dp"
         android:background="@color/colorPrimaryDark"
         android:layout_alignParentTop="true">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:text="肃宁县"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:gravity="center_vertical"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="40dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:text="肃宁县"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:gravity="center"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="10dp"
-            android:text="详情"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:text="详情"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/home_page_title">
+        android:layout_below="@+id/home_page_title"
+        android:layout_marginBottom="50dp"
+        android:scrollbars="none">
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <!-- 高德地图-->
             <com.amap.api.maps2d.MapView
                 android:id="@+id/map"
                 android:layout_width="0dp"
@@ -44,7 +56,9 @@
                 app:layout_constraintDimensionRatio="4:3"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"/>
+            <!-- 垂直新闻 -->
             <LinearLayout
+                android:id="@+id/temp_home_page_news"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:orientation="horizontal"
@@ -68,6 +82,136 @@
                     app:mvTextSize="16sp"
                     app:mvSingleLine="true"/>
             </LinearLayout>
+            <!-- 相关网格-->
+            <LinearLayout
+                android:id="@+id/temp_home_page_region"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/temp_home_page_news"
+                android:layout_marginTop="15dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <View
+                        android:id="@+id/temp_home_page_cut_line_one"
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="#0d98fd"
+                        android:layout_marginLeft="10dp"
+                        android:layout_alignParentLeft="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="相关网格"
+                        android:textSize="20sp"
+                        android:layout_toRightOf="@id/temp_home_page_cut_line_one"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="更多"
+                        android:textSize="15sp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"/>
+                </RelativeLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/home_page_region_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginLeft="20dp"/>
+            </LinearLayout>
+            <!-- 相关单位 -->
+            <LinearLayout
+                android:id="@+id/temp_home_page_unit"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/temp_home_page_region"
+                android:layout_marginTop="15dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <View
+                        android:id="@+id/temp_home_page_cut_line_two"
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="#0d98fd"
+                        android:layout_marginLeft="10dp"
+                        android:layout_alignParentLeft="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="相关单位"
+                        android:textSize="20sp"
+                        android:layout_toRightOf="@id/temp_home_page_cut_line_two"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="更多"
+                        android:textSize="15sp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"/>
+                </RelativeLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/home_page_unit_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginLeft="20dp"/>
+            </LinearLayout>
+            <!-- 工作台账 -->
+            <LinearLayout
+                android:id="@+id/temp_home_page_work"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                app:layout_constraintTop_toBottomOf="@+id/temp_home_page_unit"
+                android:orientation="vertical"
+                android:layout_marginTop="15dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <View
+                        android:id="@+id/temp_home_page_cut_line_three"
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="#0d98fd"
+                        android:layout_marginLeft="10dp"
+                        android:layout_alignParentLeft="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="工作台账"
+                        android:textSize="20sp"
+                        android:layout_toRightOf="@id/temp_home_page_cut_line_three"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="更多"
+                        android:textSize="15sp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"/>
+                </RelativeLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/home_page_account_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginLeft="20dp"/>
+            </LinearLayout>
+            <Button
+                android:id="@+id/home_page_people_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/temp_home_page_work"
+                android:text="重点人群"/>
         </android.support.constraint.ConstraintLayout>
+
     </ScrollView>
 </RelativeLayout>
