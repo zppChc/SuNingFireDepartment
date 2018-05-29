@@ -19,7 +19,7 @@ public class SplashPresenter implements SplashContract.Presenter {
     public SplashPresenter(SplashContract.View view, ApiService apiService){
         this.mView = view;
         this.mApiService = apiService;
-        Logger.d("app Splash :" + apiService);
+//        Logger.d("app Splash :" + apiService);
     }
 
 
