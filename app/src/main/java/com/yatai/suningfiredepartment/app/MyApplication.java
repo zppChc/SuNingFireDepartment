@@ -9,12 +9,13 @@ import com.yatai.suningfiredepartment.di.components.DaggerNetComponent;
 import com.yatai.suningfiredepartment.di.components.NetComponent;
 import com.yatai.suningfiredepartment.di.modules.NetModule;
 
-public class SuNingFireDepartmentApplication extends Application {
+public class MyApplication extends Application {
 
-    private static SuNingFireDepartmentApplication instance;
+    private static MyApplication instance;
+    private static Context sContext;
 
-    public static SuNingFireDepartmentApplication get(Context context){
-        return (SuNingFireDepartmentApplication)context.getApplicationContext();
+    public static MyApplication get(Context context){
+        return (MyApplication)context.getApplicationContext();
     }
 
     private NetComponent mNetComponent;
@@ -23,6 +24,7 @@ public class SuNingFireDepartmentApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        sContext=getApplicationContext();
         initNet();
         initLogger();
     }
@@ -37,11 +39,15 @@ public class SuNingFireDepartmentApplication extends Application {
         Logger.addLogAdapter(new AndroidLogAdapter());
     }
 
-    public static SuNingFireDepartmentApplication getInstance(){
+    public static MyApplication getInstance(){
         return  instance;
     }
 
     public NetComponent getNetComponent() {
         return mNetComponent;
+    }
+
+    public static Context getContext() {
+        return sContext;
     }
 }

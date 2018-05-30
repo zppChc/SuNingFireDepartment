@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.app.SuNingFireDepartmentApplication;
+import com.yatai.suningfiredepartment.app.MyApplication;
 import com.yatai.suningfiredepartment.di.components.DaggerLoginComponent;
 import com.yatai.suningfiredepartment.di.modules.LoginModule;
 import com.yatai.suningfiredepartment.presenter.LoginContract;
@@ -50,7 +50,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
     private void initPresenter(){
         DaggerLoginComponent.builder()
                 .loginModule(new LoginModule(this))
-                .netComponent(SuNingFireDepartmentApplication.get(this).getNetComponent())
+                .netComponent(MyApplication.get(this).getNetComponent())
                 .build()
                 .inject(this);
     }

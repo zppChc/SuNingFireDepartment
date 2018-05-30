@@ -12,17 +12,14 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Space;
 
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.app.SuNingFireDepartmentApplication;
+import com.yatai.suningfiredepartment.app.MyApplication;
 import com.yatai.suningfiredepartment.di.components.DaggerSplashComponent;
 import com.yatai.suningfiredepartment.di.modules.SplashModule;
 import com.yatai.suningfiredepartment.presenter.SplashContract;
@@ -76,7 +73,7 @@ public class SplashActivity extends BaseActivity implements SplashContract.View,
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_splash);
         DaggerSplashComponent.builder()
-                .netComponent(SuNingFireDepartmentApplication.get(this).getNetComponent())
+                .netComponent(MyApplication.get(this).getNetComponent())
                 .splashModule(new SplashModule(this))
                 .build()
                 .inject(this);
@@ -167,10 +164,19 @@ public class SplashActivity extends BaseActivity implements SplashContract.View,
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                //动画完成后启动 登陆页面 或者 根据需求进行更改
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
+                //动画完成后启动 登陆页面 或者 根据需求进行更改
+//                if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
+//                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                }else{
+//                    Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                }
             }
 
             @Override

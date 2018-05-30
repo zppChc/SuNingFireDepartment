@@ -1,4 +1,5 @@
 <resources>
+    <string name="base_url">http://grid.lenong365.com/api/</string>
     <string name="app_name">SuNingFireDepartment</string>
     <string name="login_title">消防智慧网格化管理系统</string>
     <string name="user_name">请输入手机号码</string>

@@ -37,7 +37,7 @@ import com.amap.api.services.district.DistrictSearchQuery;
 import com.orhanobut.logger.Logger;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.app.SuNingFireDepartmentApplication;
+import com.yatai.suningfiredepartment.app.MyApplication;
 import com.yatai.suningfiredepartment.di.components.DaggerHomePageComponent;
 import com.yatai.suningfiredepartment.di.modules.HomePageModule;
 import com.yatai.suningfiredepartment.presenter.HomePageContract;
@@ -55,7 +55,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class HomePageFragment extends Fragment implements HomePageContract.View, DistrictSearch.OnDistrictSearchListener, AMap.OnMapClickListener {
@@ -227,7 +226,7 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
 
     private void initPresenter() {
         DaggerHomePageComponent.builder()
-                .netComponent(SuNingFireDepartmentApplication.get(getContext()).getNetComponent())
+                .netComponent(MyApplication.get(getContext()).getNetComponent())
                 .homePageModule(new HomePageModule(this))
                 .build()
                 .inject(this);

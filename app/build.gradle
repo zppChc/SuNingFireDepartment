@@ -76,5 +76,5 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     //下拉刷新
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-5'
-
+    implementation files('libs/afinal_0.5.1_bin.jar')
 }

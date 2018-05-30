@@ -5,16 +5,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.view.adapter.MainViewPagerAdapter;
 import com.yatai.suningfiredepartment.view.fragment.CensusFragment;
 import com.yatai.suningfiredepartment.view.fragment.HomePageFragment;
-import com.yatai.suningfiredepartment.view.fragment.InformationFragment;
+import com.yatai.suningfiredepartment.view.fragment.InfoFragment;
 import com.yatai.suningfiredepartment.view.fragment.PersonalFragment;
 import com.yatai.suningfiredepartment.view.fragment.WorkFragment;
 
@@ -107,26 +105,17 @@ public class MainActivity extends BaseActivity {
 
     }
 
-//    private void initMenus(){
-//        mMenus = new ArrayList<>();
-//        mMenus.add("首页");
-//        mMenus.add("工作");
-//        mMenus.add("咨询");
-//        mMenus.add("统计");
-//        mMenus.add("我的");
-//    }
-
     private void initFragments(){
         fragments = new ArrayList<>();
         HomePageFragment homePageFragment = HomePageFragment.newInstance("");
         WorkFragment workFragment = WorkFragment.newInstance("");
-        InformationFragment informationFragment = InformationFragment.newInstance("");
+        InfoFragment infoFragment = InfoFragment.newInstance("");
         CensusFragment censusFragment = CensusFragment.newInstance("");
         PersonalFragment personalFragment = PersonalFragment.newInstance("");
 
         fragments.add(homePageFragment);
         fragments.add(workFragment);
-        fragments.add(informationFragment);
+        fragments.add(infoFragment);
         fragments.add(censusFragment);
         fragments.add(personalFragment);
     }
