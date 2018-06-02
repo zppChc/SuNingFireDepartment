@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity {
     private String[] mMenus = {
             "首页",
             "工作",
-            "咨询",
+            "资讯",
             "统计",
             "我的"
     };

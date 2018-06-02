@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 public class InfoCategoryAdapter extends RecyclerView.Adapter<InfoCategoryAdapter.ViewHolder> {
     private List<CategoryEntity> mCategoryEntityList = new ArrayList<>();
     private Context mContext;
+    private OnItemClickListener mClickListener;
 
     public InfoCategoryAdapter(Context context){
         this.mContext = context;
@@ -31,11 +32,15 @@ public class InfoCategoryAdapter extends RecyclerView.Adapter<InfoCategoryAdapte
         mCategoryEntityList = list;
         notifyDataSetChanged();
     }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.mClickListener = listener;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_category,parent,false);
-        return new ViewHolder(view);
+        return new ViewHolder(view,mClickListener);
     }
 
     @Override
@@ -48,13 +53,26 @@ public class InfoCategoryAdapter extends RecyclerView.Adapter<InfoCategoryAdapte
         return mCategoryEntityList.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView categoryTv;
-        public ViewHolder(View itemView) {
+        private OnItemClickListener mListener;// 声明自定义的接口
+
+        public ViewHolder(View itemView,OnItemClickListener listener) {
             super(itemView);
             categoryTv=(TextView)itemView.findViewById(R.id.item_category_title);
+            mListener = listener;
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            mListener.onItemClick(view,getPosition());
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
 }

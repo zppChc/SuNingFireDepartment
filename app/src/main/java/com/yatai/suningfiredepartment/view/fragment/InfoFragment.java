@@ -1,9 +1,11 @@
 package com.yatai.suningfiredepartment.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,15 +16,15 @@ import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.model.entity.CategoryEntity;
-import com.yatai.suningfiredepartment.model.entity.Info;
+import com.yatai.suningfiredepartment.model.entity.InfoEntity;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
+import com.yatai.suningfiredepartment.view.activity.InfoDetailActivity;
 import com.yatai.suningfiredepartment.view.adapter.InfoAdapter;
 import com.yatai.suningfiredepartment.view.adapter.InfoCategoryAdapter;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
-import net.tsz.afinal.http.AjaxParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +41,8 @@ public class InfoFragment extends Fragment {
     private InfoCategoryAdapter mCategoryAdapter;
     private InfoAdapter mInfoAdapter;
     private String token;
+    private  List<CategoryEntity> categoryList;
+    private List<InfoEntity> infoList;
 
     public static InfoFragment newInstance(String data) {
         Bundle args = new Bundle();
@@ -57,13 +61,31 @@ public class InfoFragment extends Fragment {
     }
 
     private void initView(View view) {
+        mCategoryAdapter = new InfoCategoryAdapter(getContext());
+        mCategoryAdapter.setOnItemClickListener(new InfoCategoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                ToastUtil.show(getContext(),"Position: "+position);
+                if (position == 0){
+                    getAllInfoList();
+                }else {
+                    getInfoDataByCategoryId(categoryList.get(position).getId());
+                }
+            }
+        });
+
         mCategoryRecyclerView=(RecyclerView) view.findViewById(R.id.info_category_recycler_view);
         mCategoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-        mCategoryAdapter = new InfoCategoryAdapter(getContext());
         mCategoryRecyclerView.setAdapter(mCategoryAdapter);
 
-        mInfoRecyclerView=(RecyclerView)view.findViewById(R.id.info_recycler_view);
         mInfoAdapter=new InfoAdapter(getContext());
+        mInfoAdapter.setClickListener(new InfoAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                showInfoDetail(infoList.get(position).getId());
+            }
+        });
+        mInfoRecyclerView=(RecyclerView)view.findViewById(R.id.info_recycler_view);
         mInfoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mInfoRecyclerView.setAdapter(mInfoAdapter);
 
@@ -71,15 +93,18 @@ public class InfoFragment extends Fragment {
         token = PreferenceUtils.getPerfString(getContext(), "token", "");
         mHttp.addHeader("Authorization", "Bearer " + token);
 
-        initCategoryData();
-        getInfoList();
+        getCategoryData();
+        getAllInfoList();
+
     }
 
     /**
      * 获取分类列表
      */
-    private void initCategoryData() {
+    private void getCategoryData() {
         String url = getString(R.string.base_url) + "infoCategory";
+        String token = "Bearer " + PreferenceUtils.getPerfString(getContext(), "token", "");
+        mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {
             @Override
             public void onSuccess(String s) {
@@ -87,15 +112,21 @@ public class InfoFragment extends Fragment {
                 try {
                     JSONObject jb = new JSONObject(s);
                     if (jb.getInt("code") == 200) {
-                        List<CategoryEntity> list = new ArrayList<>();
+                        categoryList = new ArrayList<>();
                         JSONArray data = jb.getJSONArray("data");
                         Logger.d("Data : " + data.toString());
                         Gson gson = new Gson();
+                        CategoryEntity temp =new CategoryEntity();
+                        temp.setId("99999");
+                        temp.setName("全部");
+                        categoryList.add(temp);
                         for (int i = 0; i < data.length(); i++) {
                             CategoryEntity categoryEntity = gson.fromJson(data.getJSONObject(i).toString(), CategoryEntity.class);
-                            list.add(categoryEntity);
+                            categoryList.add(categoryEntity);
                         }
-                        mCategoryAdapter.setCategoryEntityList(list);
+                        mCategoryAdapter.setCategoryEntityList(categoryList);
+                    }else{
+                        ToastUtil.show(getContext(),jb.getString("message"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -113,8 +144,10 @@ public class InfoFragment extends Fragment {
     /**
      * 获取全部咨询列表
      */
-    private void getInfoList(){
+    private void getAllInfoList(){
         String url =getString(R.string.base_url)+"infoList";
+        String token = "Bearer " + PreferenceUtils.getPerfString(getContext(), "token", "");
+        mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {
             @Override
             public void onSuccess(String s) {
@@ -122,15 +155,17 @@ public class InfoFragment extends Fragment {
                 try {
                     JSONObject jb  = new JSONObject(s);
                     if (jb.getInt("code") == 200) {
-                        List<Info> list =new ArrayList<>();
+                        infoList =new ArrayList<>();
                         JSONArray data = jb.getJSONArray("data");
                         Logger.d("Data : " + data.toString());
                         Gson gson = new Gson();
                         for (int i = 0; i < data.length(); i++) {
-                            Info info = gson.fromJson(data.getJSONObject(i).toString(),Info.class);
-                            list.add(info);
+                            InfoEntity infoEntity = gson.fromJson(data.getJSONObject(i).toString(),InfoEntity.class);
+                            infoList.add(infoEntity);
                         }
-                        mInfoAdapter.setInfoList(list);
+                        mInfoAdapter.setInfoEntityList(infoList);
+                    }else {
+                        ToastUtil.show(getContext(),jb.getString("message"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -150,26 +185,26 @@ public class InfoFragment extends Fragment {
      * 根据分类Id 获取咨询列表
      * @param categoryId
      */
-    private void initInfoDataByCategoryId(String categoryId){
-        String url = getString(R.string.base_url) + "info";
-        AjaxParams params = new AjaxParams();
-        params.put("id",categoryId);
-        mHttp.get(url, params, new AjaxCallBack<String>() {
+    private void getInfoDataByCategoryId(String categoryId){
+        String url = getString(R.string.base_url) + "infoList/"+categoryId;
+        String token = "Bearer " + PreferenceUtils.getPerfString(getContext(), "token", "");
+        mHttp.addHeader("Authorization", token);
+        mHttp.get(url, new AjaxCallBack<String>() {
             @Override
             public void onSuccess(String s) {
                 super.onSuccess(s);
                 try {
                     JSONObject jb  = new JSONObject(s);
                     if (jb.getInt("code") == 200) {
-                        List<Info> list =new ArrayList<>();
+                        infoList =new ArrayList<>();
                         JSONArray data = jb.getJSONArray("data");
                         Logger.d("Data : " + data.toString());
                         Gson gson = new Gson();
                         for (int i = 0; i < data.length(); i++) {
-                            Info info = gson.fromJson(data.getJSONObject(i).toString(),Info.class);
-                            list.add(info);
+                            InfoEntity infoEntity = gson.fromJson(data.getJSONObject(i).toString(),InfoEntity.class);
+                            infoList.add(infoEntity);
                         }
-                        mInfoAdapter.setInfoList(list);
+                        mInfoAdapter.setInfoEntityList(infoList);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -181,5 +216,14 @@ public class InfoFragment extends Fragment {
                 super.onFailure(t, errorNo, strMsg);
             }
         });
+    }
+
+    private void showInfoDetail(String infoId){
+        Intent intent = new Intent();
+        intent.setClass(getContext(), InfoDetailActivity.class);
+        Bundle mBundle = new Bundle();
+        mBundle.putString("infoId",infoId);//压入数据
+        intent.putExtras(mBundle);
+        startActivity(intent);
     }
 }

@@ -9,51 +9,67 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.model.entity.Info;
+import com.yatai.suningfiredepartment.model.entity.InfoEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
-    private List<Info> mInfoList;
+    private List<InfoEntity> mInfoEntityList;
     private Context mContext;
+    private OnItemClickListener mClickListener;
 
     public InfoAdapter(Context context){
         this.mContext = context;
-        mInfoList = new ArrayList<>();
+        mInfoEntityList = new ArrayList<>();
+    }
+    public void setClickListener(OnItemClickListener listener){
+        mClickListener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_info,parent,false);
-        return new ViewHolder(view);
+        return new ViewHolder(view,mClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.infoTitle.setText(mInfoList.get(position).getTitle());
+        holder.infoTitle.setText(mInfoEntityList.get(position).getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mInfoList.size();
+        return mInfoEntityList.size();
     }
 
-    public void setInfoList(List<Info> list){
-        mInfoList.clear();
-        mInfoList= list;
+    public void setInfoEntityList(List<InfoEntity> list){
+        mInfoEntityList.clear();
+        mInfoEntityList = list;
         notifyDataSetChanged();
     }
 
 
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView infoTitle;
-        public ViewHolder(View itemView) {
+         OnItemClickListener mListener;// 声明自定义的接口
+        public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             infoTitle=(TextView)itemView.findViewById(R.id.info_detail_title);
+            mListener=listener;
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            mListener.onItemClick(view,getPosition());
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }

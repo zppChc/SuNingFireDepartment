@@ -7,12 +7,15 @@
     <TextView
         android:id="@+id/info_detail_title"
         android:layout_width="wrap_content"
-        android:layout_height="59dp"
+        android:layout_height="58dp"
+        android:layout_alignParentTop="true"
         android:gravity="center_vertical"
         android:textSize="18sp"
         android:text="标题"/>
     <View
+        android:id="@+id/temp_item_info_bottom_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/cut_off_line"/>
+        android:background="@color/cut_off_line"
+        android:layout_below="@id/info_detail_title"/>
 </RelativeLayout>

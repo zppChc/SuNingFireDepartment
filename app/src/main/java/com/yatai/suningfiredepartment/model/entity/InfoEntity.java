@@ -3,7 +3,7 @@ package com.yatai.suningfiredepartment.model.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Info implements Parcelable{
+public class InfoEntity implements Parcelable{
     private String id;
     private String title;
     private String category_id;
@@ -32,21 +32,21 @@ public class Info implements Parcelable{
         this.category_id = category_id;
     }
 
-    protected Info(Parcel in) {
+    protected InfoEntity(Parcel in) {
         id = in.readString();
         title = in.readString();
         category_id = in.readString();
     }
 
-    public static final Creator<Info> CREATOR = new Creator<Info>() {
+    public static final Creator<InfoEntity> CREATOR = new Creator<InfoEntity>() {
         @Override
-        public Info createFromParcel(Parcel in) {
-            return new Info(in);
+        public InfoEntity createFromParcel(Parcel in) {
+            return new InfoEntity(in);
         }
 
         @Override
-        public Info[] newArray(int size) {
-            return new Info[size];
+        public InfoEntity[] newArray(int size) {
+            return new InfoEntity[size];
         }
     };
 

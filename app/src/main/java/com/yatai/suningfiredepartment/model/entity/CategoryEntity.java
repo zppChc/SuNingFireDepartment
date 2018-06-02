@@ -23,10 +23,9 @@ public class CategoryEntity implements Parcelable {
         this.name = name;
     }
 
-    public static Creator<CategoryEntity> getCREATOR() {
-        return CREATOR;
-    }
+    public CategoryEntity(){
 
+    }
     protected CategoryEntity(Parcel in) {
         id = in.readString();
         name = in.readString();
