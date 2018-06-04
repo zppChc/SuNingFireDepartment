@@ -20,10 +20,6 @@ import android.view.View;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.app.MyApplication;
-import com.yatai.suningfiredepartment.di.components.DaggerSplashComponent;
-import com.yatai.suningfiredepartment.di.modules.SplashModule;
-import com.yatai.suningfiredepartment.presenter.SplashContract;
-import com.yatai.suningfiredepartment.presenter.SplashPresenter;
 import com.yatai.suningfiredepartment.util.AppUtil;
 import com.yatai.suningfiredepartment.util.FileUtil;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
@@ -37,21 +33,18 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
 
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class SplashActivity extends BaseActivity implements SplashContract.View, EasyPermissions.PermissionCallbacks {
+public class SplashActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
     private static final int PERMISSON_REQUESTCODE = 1;
 
     @BindView(R.id.splash_img)
     FixedImageView splashImg;
-    @Inject
-    SplashPresenter mPresenter;
 
     /**
      * 需要进行检测的权限数组
@@ -72,11 +65,6 @@ public class SplashActivity extends BaseActivity implements SplashContract.View,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_splash);
-        DaggerSplashComponent.builder()
-                .netComponent(MyApplication.get(this).getNetComponent())
-                .splashModule(new SplashModule(this))
-                .build()
-                .inject(this);
         initStatus();
     }
 
@@ -205,7 +193,6 @@ public class SplashActivity extends BaseActivity implements SplashContract.View,
             ButterKnife.bind(SplashActivity.this);
             delaySplash();
             String deviceId = AppUtil.getDeviceId(this);
-            mPresenter.getSplash(deviceId);
         }
     }
 

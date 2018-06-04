@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.model.entity.InfoEntity;
+import com.yatai.suningfiredepartment.entity.InfoEntity;
 
 import java.util.ArrayList;
 import java.util.List;

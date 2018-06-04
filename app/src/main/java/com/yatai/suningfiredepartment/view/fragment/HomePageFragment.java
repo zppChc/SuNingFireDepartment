@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
@@ -34,30 +35,33 @@ import com.amap.api.services.district.DistrictItem;
 import com.amap.api.services.district.DistrictResult;
 import com.amap.api.services.district.DistrictSearch;
 import com.amap.api.services.district.DistrictSearchQuery;
-import com.orhanobut.logger.Logger;
+import com.google.gson.Gson;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.app.MyApplication;
-import com.yatai.suningfiredepartment.di.components.DaggerHomePageComponent;
-import com.yatai.suningfiredepartment.di.modules.HomePageModule;
-import com.yatai.suningfiredepartment.presenter.HomePageContract;
-import com.yatai.suningfiredepartment.presenter.HomePagePresenter;
+import com.yatai.suningfiredepartment.entity.DepartmentEntity;
+import com.yatai.suningfiredepartment.entity.GridEntity;
+import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.activity.FocusGroupActivity;
-import com.yatai.suningfiredepartment.view.adapter.HomeAccountAdapter;
+import com.yatai.suningfiredepartment.view.adapter.HomePlaceAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeRegionAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeUnitAdapter;
 
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class HomePageFragment extends Fragment implements HomePageContract.View, DistrictSearch.OnDistrictSearchListener, AMap.OnMapClickListener {
+public class HomePageFragment extends Fragment implements DistrictSearch.OnDistrictSearchListener, AMap.OnMapClickListener {
 
     @BindView(R.id.map)
     MapView mMapView;
@@ -70,13 +74,21 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
     @BindView(R.id.home_page_unit_recycler_view)
     RecyclerView mUnitRecyclerView;
     //工作台账
-    @BindView(R.id.home_page_account_recycler_view)
-    RecyclerView mAccountRecyclerView;
+    @BindView(R.id.home_page_place_recycler_view)
+    RecyclerView mPlaceRecyclerView;
     @BindView(R.id.home_page_people_button)
     Button focusPeopleBtn;
 
-    @Inject
-    HomePagePresenter mPresenter;
+    //相关网格 layout
+    @BindView(R.id.temp_home_page_region)
+    LinearLayout mRegionLayout;
+    //相关单位 layout
+    @BindView(R.id.temp_home_page_unit)
+    LinearLayout mUnitLayout;
+    //重点区域
+    @BindView(R.id.temp_home_page_place)
+    LinearLayout mPlaceLayout;
+
 
     List<String> info;//滚动新闻
     AMap mAMap;
@@ -86,16 +98,22 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
     Polygon polygon;
     Unbinder mUnbinder;
 
-    List<Drawable> images ;
+    List<Drawable> images;
 
     HomeRegionAdapter mHomeRegionAdapter;
     HomeUnitAdapter mHomeUnitAdapter;
-    HomeAccountAdapter mHomeAccountAdapter;
+    HomePlaceAdapter mHomePlaceAdapter;
 
 
-    public static HomePageFragment newInstance(String data) {
+    private FinalHttp mHttp;
+    private String gridId;
+    private GridEntity mGridEntity;
+    private List<GridEntity> childrenGridList;
+    private List<DepartmentEntity> departmentList;
+
+    public static HomePageFragment newInstance(String gridId) {
         Bundle args = new Bundle();
-        args.putString("key", data);
+        args.putString("gridId", gridId);
         HomePageFragment fragment = new HomePageFragment();
         fragment.setArguments(args);
         return fragment;
@@ -104,6 +122,9 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //接收传来的数据getArguments
+        Bundle data = getArguments();
+        gridId = data.getString("gridId");
     }
 
     @Nullable
@@ -112,7 +133,7 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
         mUnbinder = ButterKnife.bind(this, view);
         initView();
-        initPresenter();
+        initData();
         //在activity执行onCreate时执行mapView.onCreate(saveInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         initMap();
@@ -121,6 +142,8 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
     }
 
     private void initView() {
+        childrenGridList = new ArrayList<>();
+        departmentList = new ArrayList<>();
         info = new ArrayList<>();
         //垂直广告 或者新闻
         info.add("1. 大家好，我是新闻一号。");
@@ -130,7 +153,7 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
 
         marqueeNewView.startWithList(info, R.anim.anim_bottom_in, R.anim.anim_top_out);
 
-        images= new ArrayList<>();
+        images = new ArrayList<>();
         Resources resources = getContext().getResources();
         images.add(resources.getDrawable(R.drawable.a));
         images.add(resources.getDrawable(R.drawable.b));
@@ -142,17 +165,17 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
         mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mHomeRegionAdapter = new HomeRegionAdapter(getContext());
         mRegionRecyclerView.setAdapter(mHomeRegionAdapter);
-        mHomeRegionAdapter.setImgs(images);
+        mHomeRegionAdapter.setGridList(childrenGridList);
 
         mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mHomeUnitAdapter = new HomeUnitAdapter(getContext());
         mUnitRecyclerView.setAdapter(mHomeUnitAdapter);
         mHomeUnitAdapter.setImgs(images);
 
-        mAccountRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        mHomeAccountAdapter = new HomeAccountAdapter(getContext());
-        mAccountRecyclerView.setAdapter(mHomeAccountAdapter);
-        mHomeAccountAdapter.setImgs(images);
+        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mHomePlaceAdapter = new HomePlaceAdapter(getContext());
+        mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
+        mHomePlaceAdapter.setImgs(images);
 
         focusPeopleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,14 +245,6 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
                 .fillColor(Color.LTGRAY)
                 .strokeColor(Color.RED)
                 .strokeWidth(1));
-    }
-
-    private void initPresenter() {
-        DaggerHomePageComponent.builder()
-                .netComponent(MyApplication.get(getContext()).getNetComponent())
-                .homePageModule(new HomePageModule(this))
-                .build()
-                .inject(this);
     }
 
 
@@ -310,7 +325,6 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        Logger.d("HomePageFragment Resume");
     }
 
     @Override
@@ -338,26 +352,6 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
 //        mUnbinder.unbind();
     }
 
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void dismissLoading() {
-
-    }
-
-    @Override
-    public void updateListUI() {
-
-    }
-
-    @Override
-    public void showOnFailuer() {
-
-    }
-
 
     private Handler mHandler = new Handler() {
         @Override
@@ -366,5 +360,80 @@ public class HomePageFragment extends Fragment implements HomePageContract.View,
             mAMap.addPolyline(polylineOption);
         }
     };
+
+    private void initData() {
+        String token = PreferenceUtils.getPerfString(getContext(), "token", "");
+        String url = getString(R.string.base_url) + "grid/" + gridId;
+//        Logger.d("url : "+ url);
+//        Logger.d("token: ",PreferenceUtils.getPerfString(getContext(),"token",""));
+        mHttp = new FinalHttp();
+        mHttp.addHeader("Authorization", "Bearer " + token);
+        mHttp.get(url, new AjaxCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                try {
+                    JSONObject jb = new JSONObject(s);
+                    if (jb.getInt("code") == 200) {
+//                        ToastUtil.show(getContext(),jb.getJSONObject("data").toString());
+                        JSONObject data = jb.getJSONObject("data");
+                        Gson gson = new Gson();
+                        //获取当前用户 grid 信息
+                        JSONObject gridJb = data.getJSONObject("grid");
+                        mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
+                        //获取当前用户 下级 grid信息
+                        JSONArray gridChildrenArray = data.getJSONArray("childrenGrid");
+                        childrenGridList.clear();
+                        if (gridChildrenArray.length() > 0) {
+                            for (int i = 0; i < gridChildrenArray.length(); i++) {
+                                GridEntity tempEntity = gson.fromJson(gridChildrenArray.getJSONObject(i).toString(), GridEntity.class);
+                                childrenGridList.add(tempEntity);
+                            }
+                            mHomeRegionAdapter.setGridList(childrenGridList);
+                        }
+
+                        //获取相关部门信息
+                        JSONArray departmentArray = data.getJSONArray("department");
+                        departmentList.clear();
+                        if (departmentArray.length() > 0) {
+                            for (int i = 0; i < departmentArray.length(); i++) {
+                                DepartmentEntity departmentEntity = gson.fromJson(departmentArray.getJSONObject(i).toString(), DepartmentEntity.class);
+                                departmentList.add(departmentEntity);
+                            }
+                        }else{
+                            mUnitLayout.setVisibility(View.GONE);
+                        }
+
+                        //重点区域
+                        JSONArray importantPlaceArray = data.getJSONArray("importantPlace");
+                        if (importantPlaceArray.length() > 0) {
+
+                        } else {
+                            mPlaceLayout.setVisibility(View.GONE);
+                        }
+
+                        //重点人群
+                        JSONArray importantPersonArray = data.getJSONArray("importantPerson");
+                        if (importantPersonArray.length() > 0) {
+
+                        } else {
+
+                        }
+
+                    } else {
+                        ToastUtil.show(getContext(), jb.getString("message"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                ToastUtil.show(getContext(), strMsg);
+            }
+        });
+    }
 
 }

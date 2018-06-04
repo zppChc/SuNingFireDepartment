@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.entity.GridEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ import butterknife.ButterKnife;
  * 相关网格 recycler view adapter
  */
 public class HomeRegionAdapter extends RecyclerView.Adapter<HomeRegionAdapter.ViewHolder>{
-    private List<Drawable> mImgs  = new ArrayList<>();
+    private List<GridEntity> gridList  = new ArrayList<>();
     private Context mContext;
 
     public HomeRegionAdapter(Context context){
@@ -39,16 +41,18 @@ public class HomeRegionAdapter extends RecyclerView.Adapter<HomeRegionAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.img.setImageDrawable(mImgs.get(position));
+        int resource = R.drawable.a;
+        Glide.with(mContext).load(resource).into(holder.img);
+//        Glide.with(holder.itemView).load(gridList.get(position).getImage()).into(holder.img);
     }
 
     @Override
     public int getItemCount() {
-        return mImgs.size();
+        return gridList.size();
     }
 
-    public void setImgs(List<Drawable> imgs){
-        mImgs = imgs;
+    public void setGridList(List<GridEntity> list){
+        gridList = list;
         notifyDataSetChanged();
     }
 

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,8 +14,8 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.model.entity.CategoryEntity;
-import com.yatai.suningfiredepartment.model.entity.InfoEntity;
+import com.yatai.suningfiredepartment.entity.CategoryEntity;
+import com.yatai.suningfiredepartment.entity.InfoEntity;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.activity.InfoDetailActivity;
@@ -40,7 +39,6 @@ public class InfoFragment extends Fragment {
     private FinalHttp mHttp;
     private InfoCategoryAdapter mCategoryAdapter;
     private InfoAdapter mInfoAdapter;
-    private String token;
     private  List<CategoryEntity> categoryList;
     private List<InfoEntity> infoList;
 
@@ -90,8 +88,6 @@ public class InfoFragment extends Fragment {
         mInfoRecyclerView.setAdapter(mInfoAdapter);
 
         mHttp = new FinalHttp();
-        token = PreferenceUtils.getPerfString(getContext(), "token", "");
-        mHttp.addHeader("Authorization", "Bearer " + token);
 
         getCategoryData();
         getAllInfoList();

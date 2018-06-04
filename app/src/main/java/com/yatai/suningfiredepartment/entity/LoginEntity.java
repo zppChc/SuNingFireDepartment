@@ -1,4 +1,4 @@
-package com.yatai.suningfiredepartment.model.entity;
+package com.yatai.suningfiredepartment.entity;
 
 /**
  * chc

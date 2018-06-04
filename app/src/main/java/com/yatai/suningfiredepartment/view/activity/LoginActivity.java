@@ -8,22 +8,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.app.MyApplication;
-import com.yatai.suningfiredepartment.di.components.DaggerLoginComponent;
-import com.yatai.suningfiredepartment.di.modules.LoginModule;
-import com.yatai.suningfiredepartment.presenter.LoginContract;
-import com.yatai.suningfiredepartment.presenter.LoginPresenter;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.util.Validator;
 
-import javax.inject.Inject;
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends BaseActivity implements LoginContract.View {
+public class LoginActivity extends BaseActivity  {
 
     @BindView(R.id.login_user_name_ed)
     EditText userNameEd;
@@ -36,23 +36,15 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
     @BindView(R.id.login_forgot_password)
     TextView forgotPassword;
 
-    @Inject
-    LoginPresenter mPresenter;
+    private FinalHttp mHttp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(LoginActivity.this);
-        initPresenter();
-    }
-
-    private void initPresenter(){
-        DaggerLoginComponent.builder()
-                .loginModule(new LoginModule(this))
-                .netComponent(MyApplication.get(this).getNetComponent())
-                .build()
-                .inject(this);
+        mHttp =new FinalHttp();
     }
 
     @OnClick({R.id.login_button, R.id.login_use_message, R.id.login_forgot_password})
@@ -62,7 +54,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
                 String mobile = userNameEd.getText().toString();
                 String password = passwordEd.getText().toString();
                 if (Validator.validUsername(mobile) && Validator.validPassword(password)){
-                    mPresenter.login(mobile,password);
+                    login(mobile,password);
                 }else{
                     ToastUtil.show(this,"请输入手机号和密码");
                 }
@@ -74,15 +66,47 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
         }
     }
 
-    @Override
+    private void login(String mobile,String password){
+        String url = getString(R.string.base_url)+"login";
+        AjaxParams params=new AjaxParams();
+        params.put("mobile",mobile);
+        params.put("password",password);
+        mHttp.post(url, params, new AjaxCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                try {
+                    JSONObject jb = new JSONObject(s);
+                    if (jb.getInt("code") == 200){
+                        JSONObject data = jb.getJSONObject("data");
+                        String token = data.getString("token");
+                        String gridId = data.getString("grid_id");
+                        loginSuccess(token,gridId);
+                    }else{
+                        ToastUtil.show(getApplicationContext(),jb.getString("message"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                loginFailed();
+            }
+        });
+    }
+
     public void loginFailed() {
         ToastUtil.show(this,"手机号或密码错误，请重新输入");
     }
 
-    @Override
-    public void loginSuccess(String token) {
+    public void loginSuccess(String token,String gridId) {
         PreferenceUtils.setPrefString(this,"token",token);
+        PreferenceUtils.setPrefString(this,"gridId",gridId);
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        intent.putExtra("gridId",gridId);
         startActivity(intent);
         finish();
     }

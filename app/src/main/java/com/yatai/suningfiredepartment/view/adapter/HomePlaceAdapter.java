@@ -22,12 +22,12 @@ import butterknife.ButterKnife;
  * Date 2018/5/28
  * 工作台账 recycler view adapter
  */
-public class HomeAccountAdapter extends RecyclerView.Adapter<HomeAccountAdapter.ViewHolder>{
+public class HomePlaceAdapter extends RecyclerView.Adapter<HomePlaceAdapter.ViewHolder>{
 
     private List<Drawable> mImgs = new ArrayList<>();
     private Context mContext;
 
-    public HomeAccountAdapter(Context context){
+    public HomePlaceAdapter(Context context){
         this.mContext = context;
     }
 

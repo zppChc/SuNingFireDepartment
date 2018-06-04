@@ -9,14 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.model.entity.CategoryEntity;
+import com.yatai.suningfiredepartment.entity.CategoryEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class InfoCategoryAdapter extends RecyclerView.Adapter<InfoCategoryAdapter.ViewHolder> {
     private List<CategoryEntity> mCategoryEntityList = new ArrayList<>();
