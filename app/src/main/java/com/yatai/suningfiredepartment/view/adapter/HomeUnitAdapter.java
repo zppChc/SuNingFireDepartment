@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.entity.DepartmentEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ import butterknife.ButterKnife;
  */
 public class HomeUnitAdapter extends RecyclerView.Adapter<HomeUnitAdapter.ViewHolder> {
 
-    private List<Drawable> mImgs = new ArrayList<>();
+    private List<DepartmentEntity> mDepartmentList = new ArrayList<>();
     private Context mContext;
 
     public HomeUnitAdapter(Context context){
@@ -40,15 +42,15 @@ public class HomeUnitAdapter extends RecyclerView.Adapter<HomeUnitAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.img.setImageDrawable(mImgs.get(position));
+        Glide.with(mContext).load(mDepartmentList.get(position).getImage()).into(holder.img);
     }
 
     @Override
     public int getItemCount() {
-        return mImgs.size();
+        return mDepartmentList.size();
     }
-    public void  setImgs(List<Drawable> imgs){
-        mImgs = imgs;
+    public void  setDepartmentList(List<DepartmentEntity> list){
+        mDepartmentList = list;
         notifyDataSetChanged();
     }
     class ViewHolder extends RecyclerView.ViewHolder{

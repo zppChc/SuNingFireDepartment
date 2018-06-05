@@ -3,12 +3,14 @@ package com.yatai.suningfiredepartment.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 public class GridEntity implements Parcelable {
     private int id;
     private int parent_id;
     private int grid_level;
     private String name;
-    private String polygon;
+    private List<List<Double>> polygon;
     private int user_id;
     private String image;
 
@@ -17,7 +19,6 @@ public class GridEntity implements Parcelable {
         parent_id = in.readInt();
         grid_level = in.readInt();
         name = in.readString();
-        polygon = in.readString();
         user_id = in.readInt();
         image = in.readString();
     }
@@ -66,11 +67,11 @@ public class GridEntity implements Parcelable {
         this.name = name;
     }
 
-    public String getPolygon() {
+    public List<List<Double>> getPolygon() {
         return polygon;
     }
 
-    public void setPolygon(String polygon) {
+    public void setPolygon(List<List<Double>> polygon) {
         this.polygon = polygon;
     }
 
@@ -101,7 +102,6 @@ public class GridEntity implements Parcelable {
         parcel.writeInt(parent_id);
         parcel.writeInt(grid_level);
         parcel.writeString(name);
-        parcel.writeString(polygon);
         parcel.writeInt(user_id);
         parcel.writeString(image);
     }

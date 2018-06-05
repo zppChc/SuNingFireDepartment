@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 public class HomeRegionAdapter extends RecyclerView.Adapter<HomeRegionAdapter.ViewHolder>{
     private List<GridEntity> gridList  = new ArrayList<>();
     private Context mContext;
+    private OnItemClickListener mListener;
 
     public HomeRegionAdapter(Context context){
         this.mContext = context;
@@ -36,14 +37,12 @@ public class HomeRegionAdapter extends RecyclerView.Adapter<HomeRegionAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_image,parent,false);
-        return new ViewHolder(view);
+        return new ViewHolder(view,mListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int resource = R.drawable.a;
-        Glide.with(mContext).load(resource).into(holder.img);
-//        Glide.with(holder.itemView).load(gridList.get(position).getImage()).into(holder.img);
+        Glide.with(mContext).load(gridList.get(position).getImage()).into(holder.img);
     }
 
     @Override
@@ -56,12 +55,28 @@ public class HomeRegionAdapter extends RecyclerView.Adapter<HomeRegionAdapter.Vi
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    public void setListener(OnItemClickListener listener){
+        this.mListener = listener;
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.item_show)
         ImageView img;
-        public ViewHolder(View itemView) {
+        private OnItemClickListener mListener;
+        public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(this);
+            mListener = listener;
         }
+
+        @Override
+        public void onClick(View view) {
+            mListener.onItemClick(view,getPosition());
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }
