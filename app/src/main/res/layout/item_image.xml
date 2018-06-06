@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="120dp"
     android:layout_height="120dp"
-    android:id="@+id/item_show">
+    android:id="@+id/item_show"
+    android:paddingLeft="10dp">
 
 </ImageView>

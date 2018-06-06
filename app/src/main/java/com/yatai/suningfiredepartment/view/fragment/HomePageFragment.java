@@ -217,13 +217,12 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         //UiSettings 主要是对地图上的控件的管理，比如指南针、logo位置（不能隐藏）.....
         mUiSettings = mAMap.getUiSettings();
 
-//        //隐藏缩放按钮
-//        mUiSettings.setZoomControlsEnabled(false);
-//        //缩放手势
-//        mUiSettings.setZoomGesturesEnabled(false);
-//        //滑动手势
-//        mUiSettings.setScrollGesturesEnabled(false);
-
+        //隐藏缩放按钮
+        mUiSettings.setZoomControlsEnabled(false);
+        //缩放手势
+        mUiSettings.setZoomGesturesEnabled(false);
+        //滑动手势
+        mUiSettings.setScrollGesturesEnabled(false);
     }
 
 
@@ -299,7 +298,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                         mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
                        List<LatLng> bottomLatLng =  LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形
-                            addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(),bottomLatLng);
+                            addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(),bottomLatLng,8);
 
                         LatLngBounds.Builder bottombounds = new LatLngBounds.Builder();
                         for (int i = 0; i < bottomLatLng.size(); i++) {
@@ -317,9 +316,11 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                                 GridEntity tempEntity = gson.fromJson(gridChildrenArray.getJSONObject(i).toString(), GridEntity.class);
                                 childrenGridList.add(tempEntity);
                                 List<LatLng> childLatLng =  LngLat2LatLng.convertLngLat2LatLng(tempEntity.getPolygon());
-                                addArea(ColorUtil.randomStrokeRgb(), ColorUtil.randomFillArgb(),childLatLng);
+                                addArea(ColorUtil.randomStrokeRgb(), ColorUtil.randomFillArgb(),childLatLng,1);
                             }
                             mHomeRegionAdapter.setGridList(childrenGridList);
+                        }else{
+                            mRegionLayout.setVisibility(View.GONE);
                         }
 
                         //获取相关部门信息
@@ -417,7 +418,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
      * @param fillColor        填充颜色
      * @param latLnglist
      */
-    private void addArea(int strokeColor, int fillColor, List<LatLng> latLnglist) {
+    private void addArea(int strokeColor, int fillColor, List<LatLng> latLnglist, float strokeWidth) {
         // 定义多边形的属性信息
         PolygonOptions polygonOptions = new PolygonOptions();
         // 添加多个多边形边框的顶点
@@ -427,7 +428,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         // 设置多边形的边框颜色，32位 ARGB格式，默认为黑色
         polygonOptions.strokeColor(strokeColor);
         // 设置多边形的边框宽度，单位：像素
-        polygonOptions.strokeWidth(1);
+        polygonOptions.strokeWidth(strokeWidth);
         // 设置多边形的填充颜色，32位ARGB格式
         polygonOptions.fillColor(fillColor); // 注意要加前两位的透明度
         // 在地图上添加一个多边形（polygon）对象

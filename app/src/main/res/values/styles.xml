@@ -21,7 +21,7 @@
         <item name="colorControlActivated">#f0f0f0</item>
     </style>
 
-    <style name="TranslucentTheme" parent="AppTheme">
-
-    </style>
+    <style name="TranslucentTheme" parent="AppTheme"/>
+    
+    <style name="ActivityTranslucentTheme" parent="AppTheme"/>
 </resources>

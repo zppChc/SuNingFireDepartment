@@ -39,10 +39,13 @@
         <activity
             android:name=".view.activity.MainActivity"
             android:theme="@style/TranslucentTheme" />
-        <activity android:name=".view.activity.FocusGroupActivity" />
+        <activity android:name=".view.activity.FocusGroupActivity"
+            android:theme="@style/ActivityTranslucentTheme"/>
         <activity android:name=".view.activity.InfoDetailActivity" />
-        <activity android:name=".view.activity.SubGridActivity" />
-        <activity android:name=".view.activity.SubWorkActivity"></activity>
+        <activity android:name=".view.activity.SubGridActivity"
+            android:theme="@style/ActivityTranslucentTheme"/>
+        <activity android:name=".view.activity.SubWorkActivity"
+            android:theme="@style/ActivityTranslucentTheme"/>
     </application>
 
 </manifest>

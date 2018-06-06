@@ -44,7 +44,7 @@ public class InfoFragment extends Fragment {
 
     public static InfoFragment newInstance(String data) {
         Bundle args = new Bundle();
-        args.putString("key", data);
+        args.putString("gridId", data);
         InfoFragment fragment = new InfoFragment();
         fragment.setArguments(args);
         return fragment;
@@ -59,6 +59,7 @@ public class InfoFragment extends Fragment {
     }
 
     private void initView(View view) {
+        categoryList = new ArrayList<>();
         mCategoryAdapter = new InfoCategoryAdapter(getContext());
         mCategoryAdapter.setOnItemClickListener(new InfoCategoryAdapter.OnItemClickListener() {
             @Override
@@ -107,22 +108,27 @@ public class InfoFragment extends Fragment {
                 super.onSuccess(s);
                 try {
                     JSONObject jb = new JSONObject(s);
+                    infoList = new ArrayList<>();
                     if (jb.getInt("code") == 200) {
-                        categoryList = new ArrayList<>();
                         JSONArray data = jb.getJSONArray("data");
-                        Logger.d("Data : " + data.toString());
+//                        Logger.d("Data : " + data.toString());
                         Gson gson = new Gson();
-                        CategoryEntity temp =new CategoryEntity();
-                        temp.setId("99999");
-                        temp.setName("全部");
-                        categoryList.add(temp);
-                        for (int i = 0; i < data.length(); i++) {
-                            CategoryEntity categoryEntity = gson.fromJson(data.getJSONObject(i).toString(), CategoryEntity.class);
-                            categoryList.add(categoryEntity);
+                        if (data.length()>0) {
+                            CategoryEntity temp =new CategoryEntity();
+                            temp.setId("99999");
+                            temp.setName("全部");
+                            categoryList.add(temp);
+                            for (int i = 0; i < data.length(); i++) {
+                                CategoryEntity categoryEntity = gson.fromJson(data.getJSONObject(i).toString(), CategoryEntity.class);
+                                categoryList.add(categoryEntity);
+                            }
+                            mCategoryAdapter.setCategoryEntityList(categoryList);
+                        }else{
+                            mCategoryAdapter.setCategoryEntityList(categoryList);
                         }
-                        mCategoryAdapter.setCategoryEntityList(categoryList);
                     }else{
                         ToastUtil.show(getContext(),jb.getString("message"));
+                        mCategoryAdapter.setCategoryEntityList(categoryList);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -149,19 +155,24 @@ public class InfoFragment extends Fragment {
             public void onSuccess(String s) {
                 super.onSuccess(s);
                 try {
+                    infoList = new ArrayList<>();
                     JSONObject jb  = new JSONObject(s);
                     if (jb.getInt("code") == 200) {
-                        infoList =new ArrayList<>();
                         JSONArray data = jb.getJSONArray("data");
-                        Logger.d("Data : " + data.toString());
+//                        Logger.d("Data : " + data.toString());
                         Gson gson = new Gson();
-                        for (int i = 0; i < data.length(); i++) {
-                            InfoEntity infoEntity = gson.fromJson(data.getJSONObject(i).toString(),InfoEntity.class);
-                            infoList.add(infoEntity);
+                        if (data.length()>0) {
+                            for (int i = 0; i < data.length(); i++) {
+                                InfoEntity infoEntity = gson.fromJson(data.getJSONObject(i).toString(), InfoEntity.class);
+                                infoList.add(infoEntity);
+                            }
+                            mInfoAdapter.setInfoEntityList(infoList);
+                        }else{
+                            mInfoAdapter.setInfoEntityList(infoList);
                         }
-                        mInfoAdapter.setInfoEntityList(infoList);
                     }else {
                         ToastUtil.show(getContext(),jb.getString("message"));
+                        mInfoAdapter.setInfoEntityList(infoList);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -190,16 +201,23 @@ public class InfoFragment extends Fragment {
             public void onSuccess(String s) {
                 super.onSuccess(s);
                 try {
+                    infoList = new ArrayList<>();
                     JSONObject jb  = new JSONObject(s);
                     if (jb.getInt("code") == 200) {
-                        infoList =new ArrayList<>();
                         JSONArray data = jb.getJSONArray("data");
-                        Logger.d("Data : " + data.toString());
+//                        Logger.d("Data : " + data.toString());
                         Gson gson = new Gson();
-                        for (int i = 0; i < data.length(); i++) {
-                            InfoEntity infoEntity = gson.fromJson(data.getJSONObject(i).toString(),InfoEntity.class);
-                            infoList.add(infoEntity);
+                        if(data.length()>0) {
+                            for (int i = 0; i < data.length(); i++) {
+                                InfoEntity infoEntity = gson.fromJson(data.getJSONObject(i).toString(), InfoEntity.class);
+                                infoList.add(infoEntity);
+                            }
+                            mInfoAdapter.setInfoEntityList(infoList);
+                        }else{
+                            mInfoAdapter.setInfoEntityList(infoList);
                         }
+                    }else{
+                        ToastUtil.show(getContext(),jb.getString("message"));
                         mInfoAdapter.setInfoEntityList(infoList);
                     }
                 } catch (JSONException e) {

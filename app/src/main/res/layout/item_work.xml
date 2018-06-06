@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/item_flag_view"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_marginTop="15dp"
         android:text="2018年3月20日-------3月11日"
         android:textColor="@color/work_title_black"
@@ -31,13 +31,15 @@
         android:layout_marginLeft="8dp"
         android:textColor="@color/work_content_gary"
         android:textSize="15sp"
-        android:text="2018年第一季度消防会议"/>
+        android:text="2018年第一季度消防会议"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/item_flag_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
         android:textSize="15sp"

@@ -14,8 +14,12 @@
 
     <color name="login_title">#666666</color>
 
-    <color name="personal_gray_bg">#f0f0f0</color>
+    <color name="home_page_cut_line_gray">#f0f0f0</color>
+    <color name="home_page_sub_title_blue_line">#0d98fd</color>
+    <color name="home_page_news_ver_line">#999999</color>
+    <color name="home_page_news_text_color">#999999</color>
 
+    <color name="personal_gray_bg">#f0f0f0</color>
     <color name="personal_black_one">#666666</color>
     <color name="personal_black_two">#333333</color>
 
