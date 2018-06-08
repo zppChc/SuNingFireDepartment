@@ -38,7 +38,7 @@ public class WorkDetailPicAdapter extends RecyclerView.Adapter<WorkDetailPicAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_image,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_work_img,parent,false);
         return new ViewHolder(view,mListener);
     }
 
@@ -53,7 +53,7 @@ public class WorkDetailPicAdapter extends RecyclerView.Adapter<WorkDetailPicAdap
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.item_show)
+        @BindView(R.id.item_work_pic_show)
         ImageView img;
         OnItemClickListener mListener;
         public ViewHolder(View itemView, OnItemClickListener listener) {

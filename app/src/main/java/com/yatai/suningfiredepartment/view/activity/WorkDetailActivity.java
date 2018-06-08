@@ -2,6 +2,9 @@ package com.yatai.suningfiredepartment.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -22,7 +25,14 @@ import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.WorkItemEntity;
 import com.yatai.suningfiredepartment.entity.WorkTemplateEntity;
+import com.yatai.suningfiredepartment.util.ImageUtil;
+import com.yatai.suningfiredepartment.util.PreferenceUtils;
+import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.adapter.WorkDetailPicAdapter;
+
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +40,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,9 +69,11 @@ public class WorkDetailActivity extends AppCompatActivity {
     private List<WorkTemplateEntity> mTemplateList;
     private List<Drawable> mPicList;
     private WorkDetailPicAdapter mPicAdapter;
+    private List<String> upLoadPicPath;
 
     //图片对象
     private Uri contentUri;
+    private File currentImageFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +91,7 @@ public class WorkDetailActivity extends AppCompatActivity {
     private void initView() throws JSONException {
         mTemplateList = new ArrayList<>();
         mPicList = new ArrayList<>();
+        upLoadPicPath = new ArrayList<>();
 
         Intent intent = getIntent();
         String workItem = intent.getStringExtra("workItem");
@@ -84,7 +100,6 @@ public class WorkDetailActivity extends AppCompatActivity {
         mWorkItemEntity = gson.fromJson(workItem, WorkItemEntity.class);
 
         mTitleTv.setText(mWorkItemEntity.getName());
-        Logger.d("Description: " + mWorkItemEntity.getDescription());
         mDescriptionTv.setText(mWorkItemEntity.getDescription());
 
         JSONObject jb = new JSONObject(workItem);
@@ -101,7 +116,11 @@ public class WorkDetailActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 if(position == 0){
-                    takePhoto();
+                    try {
+                        takePhoto();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -114,22 +133,30 @@ public class WorkDetailActivity extends AppCompatActivity {
 
     }
 
-    private void takePhoto() {
+    private void takePhoto() throws IOException {
         // 启动系统相机
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // 获取拍完后的uri
-         Uri mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
+        //在sd下创建文件夹myimage；Environment.getExternalStorageDirectory()得到SD卡路径文件
+        File dir = new File(Environment.getExternalStorageDirectory(), "YaTai");
+        if (!dir.exists()) {    //exists()判断文件是否存在，不存在则创建文件
+            dir.mkdirs();
+        }
+        //设置日期格式在android中，创建文件时，文件名中不能包含“：”冒号
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        String filename = df.format(new Date());
+        currentImageFile = new File(dir, filename + ".jpg");
+        if (!currentImageFile.exists()) {
+            currentImageFile.createNewFile();
+        }
          //判断7.0 android 系统
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
             //临时添加一个拍照权限
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             //通过FileProvider 获取uri
-            contentUri = FileProvider.getUriForFile(WorkDetailActivity.this,"com.yatai.suningfiredepartment.fileProvider",
-                    new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
+            contentUri = FileProvider.getUriForFile(WorkDetailActivity.this,"com.yatai.suningfiredepartment.fileProvider",currentImageFile);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
         } else {
-            mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(currentImageFile));
         }
         startActivityForResult(intent, TAKE_PHOTO);
     }
@@ -138,28 +165,67 @@ public class WorkDetailActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-
             switch (requestCode) {
-
                 case TAKE_PHOTO:
-                    Uri picture;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//如果是7.0android系统
-                        picture = contentUri;
-                    } else {
-                        picture = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/temp.jpg"));
-                    }
-                    try {
-                        Drawable d=Drawable.createFromStream(getContentResolver().openInputStream(picture),"work.jpg");
-                        mPicList.add(d);
-                        mPicAdapter.notifyDataSetChanged();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    String filePath = currentImageFile.getAbsolutePath();
+                    Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                    Drawable d=new BitmapDrawable(bitmap);
+                    mPicList.add(d);
+                    mPicAdapter.notifyDataSetChanged();
                     //缺少一个上传功能
-//
-//                    startPhotoZoom(picture);
+                    uploadAndCompress(bitmap);
                     break;
             }
         }
+    }
+
+
+    private void uploadAndCompress(final Bitmap unCompressBitmap){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                Bitmap bitmap = ImageUtil.compressImage(unCompressBitmap);
+                String uploadPicPath = ImageUtil.saveBitmap(bitmap);
+                uploadPicture(uploadPicPath);
+            }
+        }.start();
+    }
+
+    private void uploadPicture(String path){
+        FinalHttp  http = new FinalHttp();
+        String token = "Bearer " + PreferenceUtils.getPerfString(WorkDetailActivity.this, "token", "");
+        String url = getString(R.string.base_url) + "image";
+        http.addHeader("Authorization", token);
+        AjaxParams params = new AjaxParams();
+        try {
+            params.put("image", new File(path));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        params.put("category","task");
+        http.post(url, params, new AjaxCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                try {
+                    JSONObject jb = new JSONObject(s);
+                    if (jb.getInt("code") == 200){
+                        ToastUtil.show(WorkDetailActivity.this, "Upload Picture Success");
+                        Logger.i("Upload pic : "+ s);
+                    }else{
+                        ToastUtil.show(WorkDetailActivity.this,jb.getString("message"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                ToastUtil.show(WorkDetailActivity.this,strMsg);
+            }
+        });
     }
 }
