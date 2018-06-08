@@ -106,7 +106,6 @@ public class LoginActivity extends BaseActivity  {
         PreferenceUtils.setPrefString(this,"token",token);
         PreferenceUtils.setPrefString(this,"gridId",gridId);
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-        intent.putExtra("gridId",gridId);
         startActivity(intent);
         finish();
     }

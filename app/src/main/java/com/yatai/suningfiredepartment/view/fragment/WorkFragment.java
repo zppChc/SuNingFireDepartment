@@ -1,5 +1,6 @@
 package com.yatai.suningfiredepartment.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.yatai.suningfiredepartment.entity.CategoryEntity;
 import com.yatai.suningfiredepartment.entity.WorkItemEntity;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
+import com.yatai.suningfiredepartment.view.activity.WorkDetailActivity;
 import com.yatai.suningfiredepartment.view.adapter.WorkCategoryAdapter;
 import com.yatai.suningfiredepartment.view.adapter.WorkItemAdapter;
 
@@ -101,7 +103,11 @@ public class WorkFragment extends Fragment {
         mWorkItemAdapter.setListener(new WorkItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ToastUtil.show(getContext(),"Work Item : " + position);
+                Intent intent = new Intent(getActivity(), WorkDetailActivity.class);
+                Gson gson  = new Gson();
+                String workItemDetail = gson.toJson(workList.get(position));
+                intent.putExtra("workItem",workItemDetail);
+                startActivity(intent);
             }
         });
         workRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));

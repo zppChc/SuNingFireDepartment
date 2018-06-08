@@ -24,7 +24,6 @@ public class InfoCategoryAdapter extends RecyclerView.Adapter<InfoCategoryAdapte
     }
 
     public void setCategoryEntityList(List<CategoryEntity> list){
-        mCategoryEntityList.clear();
         mCategoryEntityList = list;
         notifyDataSetChanged();
     }

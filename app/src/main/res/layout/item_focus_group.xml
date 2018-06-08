@@ -60,5 +60,6 @@
         android:layout_marginRight="12dp"
         android:text="独居老人"
         android:textSize="13sp"
-        android:textColor="@color/focus_group_flag_blue"/>
+        android:textColor="@color/focus_group_flag_blue"
+        android:visibility="gone"/>
 </android.support.constraint.ConstraintLayout>

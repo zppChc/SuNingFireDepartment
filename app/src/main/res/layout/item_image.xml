@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="120dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="120dp"
-    android:id="@+id/item_show"
-    android:paddingLeft="10dp">
+    android:layout_width="120dp"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/item_show"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="2dp"
+        app:riv_border_color="#00000000"
+        app:riv_corner_radius="10dp"/>
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:ellipsize="middle"
+        android:width="80dp"
+        android:textSize="15sp"
+        android:textColor="@color/personal_black_one"/>
+</LinearLayout>
 
-</ImageView>

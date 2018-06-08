@@ -24,4 +24,8 @@
     <style name="TranslucentTheme" parent="AppTheme"/>
     
     <style name="ActivityTranslucentTheme" parent="AppTheme"/>
+
+    <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">13sp</item>
+    </style>
 </resources>

@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.entity.PlaceEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ import butterknife.ButterKnife;
  */
 public class HomePlaceAdapter extends RecyclerView.Adapter<HomePlaceAdapter.ViewHolder>{
 
-    private List<Drawable> mImgs = new ArrayList<>();
+    private List<PlaceEntity> mList = new ArrayList<>();
     private Context mContext;
 
     public HomePlaceAdapter(Context context){
@@ -40,22 +43,25 @@ public class HomePlaceAdapter extends RecyclerView.Adapter<HomePlaceAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.img.setImageDrawable(mImgs.get(position));
+        Glide.with(mContext).load(mList.get(position).getImage()).into(holder.img);
+        holder.nameTv.setText(mList.get(position).getName());
     }
 
     @Override
     public int getItemCount() {
-        return mImgs.size();
+        return mList.size();
     }
 
-    public void setImgs(List<Drawable> imgs){
-        mImgs = imgs;
+    public void setList(List<PlaceEntity> list){
+        mList = list;
         notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.item_show)
         ImageView img;
+        @BindView(R.id.item_name)
+        TextView nameTv;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

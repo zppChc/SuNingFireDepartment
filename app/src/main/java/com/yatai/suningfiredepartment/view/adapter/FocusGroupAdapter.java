@@ -7,11 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.entity.PeopleEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * @author  chc
@@ -20,9 +27,16 @@ import butterknife.ButterKnife;
  */
 public class FocusGroupAdapter extends RecyclerView.Adapter<FocusGroupAdapter.ViewHolder>{
     private Context mContext;
+    private List<PeopleEntity> mList;
 
     public FocusGroupAdapter(Context context){
         this.mContext = context;
+        mList = new ArrayList<>();
+    }
+
+    public void  setList(List<PeopleEntity> list){
+        mList = list;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -34,15 +48,28 @@ public class FocusGroupAdapter extends RecyclerView.Adapter<FocusGroupAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+        Glide.with(mContext).load(mList.get(position).getImage()).into(holder.portrait);
+        holder.name.setText(mList.get(position).getName());
+        holder.phone.setText(mList.get(position).getMobile());
+        holder.address.setText(mList.get(position).getAddress());
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return mList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
+
+        @BindView(R.id.item_focus_group_portrait)
+        CircleImageView portrait;
+        @BindView(R.id.item_focus_group_name)
+        TextView name;
+        @BindView(R.id.item_focus_group_phone)
+        TextView phone;
+        @BindView(R.id.item_focus_group_address)
+        TextView address;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

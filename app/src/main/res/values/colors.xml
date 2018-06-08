@@ -25,8 +25,8 @@
 
     <color name="cut_off_line">#f0f0f0</color>
     
-    <color name="work_complete">#0d98fd</color>
-    <color name="work_execute">#ff6666</color>
+    <color name="work_complete_blue">#0d98fd</color>
+    <color name="work_execute_red">#ff6666</color>
     <color name="work_not_started">#999999</color>
     <color name="work_title_black">#333333</color>
     <color name="work_content_gary">#999999</color>

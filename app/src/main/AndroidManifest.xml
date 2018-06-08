@@ -18,6 +18,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.yatai.suningfiredepartment.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
         <activity
             android:name=".view.activity.SplashActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -39,13 +48,21 @@
         <activity
             android:name=".view.activity.MainActivity"
             android:theme="@style/TranslucentTheme" />
-        <activity android:name=".view.activity.FocusGroupActivity"
-            android:theme="@style/ActivityTranslucentTheme"/>
-        <activity android:name=".view.activity.InfoDetailActivity" />
-        <activity android:name=".view.activity.SubGridActivity"
-            android:theme="@style/ActivityTranslucentTheme"/>
-        <activity android:name=".view.activity.SubWorkActivity"
-            android:theme="@style/ActivityTranslucentTheme"/>
+        <activity
+            android:name=".view.activity.FocusGroupActivity"
+            android:theme="@style/ActivityTranslucentTheme"  />
+        <activity
+            android:name=".view.activity.InfoDetailActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
+        <activity
+            android:name=".view.activity.SubGridActivity"
+            android:theme="@style/ActivityTranslucentTheme"  />
+        <activity
+            android:name=".view.activity.SubWorkActivity"
+            android:theme="@style/ActivityTranslucentTheme"  />
+        <activity
+            android:name=".view.activity.WorkDetailActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.yatai.suningfiredepartment.R;
@@ -43,6 +44,7 @@ public class HomeUnitAdapter extends RecyclerView.Adapter<HomeUnitAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Glide.with(mContext).load(mDepartmentList.get(position).getImage()).into(holder.img);
+        holder.nameTv.setText(mDepartmentList.get(position).getName());
     }
 
     @Override
@@ -56,6 +58,8 @@ public class HomeUnitAdapter extends RecyclerView.Adapter<HomeUnitAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.item_show)
         ImageView img;
+        @BindView(R.id.item_name)
+        TextView nameTv;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

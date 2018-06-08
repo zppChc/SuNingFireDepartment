@@ -26,10 +26,13 @@ import com.google.gson.Gson;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.DepartmentEntity;
 import com.yatai.suningfiredepartment.entity.GridEntity;
+import com.yatai.suningfiredepartment.entity.PeopleEntity;
+import com.yatai.suningfiredepartment.entity.PlaceEntity;
 import com.yatai.suningfiredepartment.util.ColorUtil;
 import com.yatai.suningfiredepartment.util.LngLat2LatLng;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
+import com.yatai.suningfiredepartment.view.adapter.HomePeopleAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePlaceAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeRegionAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeUnitAdapter;
@@ -72,6 +75,10 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     LinearLayout mPlaceLayout;
     @BindView(R.id.temp_sub_grid_region)
     LinearLayout mRegionLayout;
+    @BindView(R.id.sub_grid_people_recycler_view)
+    RecyclerView mPeopleRecyclerView;
+    @BindView(R.id.temp_sub_grid_people)
+    LinearLayout mPeopleLayout;
 
 
     private String gridId;
@@ -89,15 +96,19 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     private HomeRegionAdapter mHomeRegionAdapter;
     private HomeUnitAdapter mHomeUnitAdapter;
     private HomePlaceAdapter mHomePlaceAdapter;
+    private HomePeopleAdapter mHomePeopleAdapter;
 
 
     private GridEntity mGridEntity;
     private List<GridEntity> childrenGridList;
     private List<DepartmentEntity> departmentList;
+    private List<PeopleEntity> peopleList;
+    private List<PlaceEntity> placeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setContentView(R.layout.activity_sub_gird);
 
         ButterKnife.bind(this);
@@ -126,11 +137,13 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         childrenGridList = new ArrayList<>();
         departmentList = new ArrayList<>();
         childPolygons = new ArrayList<>();
+        peopleList = new ArrayList<>();
+        placeList = new ArrayList<>();
 
         mContext = this;
 
-        mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeRegionAdapter = new HomeRegionAdapter(this);
+        mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomeRegionAdapter = new HomeRegionAdapter(SubGridActivity.this);
         mHomeRegionAdapter.setListener(new HomeRegionAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -143,16 +156,31 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         mRegionRecyclerView.setAdapter(mHomeRegionAdapter);
         mHomeRegionAdapter.setGridList(childrenGridList);
 
-        mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeUnitAdapter = new HomeUnitAdapter(this);
+        mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomeUnitAdapter = new HomeUnitAdapter(SubGridActivity.this);
         mUnitRecyclerView.setAdapter(mHomeUnitAdapter);
         mHomeUnitAdapter.setDepartmentList(departmentList);
 
         //重点地点。。。。没有实体类，等接口中出现数据在进行更改
-//        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        mHomePlaceAdapter = new HomePlaceAdapter(getContext());
-//        mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
-//        mHomePlaceAdapter.setImgs(images);
+        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomePlaceAdapter = new HomePlaceAdapter(SubGridActivity.this);
+        mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
+        mHomePlaceAdapter.setList(placeList);
+
+        mPeopleRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomePeopleAdapter = new HomePeopleAdapter(SubGridActivity.this);
+        mHomePeopleAdapter.setListener(new HomePeopleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(SubGridActivity.this,FocusGroupActivity.class);
+                Gson gson =new Gson();
+                String peopleStr = gson.toJson(peopleList.get(position));
+                intent.putExtra("people",peopleStr);
+                startActivity(intent);
+            }
+        });
+        mPeopleRecyclerView.setAdapter(mHomePeopleAdapter);
+        mHomePeopleAdapter.setList(peopleList);
 
         initRecyclerViewData();
         mBackImg.setOnClickListener(new View.OnClickListener() {
@@ -256,7 +284,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                         mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
                         List<LatLng> bottomLatLng = LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形
-                        addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(), bottomLatLng,8);
+                        addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(), bottomLatLng, 8);
 
                         LatLngBounds.Builder bottombounds = new LatLngBounds.Builder();
                         for (int i = 0; i < bottomLatLng.size(); i++) {
@@ -274,7 +302,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                                 GridEntity tempEntity = gson.fromJson(gridChildrenArray.getJSONObject(i).toString(), GridEntity.class);
                                 childrenGridList.add(tempEntity);
                                 List<LatLng> childLatLng = LngLat2LatLng.convertLngLat2LatLng(tempEntity.getPolygon());
-                                addArea(ColorUtil.randomStrokeRgb(), ColorUtil.randomFillArgb(), childLatLng,1);
+                                addArea(ColorUtil.randomStrokeRgb(), ColorUtil.randomFillArgb(), childLatLng, 1);
                             }
                             mHomeRegionAdapter.setGridList(childrenGridList);
                         } else {
@@ -297,18 +325,28 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
 
                         //重点区域
                         JSONArray importantPlaceArray = data.getJSONArray("importantPlace");
+                        placeList.clear();
                         if (importantPlaceArray.length() > 0) {
-
+                            for (int i  =0; i<importantPlaceArray.length(); i++){
+                                PlaceEntity placeEntity  = gson.fromJson(importantPlaceArray.getJSONObject(i).toString(),PlaceEntity.class);
+                                placeList.add(placeEntity);
+                            }
+                            mHomePlaceAdapter.notifyDataSetChanged();
                         } else {
                             mPlaceLayout.setVisibility(View.GONE);
                         }
 
                         //重点人群
                         JSONArray importantPersonArray = data.getJSONArray("importantPerson");
+                        peopleList.clear();
                         if (importantPersonArray.length() > 0) {
-
+                            for (int i = 0; i<importantPersonArray.length(); i++){
+                                PeopleEntity peopleEntity = gson.fromJson(importantPersonArray.get(i).toString(),PeopleEntity.class);
+                                peopleList.add(peopleEntity);
+                            }
+                            mHomePeopleAdapter.notifyDataSetChanged();
                         } else {
-
+                            mPeopleLayout.setVisibility(View.GONE);
                         }
 
                     } else {

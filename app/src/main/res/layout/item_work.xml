@@ -6,7 +6,7 @@
         android:id="@+id/item_flag_view"
         android:layout_width="2dp"
         android:layout_height="match_parent"
-        android:background="@color/work_complete"
+        android:background="@color/work_complete_blue"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="18dp"

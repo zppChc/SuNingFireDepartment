@@ -60,11 +60,12 @@ public class InfoFragment extends Fragment {
 
     private void initView(View view) {
         categoryList = new ArrayList<>();
+        infoList = new ArrayList<>();
         mCategoryAdapter = new InfoCategoryAdapter(getContext());
         mCategoryAdapter.setOnItemClickListener(new InfoCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ToastUtil.show(getContext(),"Position: "+position);
+//                ToastUtil.show(getContext(),"Position: "+position);
                 if (position == 0){
                     getAllInfoList();
                 }else {
@@ -76,6 +77,7 @@ public class InfoFragment extends Fragment {
         mCategoryRecyclerView=(RecyclerView) view.findViewById(R.id.info_category_recycler_view);
         mCategoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         mCategoryRecyclerView.setAdapter(mCategoryAdapter);
+        mCategoryAdapter.setCategoryEntityList(categoryList);
 
         mInfoAdapter=new InfoAdapter(getContext());
         mInfoAdapter.setClickListener(new InfoAdapter.OnItemClickListener() {
@@ -87,6 +89,7 @@ public class InfoFragment extends Fragment {
         mInfoRecyclerView=(RecyclerView)view.findViewById(R.id.info_recycler_view);
         mInfoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mInfoRecyclerView.setAdapter(mInfoAdapter);
+        mInfoAdapter.setInfoEntityList(infoList);
 
         mHttp = new FinalHttp();
 
@@ -107,8 +110,8 @@ public class InfoFragment extends Fragment {
             public void onSuccess(String s) {
                 super.onSuccess(s);
                 try {
+                    categoryList.clear();
                     JSONObject jb = new JSONObject(s);
-                    infoList = new ArrayList<>();
                     if (jb.getInt("code") == 200) {
                         JSONArray data = jb.getJSONArray("data");
 //                        Logger.d("Data : " + data.toString());
@@ -122,13 +125,13 @@ public class InfoFragment extends Fragment {
                                 CategoryEntity categoryEntity = gson.fromJson(data.getJSONObject(i).toString(), CategoryEntity.class);
                                 categoryList.add(categoryEntity);
                             }
-                            mCategoryAdapter.setCategoryEntityList(categoryList);
+                            mCategoryAdapter.notifyDataSetChanged();
                         }else{
-                            mCategoryAdapter.setCategoryEntityList(categoryList);
+                            mCategoryAdapter.notifyDataSetChanged();
                         }
                     }else{
                         ToastUtil.show(getContext(),jb.getString("message"));
-                        mCategoryAdapter.setCategoryEntityList(categoryList);
+                        mCategoryAdapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -155,11 +158,10 @@ public class InfoFragment extends Fragment {
             public void onSuccess(String s) {
                 super.onSuccess(s);
                 try {
-                    infoList = new ArrayList<>();
+                    infoList=new ArrayList<>();
                     JSONObject jb  = new JSONObject(s);
                     if (jb.getInt("code") == 200) {
                         JSONArray data = jb.getJSONArray("data");
-//                        Logger.d("Data : " + data.toString());
                         Gson gson = new Gson();
                         if (data.length()>0) {
                             for (int i = 0; i < data.length(); i++) {
@@ -201,7 +203,7 @@ public class InfoFragment extends Fragment {
             public void onSuccess(String s) {
                 super.onSuccess(s);
                 try {
-                    infoList = new ArrayList<>();
+                    infoList=new ArrayList<>();
                     JSONObject jb  = new JSONObject(s);
                     if (jb.getInt("code") == 200) {
                         JSONArray data = jb.getJSONArray("data");
@@ -228,13 +230,14 @@ public class InfoFragment extends Fragment {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
+                ToastUtil.show(getContext(),strMsg);
             }
         });
     }
 
     private void showInfoDetail(String infoId){
         Intent intent = new Intent();
-        intent.setClass(getContext(), InfoDetailActivity.class);
+        intent.setClass(getActivity().getApplicationContext(), InfoDetailActivity.class);
         Bundle mBundle = new Bundle();
         mBundle.putString("infoId",infoId);//压入数据
         intent.putExtras(mBundle);

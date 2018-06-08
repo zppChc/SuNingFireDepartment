@@ -152,19 +152,19 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+//                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+//                startActivity(intent);
+//                finish();
                 //动画完成后启动 登陆页面 或者 根据需求进行更改
-//                if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
-//                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                }else{
-//                    Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                }
+                if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
 
             @Override

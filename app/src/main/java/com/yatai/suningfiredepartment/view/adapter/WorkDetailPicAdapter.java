@@ -1,6 +1,7 @@
 package com.yatai.suningfiredepartment.view.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,11 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.entity.GridEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,20 +18,23 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * @author chc
- * Date :2018/5/28
- * 相关网格 recycler view adapter
- */
-public class HomeRegionAdapter extends RecyclerView.Adapter<HomeRegionAdapter.ViewHolder>{
-    private List<GridEntity> gridList  = new ArrayList<>();
+public class WorkDetailPicAdapter extends RecyclerView.Adapter<WorkDetailPicAdapter.ViewHolder> {
+
     private Context mContext;
+    private List<Drawable> mDrawables;
     private OnItemClickListener mListener;
 
-    public HomeRegionAdapter(Context context){
-        this.mContext = context;
+    public WorkDetailPicAdapter(Context context){
+        mContext = context;
+        mDrawables = new ArrayList<>();
     }
-
+    public void setDrawables(List<Drawable> drawables){
+        mDrawables=drawables;
+        notifyDataSetChanged();
+    }
+    public void setListener(OnItemClickListener listener){
+        mListener = listener;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,35 +44,23 @@ public class HomeRegionAdapter extends RecyclerView.Adapter<HomeRegionAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(mContext).load(gridList.get(position).getImage()).into(holder.img);
-        holder.nameTv.setText(gridList.get(position).getName());
+        holder.img.setImageDrawable(mDrawables.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return gridList.size();
+        return mDrawables.size();
     }
 
-    public void setGridList(List<GridEntity> list){
-        gridList = list;
-        notifyDataSetChanged();
-    }
-
-    public void setListener(OnItemClickListener listener){
-        this.mListener = listener;
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.item_show)
         ImageView img;
-        @BindView(R.id.item_name)
-        TextView nameTv;
-        private OnItemClickListener mListener;
+        OnItemClickListener mListener;
         public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
-            itemView.setOnClickListener(this);
             mListener = listener;
+            itemView.setOnClickListener(this);
         }
 
         @Override

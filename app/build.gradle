@@ -64,4 +64,6 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-5'
     implementation files('libs/afinal_0.5.1_bin.jar')
     androidTestImplementation 'junit:junit:4.12'
+    //图片圆角
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }

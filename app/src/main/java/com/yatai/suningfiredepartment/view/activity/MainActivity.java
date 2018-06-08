@@ -56,15 +56,18 @@ public class MainActivity extends BaseActivity {
     };
     private List<Fragment> fragments;
     private MainViewPagerAdapter mPagerAdapter;
+    private String gridId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+//
+//        Intent intent = getIntent();
+//        String gridId = intent.getStringExtra("gridId");
 
-        Intent intent = getIntent();
-        String gridId = intent.getStringExtra("gridId");
+        gridId = PreferenceUtils.getPerfString(MainActivity.this,"gridId","");
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         initFragments(gridId);
@@ -77,8 +80,10 @@ public class MainActivity extends BaseActivity {
            tab.setCustomView(R.layout.item_menu);
             TextView textView = (TextView)tab.getCustomView().findViewById(R.id.tab_text);
             textView.setText(mMenus[i]);
+            textView.setTextSize(10);
             ImageView imageView=(ImageView)tab.getCustomView().findViewById(R.id.tab_img);
             imageView.setImageDrawable(getResources().getDrawable(images[i]));
+            imageView.setPadding(0,5,0,0);
            if (i == 0){
                imageView.setSelected(true);
 //               tab.getCustomView().findViewById(R.id.tab_layout).setSelected(true);
