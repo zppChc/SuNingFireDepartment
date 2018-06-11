@@ -19,6 +19,7 @@ import com.yatai.suningfiredepartment.entity.WorkItemEntity;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.activity.WorkDetailActivity;
+import com.yatai.suningfiredepartment.view.activity.WorkDetailFinishActivity;
 import com.yatai.suningfiredepartment.view.adapter.WorkCategoryAdapter;
 import com.yatai.suningfiredepartment.view.adapter.WorkItemAdapter;
 
@@ -103,11 +104,20 @@ public class WorkFragment extends Fragment {
         mWorkItemAdapter.setListener(new WorkItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getActivity(), WorkDetailActivity.class);
-                Gson gson  = new Gson();
+                Gson gson = new Gson();
                 String workItemDetail = gson.toJson(workList.get(position));
-                intent.putExtra("workItem",workItemDetail);
-                startActivity(intent);
+                //工作状态为未完成，跳转到一个未完成界面
+                if (workList.get(position).getStatus() == 0) {
+                    Intent intent = new Intent(getActivity(), WorkDetailActivity.class);
+                    intent.putExtra("workItem", workItemDetail);
+                    startActivity(intent);
+                }else{
+                    //跳转到 查看单个任务界面
+                    Intent intent = new Intent(getActivity(), WorkDetailFinishActivity.class);
+                    intent.putExtra("workItem", workItemDetail);
+                    //从workItem 中获取ID,可以用来查询单个数据
+                    startActivity(intent);
+                }
             }
         });
         workRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));

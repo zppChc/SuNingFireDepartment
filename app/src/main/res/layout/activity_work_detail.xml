@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.WorkDetailActivity">
+    tools:context=".view.activity.WorkDetailActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true"  >
     <View
         android:id="@+id/work_detail_title_background"
         android:layout_width="match_parent"
@@ -31,9 +33,11 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10sp"
             android:text="工作标题"
+            android:width="200dp"
+            android:ellipsize="middle"
             android:textSize="20sp"
             android:textColor="@color/white"
-            android:gravity="center_vertical"/>
+            android:gravity="center"/>
     </RelativeLayout>
 
     <ScrollView
@@ -52,43 +56,56 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="18dp"
-                android:textSize="18sp"
-                android:text="Hello"/>
+                android:layout_marginBottom="15dp"
+                android:textSize="16sp"/>
             <TextView
                 android:id="@+id/temp_work_detail_work_tv"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:paddingLeft="15dp"
                 android:layout_below="@+id/work_detail_description_text_view"
                 android:background="@color/home_page_cut_line_gray"
                 android:text="巡查详细信息"
                 android:textSize="14sp"
                 android:textColor="@color/textGray"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical"
+                android:visibility="gone"/>
+            <LinearLayout
+                android:id="@+id/work_detail_dynamic_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical"
+                android:layout_below="@+id/temp_work_detail_work_tv">
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/temp_work_detail_take_photo_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
                 android:layout_marginTop="20dp"
-                android:layout_below="@+id/temp_work_detail_work_tv">
+                android:layout_below="@+id/work_detail_dynamic_layout">
                 <TextView
                     android:id="@+id/temp_work_detail_take_photo_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@color/home_page_cut_line_gray"
+                    android:textColor="@color/textGray"
                     android:text="巡查图片"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="15dp"/>
-
+                    android:gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:paddingLeft="15dp"
+                    android:layout_marginBottom="10dp"/>
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/work_Detail_photo_display_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:paddingLeft="15dp"
                     android:layout_below="@+id/temp_work_detail_take_photo_title"
                     android:layout_marginRight="15dp"/>
             </RelativeLayout>

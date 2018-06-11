@@ -11,7 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- 在SDCard中创建与删除文件权限 -->
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+    <uses-permission
+        android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -29,8 +30,9 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
+
         <activity
             android:name=".view.activity.SplashActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -54,19 +56,21 @@
             android:theme="@style/TranslucentTheme" />
         <activity
             android:name=".view.activity.FocusGroupActivity"
-            android:theme="@style/ActivityTranslucentTheme"  />
+            android:theme="@style/ActivityTranslucentTheme" />
         <activity
             android:name=".view.activity.InfoDetailActivity"
             android:theme="@style/ActivityTranslucentTheme" />
         <activity
             android:name=".view.activity.SubGridActivity"
-            android:theme="@style/ActivityTranslucentTheme"  />
+            android:theme="@style/ActivityTranslucentTheme" />
         <activity
             android:name=".view.activity.SubWorkActivity"
-            android:theme="@style/ActivityTranslucentTheme"  />
+            android:theme="@style/ActivityTranslucentTheme" />
         <activity
             android:name=".view.activity.WorkDetailActivity"
             android:theme="@style/ActivityTranslucentTheme" />
+        <activity android:name=".view.activity.WorkDetailFinishActivity"
+            android:theme="@style/ActivityTranslucentTheme"/>
     </application>
 
 </manifest>

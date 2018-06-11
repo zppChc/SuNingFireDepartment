@@ -11,15 +11,26 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationClientOption.AMapLocationMode;
+import com.amap.api.location.AMapLocationListener;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
@@ -49,7 +60,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class WorkDetailActivity extends AppCompatActivity {
+public class WorkDetailActivity extends AppCompatActivity{
 
     private static final int TAKE_PHOTO = 1;
 
@@ -57,8 +68,10 @@ public class WorkDetailActivity extends AppCompatActivity {
     TextView mTitleTv;
     @BindView(R.id.work_detail_description_text_view)
     TextView mDescriptionTv;
-    @BindView(R.id.work_detail_template_layout)
-    RelativeLayout mTemplateLayout;
+    @BindView(R.id.temp_work_detail_work_tv)
+    TextView mTemplateWorkTitleTv;
+    @BindView(R.id.work_detail_dynamic_layout)
+    LinearLayout mDynamicLayout;
     @BindView(R.id.work_detail_confirm_button)
     Button mConfirmBtn;
     @BindView(R.id.work_Detail_photo_display_recycler_view)
@@ -75,6 +88,11 @@ public class WorkDetailActivity extends AppCompatActivity {
     private Uri contentUri;
     private File currentImageFile;
 
+
+    private AMapLocationClient locationClient = null;
+    private AMapLocationClientOption locationOption = null;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +104,9 @@ public class WorkDetailActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        initLocation();
     }
+
 
     private void initView() throws JSONException {
         mTemplateList = new ArrayList<>();
@@ -100,7 +120,7 @@ public class WorkDetailActivity extends AppCompatActivity {
         mWorkItemEntity = gson.fromJson(workItem, WorkItemEntity.class);
 
         mTitleTv.setText(mWorkItemEntity.getName());
-        mDescriptionTv.setText(mWorkItemEntity.getDescription());
+        mDescriptionTv.setText("任务描述："+mWorkItemEntity.getDescription());
 
         JSONObject jb = new JSONObject(workItem);
         JSONArray templateArray = jb.getJSONArray("template");
@@ -127,10 +147,72 @@ public class WorkDetailActivity extends AppCompatActivity {
         mPicRecyclerView.setAdapter(mPicAdapter);
         mPicList.add(getResources().getDrawable(R.drawable.take_photo));
         mPicAdapter.setDrawables(mPicList);
+
+        mConfirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submitInfo();
+            }
+        });
+    }
+
+    private void initLocation(){
+        //初始化client
+        locationClient = new AMapLocationClient(this.getApplicationContext());
+        locationOption = getDefaultOption();
+        //设置定位参数
+        locationClient.setLocationOption(locationOption);
+        // 设置定位监听
+        locationClient.setLocationListener(locationListener);
+        locationClient.startLocation();
     }
 
     private void dynamicAdd(List<WorkTemplateEntity> list) {
+        if (list.size() > 0){
+            mTemplateWorkTitleTv.setVisibility(View.VISIBLE);
+            for (int i = 0; i< list.size(); i++){
+                final int j = i;
+                LinearLayout layout = new LinearLayout(this);
+                layout.setOrientation(LinearLayout.HORIZONTAL);
 
+                TextView textView = new TextView(this);
+                textView.setText(mTemplateList.get(i).getName());
+                textView.setTextSize(16);
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+
+                final EditText editText = new EditText(this);
+                editText.setGravity(Gravity.CENTER_VERTICAL);
+                editText.setTextSize(16);
+                editText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        mTemplateList.get(j).setContent(editText.getText().toString());
+                    }
+                });
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,160);
+                LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.MATCH_PARENT,1.0f);
+                LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.MATCH_PARENT,3.0f);
+
+                layout.addView(textView,textParams);
+                layout.addView(editText,editParams);
+                mDynamicLayout.addView(layout,layoutParams);
+            }
+        }
+    }
+
+    private void submitInfo(){
+        for (int i = 0 ; i< mTemplateList.size(); i++) {
+            Logger.i("Content : " + mTemplateList.get(i).getContent());
+        }
     }
 
     private void takePhoto() throws IOException {
@@ -211,8 +293,8 @@ public class WorkDetailActivity extends AppCompatActivity {
                 try {
                     JSONObject jb = new JSONObject(s);
                     if (jb.getInt("code") == 200){
-                        ToastUtil.show(WorkDetailActivity.this, "Upload Picture Success");
-                        Logger.i("Upload pic : "+ s);
+                        JSONObject data = jb.getJSONObject("data");
+                        upLoadPicPath.add(data.getString("imagePath"));
                     }else{
                         ToastUtil.show(WorkDetailActivity.this,jb.getString("message"));
                     }
@@ -227,5 +309,54 @@ public class WorkDetailActivity extends AppCompatActivity {
                 ToastUtil.show(WorkDetailActivity.this,strMsg);
             }
         });
+    }
+
+    private AMapLocationClientOption getDefaultOption(){
+        AMapLocationClientOption mOption = new AMapLocationClientOption();
+        mOption.setLocationMode(AMapLocationMode.Hight_Accuracy);//可选，设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
+        mOption.setGpsFirst(false);//可选，设置是否gps优先，只在高精度模式下有效。默认关闭
+        mOption.setHttpTimeOut(30000);//可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
+        mOption.setInterval(2000);//可选，设置定位间隔。默认为2秒
+        mOption.setNeedAddress(true);//可选，设置是否返回逆地理地址信息。默认是true
+        mOption.setOnceLocation(false);//可选，设置是否单次定位。默认是false
+        mOption.setOnceLocationLatest(false);//可选，设置是否等待wifi刷新，默认为false.如果设置为true,会自动变为单次定位，持续定位时不要使用
+        AMapLocationClientOption.setLocationProtocol(AMapLocationClientOption.AMapLocationProtocol.HTTP);//可选， 设置网络请求的协议。可选HTTP或者HTTPS。默认为HTTP
+        mOption.setSensorEnable(false);//可选，设置是否使用传感器。默认是false
+        mOption.setWifiScan(true); //可选，设置是否开启wifi扫描。默认为true，如果设置为false会同时停止主动刷新，停止以后完全依赖于系统刷新，定位位置可能存在误差
+        mOption.setLocationCacheEnable(true); //可选，设置是否使用缓存定位，默认为true
+        mOption.setGeoLanguage(AMapLocationClientOption.GeoLanguage.DEFAULT);//可选，设置逆地理信息的语言，默认值为默认语言（根据所在地区选择语言）
+        return mOption;
+    }
+
+    /**
+     * 定位监听
+     */
+    AMapLocationListener locationListener = new AMapLocationListener() {
+        @Override
+        public void onLocationChanged(AMapLocation location) {
+            if (null != location) {
+                StringBuffer sb = new StringBuffer();
+                //errCode等于0代表定位成功，其他的为定位失败，具体的可以参照官网定位错误码说明
+                if(location.getErrorCode() == 0){
+                    sb.append("定位成功" + "\n");
+                    sb.append("定位类型: " + location.getLocationType() + "\n");
+                    sb.append("经    度    : " + location.getLongitude() + "\n");
+                    sb.append("纬    度    : " + location.getLatitude() + "\n");
+                    ToastUtil.show(WorkDetailActivity.this,sb.toString());
+                } else {
+                    //定位失败
+                    sb.append("定位失败" + "\n");
+                    sb.append("错误码:" + location.getErrorCode() + "\n");
+                    sb.append("错误信息:" + location.getErrorInfo() + "\n");
+                    sb.append("错误描述:" + location.getLocationDetail() + "\n");
+                }
+            }
+        }
+    };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

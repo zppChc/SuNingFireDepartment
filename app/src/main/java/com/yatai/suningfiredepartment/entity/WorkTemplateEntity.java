@@ -8,9 +8,12 @@ public class WorkTemplateEntity implements Parcelable{
 
     private String type;
 
+    private String content;
+
     protected WorkTemplateEntity(Parcel in) {
         name = in.readString();
         type = in.readString();
+        content = in.readString();
     }
 
     public static final Creator<WorkTemplateEntity> CREATOR = new Creator<WorkTemplateEntity>() {
@@ -41,6 +44,14 @@ public class WorkTemplateEntity implements Parcelable{
         this.type = type;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -50,5 +61,6 @@ public class WorkTemplateEntity implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(name);
         parcel.writeString(type);
+        parcel.writeString(content);
     }
 }

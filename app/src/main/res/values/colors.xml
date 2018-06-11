@@ -34,4 +34,6 @@
     <color name="focus_group_gray_666">#666666</color>
     <color name="focus_group_black_333">#333333</color>
     <color name="focus_group_flag_blue">#0ca2ff</color>
+
+    <color name="work_detail_gray">#999999</color>
 </resources>
