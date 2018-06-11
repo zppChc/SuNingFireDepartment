@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ public class InfoDetailActivity extends AppCompatActivity {
     ImageView mBackImageView;
     @BindView(R.id.info_detail_title_tv)
     TextView mTitleTv;
+    @BindView(R.id.info_detail_content)
+    EditText mContent;
     private String infoId;
     private FinalHttp mHttp;
 
@@ -40,7 +43,7 @@ public class InfoDetailActivity extends AppCompatActivity {
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         mBackImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,6 +67,8 @@ public class InfoDetailActivity extends AppCompatActivity {
                         JSONObject data = jb.getJSONObject("data");
                         String title = data.getString("title");
                         mTitleTv.setText(title);
+                        String content = data.getString("content");
+                        mContent.setText(content);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

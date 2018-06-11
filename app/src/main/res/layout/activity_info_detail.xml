@@ -36,10 +36,27 @@
                 android:layout_marginBottom="10sp"
                 android:singleLine="true"
                 android:width="250dp"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:ellipsize="middle"
                 android:textColor="@color/white"
                 android:gravity="center_horizontal"/>
         </RelativeLayout>
     </android.support.constraint.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:layout_below="@+id/info_detail_title_relative_layout">
+    <EditText
+        android:id="@+id/info_detail_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:paddingBottom="20dp"
+        android:background="@color/white"
+        android:editable="false"
+        android:textSize="15sp"/>
+    </ScrollView>
 </RelativeLayout>
