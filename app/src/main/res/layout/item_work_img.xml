@@ -7,5 +7,6 @@
     android:layout_height="100dp"
     android:layout_margin="2dp"
     app:riv_border_color="#00000000"
-    app:riv_corner_radius="10dp"/>
+    app:riv_corner_radius="10dp"
+    android:scaleType="fitXY"/>
 

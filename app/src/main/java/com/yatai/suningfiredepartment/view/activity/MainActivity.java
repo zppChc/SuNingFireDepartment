@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
+import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.adapter.MainViewPagerAdapter;
 import com.yatai.suningfiredepartment.view.fragment.CensusFragment;
 import com.yatai.suningfiredepartment.view.fragment.HomePageFragment;
@@ -132,4 +133,16 @@ public class MainActivity extends BaseActivity {
         fragments.add(personalFragment);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        long firstTime=0;
+        long secondTime = System.currentTimeMillis();
+        if (secondTime - firstTime > 2000) {
+            ToastUtil.show(MainActivity.this, "再按一次退出程序");
+            firstTime = secondTime;
+        } else{
+            finish();
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.yatai.suningfiredepartment.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +12,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
@@ -56,6 +62,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,6 +85,7 @@ public class WorkDetailActivity extends AppCompatActivity{
     @BindView(R.id.work_Detail_photo_display_recycler_view)
     RecyclerView mPicRecyclerView;
 
+    private ProgressDialog mProgressDialog;
 
     private WorkItemEntity mWorkItemEntity;
     private List<WorkTemplateEntity> mTemplateList;
@@ -92,6 +101,23 @@ public class WorkDetailActivity extends AppCompatActivity{
     private AMapLocationClient locationClient = null;
     private AMapLocationClientOption locationOption = null;
 
+
+    private final Timer timer = new Timer();
+    private TimerTask task;
+    @SuppressLint("HandlerLeak")
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            // 要做的事情
+//            Logger.i(""+msg.what);
+            if (msg.what == 1){
+                timer.cancel();
+                submitInfo();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +138,11 @@ public class WorkDetailActivity extends AppCompatActivity{
         mTemplateList = new ArrayList<>();
         mPicList = new ArrayList<>();
         upLoadPicPath = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(WorkDetailActivity.this,ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog.setMessage("正在提交...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
 
         Intent intent = getIntent();
         String workItem = intent.getStringExtra("workItem");
@@ -147,11 +178,27 @@ public class WorkDetailActivity extends AppCompatActivity{
         mPicRecyclerView.setAdapter(mPicAdapter);
         mPicList.add(getResources().getDrawable(R.drawable.take_photo));
         mPicAdapter.setDrawables(mPicList);
+        //初始化计时器任务
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Message message = new Message();
+                if ((mPicList.size()-1 == upLoadPicPath.size()) && mPicList.size()>1) {
+                    message.what = 1;
+                }else{
+                    message.what = 0;
+                }
+                handler.sendMessage(message);
+            }
+        };
 
         mConfirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                submitInfo();
+//                submitInfo();
+                mProgressDialog.show();
+                timer.schedule(task,2000,3000);
             }
         });
     }
@@ -210,8 +257,9 @@ public class WorkDetailActivity extends AppCompatActivity{
     }
 
     private void submitInfo(){
-        for (int i = 0 ; i< mTemplateList.size(); i++) {
-            Logger.i("Content : " + mTemplateList.get(i).getContent());
+        mProgressDialog.dismiss();
+        for (int i = 0 ; i< upLoadPicPath.size(); i++) {
+            Logger.i("Content : " + upLoadPicPath.get(i));
         }
     }
 
@@ -261,7 +309,6 @@ public class WorkDetailActivity extends AppCompatActivity{
         }
     }
 
-
     private void uploadAndCompress(final Bitmap unCompressBitmap){
         new Thread(){
             @Override
@@ -295,6 +342,7 @@ public class WorkDetailActivity extends AppCompatActivity{
                     if (jb.getInt("code") == 200){
                         JSONObject data = jb.getJSONObject("data");
                         upLoadPicPath.add(data.getString("imagePath"));
+                        Logger.i("Upload Path : " + data.getString("imagePath"));
                     }else{
                         ToastUtil.show(WorkDetailActivity.this,jb.getString("message"));
                     }
@@ -358,5 +406,14 @@ public class WorkDetailActivity extends AppCompatActivity{
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (timer !=null){
+            timer.cancel();
+        }
     }
 }
