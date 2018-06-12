@@ -81,8 +81,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_gravity="center_vertical"
                     android:textSize="15sp"
-                    android:textColor="@color/personal_black_two"
-                    android:text="13099999999"/>
+                    android:textColor="@color/personal_black_two"/>
             </LinearLayout>
             <View
                 android:layout_width="match_parent"
@@ -113,8 +112,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_gravity="center_vertical"
                     android:textSize="15sp"
-                    android:textColor="@color/personal_black_two"
-                    android:text="13092911191901011010"/>
+                    android:textColor="@color/personal_black_two"/>
             </LinearLayout>
             <View
                 android:layout_width="match_parent"
@@ -145,8 +143,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_gravity="center_vertical"
                     android:textSize="15sp"
-                    android:textColor="@color/personal_black_two"
-                    android:text="沧州市xxxxxx区"/>
+                    android:textColor="@color/personal_black_two"/>
             </LinearLayout>
         </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.yatai.suningfiredepartment.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -52,7 +53,7 @@ public class PersonalFragment extends Fragment {
     private String mobile;
     private String address;
     private String idCard;
-
+    private ProgressDialog mProgressDialog;
 
     public static PersonalFragment newInstance(String data) {
         Bundle args = new Bundle();
@@ -67,6 +68,13 @@ public class PersonalFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog.setMessage("正在加载...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+
         initData();
         return view;
     }
@@ -95,6 +103,7 @@ public class PersonalFragment extends Fragment {
                     } else {
                         ToastUtil.show(getContext(), jb.getString("message"));
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -104,6 +113,7 @@ public class PersonalFragment extends Fragment {
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 ToastUtil.show(getContext(), strMsg);
+                mProgressDialog.dismiss();
             }
         });
 

@@ -1,5 +1,6 @@
 package com.yatai.suningfiredepartment.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -116,6 +117,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     private List<DepartmentEntity> departmentList;
     private List<PeopleEntity> peopleList;
     private List<PlaceEntity> placeList;
+    private ProgressDialog mProgressDialog;
 
     public static HomePageFragment newInstance(String gridId) {
         Bundle args = new Bundle();
@@ -155,6 +157,12 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
 
         info = new ArrayList<>();
         childPolygons = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog.setMessage("正在加载...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
@@ -371,6 +379,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                     } else {
                         ToastUtil.show(getContext(), jb.getString("message"));
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -380,6 +389,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 ToastUtil.show(getContext(), strMsg);
+                mProgressDialog.dismiss();
             }
         });
     }

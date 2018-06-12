@@ -1,5 +1,6 @@
 package com.yatai.suningfiredepartment.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,9 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.CategoryEntity;
 import com.yatai.suningfiredepartment.entity.WorkItemEntity;
@@ -45,6 +49,8 @@ public class WorkFragment extends Fragment {
     @BindView(R.id.work_recycler_view)
     RecyclerView workRecyclerView;
     Unbinder unbinder;
+    @BindView(R.id.work_refresh_layout)
+    SmartRefreshLayout mRefreshLayout;
 
     private List<CategoryEntity> categoryList;
     private List<WorkItemEntity> workList;
@@ -52,6 +58,8 @@ public class WorkFragment extends Fragment {
     private String gridId;
     private WorkCategoryAdapter mCategoryAdapter;
     private WorkItemAdapter mWorkItemAdapter;
+    private ProgressDialog mProgressDialog;
+    private int refreshFlag=0;
 
     public static WorkFragment newInstance(String data) {
         Bundle args = new Bundle();
@@ -78,25 +86,33 @@ public class WorkFragment extends Fragment {
         return view;
     }
 
-    private void initView(){
+    private void initView() {
         categoryList = new ArrayList<>();
         workList = new ArrayList<>();
         mHttp = new FinalHttp();
+
+        mProgressDialog = new ProgressDialog(getContext(), ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog.setMessage("正在加载...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
 
         mCategoryAdapter = new WorkCategoryAdapter(getContext());
         mCategoryAdapter.setClickListener(new WorkCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 //                ToastUtil.show(getContext(), "Position: "+ String.valueOf(position));
-                if (position==0){
+                mProgressDialog.show();
+                refreshFlag = position;
+                if (position == 0) {
                     getAllWorkList();
-                }else{
+                } else {
                     getWorkListByCategoryId(categoryList.get(position).getId());
                 }
             }
         });
 
-        workCategoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        workCategoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         workCategoryRecyclerView.setAdapter(mCategoryAdapter);
         mCategoryAdapter.setCategoryEntityList(categoryList);
 
@@ -111,7 +127,7 @@ public class WorkFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), WorkDetailActivity.class);
                     intent.putExtra("workItem", workItemDetail);
                     startActivity(intent);
-                }else{
+                } else {
                     //跳转到 查看单个任务界面
                     Intent intent = new Intent(getActivity(), WorkDetailFinishActivity.class);
                     intent.putExtra("workItem", workItemDetail);
@@ -120,14 +136,30 @@ public class WorkFragment extends Fragment {
                 }
             }
         });
-        workRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        workRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         workRecyclerView.setAdapter(mWorkItemAdapter);
+
+        mRefreshLayout.setOnLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                refreshLayout.finishRefresh(1);
+            }
+
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                if (refreshFlag == 0){
+                    getAllWorkList();
+                }else{
+                    getWorkListByCategoryId(categoryList.get(refreshFlag).getId());
+                }
+            }
+        });
 
         getCategoryData();
         getAllWorkList();
     }
 
-    private void getCategoryData(){
+    private void getCategoryData() {
         String url = getString(R.string.base_url) + "taskCategory";
         String token = "Bearer " + PreferenceUtils.getPerfString(getContext(), "token", "");
         mHttp.addHeader("Authorization", token);
@@ -142,8 +174,8 @@ public class WorkFragment extends Fragment {
                         JSONArray data = jb.getJSONArray("data");
                         Logger.d("Data : " + data.toString());
                         Gson gson = new Gson();
-                        if (data.length()>0) {
-                            CategoryEntity temp =new CategoryEntity();
+                        if (data.length() > 0) {
+                            CategoryEntity temp = new CategoryEntity();
                             temp.setId("99999");
                             temp.setName("全部");
                             categoryList.add(temp);
@@ -152,11 +184,11 @@ public class WorkFragment extends Fragment {
                                 categoryList.add(categoryEntity);
                             }
                             mCategoryAdapter.setCategoryEntityList(categoryList);
-                        }else{
+                        } else {
                             mCategoryAdapter.setCategoryEntityList(categoryList);
                         }
-                    }else{
-                        ToastUtil.show(getContext(),jb.getString("message"));
+                    } else {
+                        ToastUtil.show(getContext(), jb.getString("message"));
                         mCategoryAdapter.setCategoryEntityList(categoryList);
                     }
                 } catch (JSONException e) {
@@ -167,13 +199,13 @@ public class WorkFragment extends Fragment {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                ToastUtil.show(getContext(),strMsg);
+                ToastUtil.show(getContext(), strMsg);
             }
         });
     }
 
-    private void getAllWorkList(){
-        String url = getString(R.string.base_url) + "grid/"+gridId+"/task";
+    private void getAllWorkList() {
+        String url = getString(R.string.base_url) + "grid/" + gridId + "/task";
         String token = "Bearer " + PreferenceUtils.getPerfString(getContext(), "token", "");
         mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {
@@ -183,22 +215,23 @@ public class WorkFragment extends Fragment {
                 workList.clear();
                 try {
                     JSONObject jb = new JSONObject(s);
-                    if (jb.getInt("code") == 200){
+                    if (jb.getInt("code") == 200) {
                         JSONArray data = jb.getJSONArray("data");
-                        if (data.length()>0){
+                        if (data.length() > 0) {
                             Gson gson = new Gson();
-                            for (int i=0; i< data.length(); i++){
-                                WorkItemEntity workItemEntity = gson.fromJson(data.getJSONObject(i).toString(),WorkItemEntity.class);
+                            for (int i = 0; i < data.length(); i++) {
+                                WorkItemEntity workItemEntity = gson.fromJson(data.getJSONObject(i).toString(), WorkItemEntity.class);
                                 workList.add(workItemEntity);
                             }
                             mWorkItemAdapter.setList(workList);
-                        }else{
+                        } else {
                             mWorkItemAdapter.setList(workList);
                         }
-                    }else {
-                        ToastUtil.show(getContext(),jb.getString("message"));
+                    } else {
+                        ToastUtil.show(getContext(), jb.getString("message"));
                         mWorkItemAdapter.setList(workList);
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -207,13 +240,14 @@ public class WorkFragment extends Fragment {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                ToastUtil.show(getContext(),strMsg);
+                ToastUtil.show(getContext(), strMsg);
+                mProgressDialog.dismiss();
             }
         });
     }
 
-    private void getWorkListByCategoryId(String categoryId){
-        String url = getString(R.string.base_url) + "grid/"+gridId+"/task/"+categoryId;
+    private void getWorkListByCategoryId(String categoryId) {
+        String url = getString(R.string.base_url) + "grid/" + gridId + "/task/" + categoryId;
         String token = "Bearer " + PreferenceUtils.getPerfString(getContext(), "token", "");
         mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {
@@ -223,23 +257,23 @@ public class WorkFragment extends Fragment {
                 workList.clear();
                 try {
                     JSONObject jb = new JSONObject(s);
-                    if (jb.getInt("code") == 200){
+                    if (jb.getInt("code") == 200) {
                         JSONArray data = jb.getJSONArray("data");
-                        ToastUtil.show(getContext(),String.valueOf(data.length()));
-                        if (data.length()>0){
+                        if (data.length() > 0) {
                             Gson gson = new Gson();
-                            for (int i=0; i< data.length(); i++){
-                                WorkItemEntity workItemEntity = gson.fromJson(data.getJSONObject(i).toString(),WorkItemEntity.class);
+                            for (int i = 0; i < data.length(); i++) {
+                                WorkItemEntity workItemEntity = gson.fromJson(data.getJSONObject(i).toString(), WorkItemEntity.class);
                                 workList.add(workItemEntity);
                             }
                             mWorkItemAdapter.setList(workList);
-                        }else{
+                        } else {
                             mWorkItemAdapter.setList(workList);
                         }
-                    }else {
-                        ToastUtil.show(getContext(),jb.getString("message"));
+                    } else {
+                        ToastUtil.show(getContext(), jb.getString("message"));
                         mWorkItemAdapter.setList(workList);
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -248,11 +282,13 @@ public class WorkFragment extends Fragment {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                ToastUtil.show(getContext(),strMsg);
+                ToastUtil.show(getContext(), strMsg);
+                mProgressDialog.dismiss();
             }
         });
 
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

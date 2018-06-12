@@ -1,5 +1,6 @@
 package com.yatai.suningfiredepartment.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,9 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.CategoryEntity;
 import com.yatai.suningfiredepartment.entity.InfoEntity;
@@ -36,11 +40,14 @@ import java.util.List;
 public class InfoFragment extends Fragment {
     private RecyclerView mCategoryRecyclerView;
     private RecyclerView mInfoRecyclerView;
+    private SmartRefreshLayout mRefreshLayout;
     private FinalHttp mHttp;
     private InfoCategoryAdapter mCategoryAdapter;
     private InfoAdapter mInfoAdapter;
     private  List<CategoryEntity> categoryList;
     private List<InfoEntity> infoList;
+    private ProgressDialog mProgressDialog;
+    private int refreshFlag=0;
 
     public static InfoFragment newInstance(String data) {
         Bundle args = new Bundle();
@@ -61,11 +68,20 @@ public class InfoFragment extends Fragment {
     private void initView(View view) {
         categoryList = new ArrayList<>();
         infoList = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog.setMessage("正在加载...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+
         mCategoryAdapter = new InfoCategoryAdapter(getContext());
         mCategoryAdapter.setOnItemClickListener(new InfoCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 //                ToastUtil.show(getContext(),"Position: "+position);
+                mProgressDialog.show();
+                refreshFlag = position;
                 if (position == 0){
                     getAllInfoList();
                 }else {
@@ -92,6 +108,23 @@ public class InfoFragment extends Fragment {
         mInfoAdapter.setInfoEntityList(infoList);
 
         mHttp = new FinalHttp();
+
+
+        mRefreshLayout = (SmartRefreshLayout)view.findViewById(R.id.info_refresh_layout);
+        mRefreshLayout.setOnLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                refreshLayout.finishRefresh(1);
+            }
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                if (refreshFlag == 0){
+                    getAllInfoList();
+                }else {
+                    getInfoDataByCategoryId(categoryList.get(refreshFlag).getId());
+                }
+            }
+        });
 
         getCategoryData();
         getAllInfoList();
@@ -176,16 +209,17 @@ public class InfoFragment extends Fragment {
                         ToastUtil.show(getContext(),jb.getString("message"));
                         mInfoAdapter.setInfoEntityList(infoList);
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 ToastUtil.show(getContext(),strMsg);
+                mProgressDialog.dismiss();
             }
         });
     }
