@@ -25,6 +25,12 @@ import com.yatai.suningfiredepartment.util.FileUtil;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.view.widget.FixedImageView;
 
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -153,18 +159,13 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
 
             @Override
             public void onAnimationEnd(Animator animator) {
-//                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-//                startActivity(intent);
-//                finish();
                 //动画完成后启动 登陆页面 或者 根据需求进行更改
                 if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }else{
-                    Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    validateToken(PreferenceUtils.getPerfString(MyApplication.getContext(),"token",""));
                 }
             }
 
@@ -239,5 +240,36 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:"+getPackageName()));
         startActivity(intent);
+    }
+
+    private void validateToken(String token){
+        FinalHttp http = new FinalHttp();
+        String url = getString(R.string.base_url)+"checkToken";
+        http.addHeader("","Bearer "+token);
+        http.get(url, new AjaxCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                try {
+                    JSONObject jb = new JSONObject(s);
+                    if (jb.getInt("code") == 200){
+                        Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 }

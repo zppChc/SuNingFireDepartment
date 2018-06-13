@@ -1,6 +1,7 @@
 package com.yatai.suningfiredepartment.view.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ public class WorkCategoryAdapter extends RecyclerView.Adapter<WorkCategoryAdapte
     private List<CategoryEntity> mCategoryEntityList = new ArrayList<>();
     private Context mContext;
     private OnItemClickListener mClickListener;
+    private int defItem = -1;
 
     public WorkCategoryAdapter(Context context){
         this.mContext = context;
@@ -29,6 +31,10 @@ public class WorkCategoryAdapter extends RecyclerView.Adapter<WorkCategoryAdapte
         notifyDataSetChanged();
     }
 
+    public void setDefSelect(int position) {
+        this.defItem = position;
+        notifyDataSetChanged();
+    }
     public void setClickListener(OnItemClickListener listener){
         this.mClickListener = listener;
     }
@@ -43,6 +49,17 @@ public class WorkCategoryAdapter extends RecyclerView.Adapter<WorkCategoryAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.categoryTv.setText(mCategoryEntityList.get(position).getName());
+        if (defItem != -1) {
+            if (defItem == position) {
+                holder.categoryTv.setTextColor(mContext.getResources().getColor(R.color.category_text_blue));
+
+            } else {
+                holder.categoryTv.setTextColor(mContext.getResources().getColor(R.color.category_text_black));
+            }
+        }
+        if (defItem == -1 && position == 0){
+            holder.categoryTv.setTextColor(mContext.getResources().getColor(R.color.category_text_blue));
+        }
     }
 
     @Override

@@ -71,6 +71,9 @@
             android:theme="@style/ActivityTranslucentTheme" />
         <activity android:name=".view.activity.WorkDetailFinishActivity"
             android:theme="@style/ActivityTranslucentTheme"/>
+        <!-- 友盟统计-->
+        <meta-data android:value="5b206ad6a40fa310600006c1" android:name="UMENG_APPKEY"/>
+        <meta-data android:value="${UMENG_CHANNEL_VALUE}" android:name="UMENG_CHANNEL"/>
     </application>
 
 </manifest>

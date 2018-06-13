@@ -8,13 +8,16 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true //突破应用方法数65535的一个限制
+        /******* 友盟********/
+         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
+        /*******************/
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
             abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "arm64-v8a", "x86_64"
         }
-
     }
     buildTypes {
         release {
@@ -66,4 +69,8 @@ dependencies {
     androidTestImplementation 'junit:junit:4.12'
     //图片圆角
     implementation 'com.makeramen:roundedimageview:2.3.0'
+    //友盟统计
+    implementation 'com.umeng.sdk:common:1.5.3'
+    implementation 'com.umeng.sdk:analytics:7.5.3'
+
 }

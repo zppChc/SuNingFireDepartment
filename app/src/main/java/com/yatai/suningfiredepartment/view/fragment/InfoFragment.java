@@ -82,6 +82,7 @@ public class InfoFragment extends Fragment {
 //                ToastUtil.show(getContext(),"Position: "+position);
                 mProgressDialog.show();
                 refreshFlag = position;
+                mCategoryAdapter.setDefSelect(position);
                 if (position == 0){
                     getAllInfoList();
                 }else {
@@ -256,6 +257,7 @@ public class InfoFragment extends Fragment {
                         ToastUtil.show(getContext(),jb.getString("message"));
                         mInfoAdapter.setInfoEntityList(infoList);
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -265,6 +267,7 @@ public class InfoFragment extends Fragment {
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 ToastUtil.show(getContext(),strMsg);
+                mProgressDialog.dismiss();
             }
         });
     }

@@ -18,6 +18,7 @@ public class InfoCategoryAdapter extends RecyclerView.Adapter<InfoCategoryAdapte
     private List<CategoryEntity> mCategoryEntityList = new ArrayList<>();
     private Context mContext;
     private OnItemClickListener mClickListener;
+    private int defItem = -1;
 
     public InfoCategoryAdapter(Context context){
         this.mContext = context;
@@ -27,7 +28,10 @@ public class InfoCategoryAdapter extends RecyclerView.Adapter<InfoCategoryAdapte
         mCategoryEntityList = list;
         notifyDataSetChanged();
     }
-
+    public void setDefSelect(int position) {
+        this.defItem = position;
+        notifyDataSetChanged();
+    }
     public void setOnItemClickListener(OnItemClickListener listener){
         this.mClickListener = listener;
     }
@@ -41,6 +45,17 @@ public class InfoCategoryAdapter extends RecyclerView.Adapter<InfoCategoryAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.categoryTv.setText(mCategoryEntityList.get(position).getName());
+        if (defItem != -1) {
+            if (defItem == position) {
+                holder.categoryTv.setTextColor(mContext.getResources().getColor(R.color.category_text_blue));
+
+            } else {
+                holder.categoryTv.setTextColor(mContext.getResources().getColor(R.color.category_text_black));
+            }
+        }
+        if (defItem == -1 && position == 0){
+            holder.categoryTv.setTextColor(mContext.getResources().getColor(R.color.category_text_blue));
+        }
     }
 
     @Override

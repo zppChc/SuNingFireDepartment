@@ -104,6 +104,7 @@ public class WorkFragment extends Fragment {
 //                ToastUtil.show(getContext(), "Position: "+ String.valueOf(position));
                 mProgressDialog.show();
                 refreshFlag = position;
+                mCategoryAdapter.setDefSelect(position);
                 if (position == 0) {
                     getAllWorkList();
                 } else {
@@ -293,5 +294,24 @@ public class WorkFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Logger.i("WorkFragment On Pause");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Logger.i("WorkFragment On Resume");
+        Logger.i("Refresh Flag: " + refreshFlag);
+        mProgressDialog.show();
+        if (refreshFlag == 0){
+            getAllWorkList();
+        }else{
+            getWorkListByCategoryId(categoryList.get(refreshFlag).getId());
+        }
     }
 }

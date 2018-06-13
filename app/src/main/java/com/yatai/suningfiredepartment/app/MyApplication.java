@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
+import com.umeng.commonsdk.UMConfigure;
 
 public class MyApplication extends Application {
 
@@ -21,6 +22,7 @@ public class MyApplication extends Application {
         super.onCreate();
         instance = this;
         sContext=getApplicationContext();
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "");
         initLogger();
     }
 

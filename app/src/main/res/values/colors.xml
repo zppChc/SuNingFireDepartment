@@ -36,4 +36,6 @@
     <color name="focus_group_flag_blue">#0ca2ff</color>
 
     <color name="work_detail_gray">#999999</color>
+    <color name="category_text_blue">#0d98fd</color>
+    <color name="category_text_black">#666666</color>
 </resources>

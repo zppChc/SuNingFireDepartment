@@ -36,19 +36,16 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/work_category_recycler_view"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@id/work_title"/>
+        android:layout_height="50dp"/>
     <View
         android:id="@+id/temp_work_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/work_category_recycler_view"
         android:background="@color/cut_off_line"/>
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/work_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/temp_work_line">
+        android:layout_height="match_parent">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/work_recycler_view"
             android:layout_width="match_parent"

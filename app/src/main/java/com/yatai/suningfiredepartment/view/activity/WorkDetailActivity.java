@@ -37,6 +37,7 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationClientOption.AMapLocationMode;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps2d.model.LatLng;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
@@ -92,6 +93,9 @@ public class WorkDetailActivity extends AppCompatActivity{
     private List<Drawable> mPicList;
     private WorkDetailPicAdapter mPicAdapter;
     private List<String> upLoadPicPath;
+    private List<Double> mLatLng;
+    private FinalHttp mHttp;
+    private Gson gson;
 
     //图片对象
     private Uri contentUri;
@@ -138,6 +142,8 @@ public class WorkDetailActivity extends AppCompatActivity{
         mTemplateList = new ArrayList<>();
         mPicList = new ArrayList<>();
         upLoadPicPath = new ArrayList<>();
+        mLatLng= new ArrayList<>();
+        mHttp = new FinalHttp();
 
         mProgressDialog = new ProgressDialog(WorkDetailActivity.this,ProgressDialog.THEME_HOLO_DARK);
         mProgressDialog.setMessage("正在提交...");
@@ -147,7 +153,7 @@ public class WorkDetailActivity extends AppCompatActivity{
         Intent intent = getIntent();
         String workItem = intent.getStringExtra("workItem");
 
-        Gson gson = new Gson();
+        gson = new Gson();
         mWorkItemEntity = gson.fromJson(workItem, WorkItemEntity.class);
 
         mTitleTv.setText(mWorkItemEntity.getName());
@@ -196,7 +202,6 @@ public class WorkDetailActivity extends AppCompatActivity{
         mConfirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                submitInfo();
                 mProgressDialog.show();
                 timer.schedule(task,2000,3000);
             }
@@ -253,13 +258,6 @@ public class WorkDetailActivity extends AppCompatActivity{
                 layout.addView(editText,editParams);
                 mDynamicLayout.addView(layout,layoutParams);
             }
-        }
-    }
-
-    private void submitInfo(){
-        mProgressDialog.dismiss();
-        for (int i = 0 ; i< upLoadPicPath.size(); i++) {
-            Logger.i("Content : " + upLoadPicPath.get(i));
         }
     }
 
@@ -390,6 +388,8 @@ public class WorkDetailActivity extends AppCompatActivity{
                     sb.append("定位类型: " + location.getLocationType() + "\n");
                     sb.append("经    度    : " + location.getLongitude() + "\n");
                     sb.append("纬    度    : " + location.getLatitude() + "\n");
+                    mLatLng.add(location.getLongitude());
+                    mLatLng.add(location.getLatitude());
                     ToastUtil.show(WorkDetailActivity.this,sb.toString());
                 } else {
                     //定位失败
@@ -402,6 +402,46 @@ public class WorkDetailActivity extends AppCompatActivity{
         }
     };
 
+    private void submitInfo(){
+
+//        for (int i = 0 ; i< upLoadPicPath.size(); i++) {
+//            Logger.i("Content : " + upLoadPicPath.get(i));
+//        }
+        //目前没有增加 输入信息的校验。。。主要是不知道里怎么增加
+        String url = getString(R.string.base_url)+"taskRecord";
+        String token =PreferenceUtils.getPerfString(WorkDetailActivity.this, "token", "");
+        mHttp.addHeader("Authorization", "Bearer " + token);
+        AjaxParams params = new AjaxParams();
+        params.put("task_id",String.valueOf(mWorkItemEntity.getId()));
+        params.put("content",convertTempleList(mTemplateList));
+        params.put("images",gson.toJson(upLoadPicPath));
+        params.put("position",gson.toJson(mLatLng));
+        mHttp.post(url, params, new AjaxCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                try {
+                    JSONObject jb = new JSONObject(s);
+                    if (jb.getInt("code") == 200){
+                        ToastUtil.show(WorkDetailActivity.this,"上传成功");
+                        finish();
+                    }else{
+                        ToastUtil.show(WorkDetailActivity.this,jb.getString("message"));
+                    }
+                    mProgressDialog.dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                ToastUtil.show(WorkDetailActivity.this,strMsg);
+                mProgressDialog.dismiss();
+            }
+        });
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -414,6 +454,37 @@ public class WorkDetailActivity extends AppCompatActivity{
         super.onDestroy();
         if (timer !=null){
             timer.cancel();
+        }
+    }
+
+    private String convertTempleList(List<WorkTemplateEntity> list){
+        List<TemplateDemo> demoList = new ArrayList<>();
+        TemplateDemo templateDemo = new TemplateDemo();
+        for (int i=0; i<list.size(); i++){
+            templateDemo.setName(list.get(i).getName());
+            templateDemo.setContent(list.get(i).getContent());
+        }
+        return new Gson().toJson(demoList);
+    }
+
+    class TemplateDemo{
+        String name;
+        String content;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
         }
     }
 }
