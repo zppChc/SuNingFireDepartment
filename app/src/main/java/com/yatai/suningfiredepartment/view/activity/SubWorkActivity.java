@@ -53,6 +53,7 @@ public class SubWorkActivity extends AppCompatActivity {
     ImageView mBackImg;
 
     private String gridId;
+    private int categoryId;
     private List<CategoryEntity> categoryList;
     private List<WorkItemEntity> workList;
     private FinalHttp mHttp;
@@ -69,6 +70,8 @@ public class SubWorkActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Intent intent = getIntent();
         gridId = intent.getStringExtra("gridId");
+        categoryId = intent.getIntExtra("categoryId",0);
+        refreshFlag = categoryId;
         initView();
     }
 
@@ -150,7 +153,12 @@ public class SubWorkActivity extends AppCompatActivity {
         });
 
         getCategoryData();
-        getAllWorkList();
+        if (refreshFlag == 0){
+            getAllWorkList();
+        }else{
+            getWorkListByCategoryId(String.valueOf(categoryId));
+        }
+
     }
 
     private void getCategoryData() {
@@ -178,6 +186,7 @@ public class SubWorkActivity extends AppCompatActivity {
                                 categoryList.add(categoryEntity);
                             }
                             mCategoryAdapter.setCategoryEntityList(categoryList);
+                            mCategoryAdapter.setDefSelect(refreshFlag);
                         } else {
                             mCategoryAdapter.setCategoryEntityList(categoryList);
                         }

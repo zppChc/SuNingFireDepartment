@@ -133,14 +133,22 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
             }
 
         }else{
-            try{
-                AssetManager assetManager = this.getAssets();
-                InputStream in  = assetManager.open("welcome_default.jpg");
-                splashImg.setImageDrawable(InputStream2Drawable(in));
-                animWelcomeImage();
-            } catch (IOException e) {
-                e.printStackTrace();
+            //动画完成后启动 登陆页面 或者 根据需求进行更改
+            if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent);
+                SplashActivity.this.finish();
+            }else{
+                validateToken(PreferenceUtils.getPerfString(MyApplication.getContext(),"token",""));
             }
+//            try{
+//                AssetManager assetManager = this.getAssets();
+//                InputStream in  = assetManager.open("welcome_default2.jpg");
+//                splashImg.setImageDrawable(InputStream2Drawable(in));
+//                animWelcomeImage();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 

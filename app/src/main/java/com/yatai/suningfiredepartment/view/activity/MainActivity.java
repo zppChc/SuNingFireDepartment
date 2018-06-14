@@ -39,25 +39,43 @@ public class MainActivity extends BaseActivity {
     private long firstTime = 0;
 
 
+//    private String[] mMenus = {
+//            "首页",
+//            "工作",
+//            "资讯",
+//            "统计",
+//            "我的"
+//    };
+//    private int[] images= new int[]{
+//            R.drawable.home_page,
+//            R.drawable.work,
+//            R.drawable.info,
+//            R.drawable.calc,
+//            R.drawable.personal
+//    };
+//    private int[] imagesSelected= new int[]{
+//            R.drawable.home_page_blue,
+//            R.drawable.work_blue,
+//            R.drawable.info_blue,
+//            R.drawable.calc_blue,
+//            R.drawable.personal_blue
+//    };
     private String[] mMenus = {
             "首页",
             "工作",
             "资讯",
-            "统计",
             "我的"
     };
     private int[] images= new int[]{
             R.drawable.home_page,
             R.drawable.work,
             R.drawable.info,
-            R.drawable.calc,
             R.drawable.personal
     };
     private int[] imagesSelected= new int[]{
             R.drawable.home_page_blue,
             R.drawable.work_blue,
             R.drawable.info_blue,
-            R.drawable.calc_blue,
             R.drawable.personal_blue
     };
     private List<Fragment> fragments;
@@ -129,13 +147,13 @@ public class MainActivity extends BaseActivity {
         HomePageFragment homePageFragment = HomePageFragment.newInstance(gridId);
         WorkFragment workFragment = WorkFragment.newInstance(gridId);
         InfoFragment infoFragment = InfoFragment.newInstance(gridId);
-        CensusFragment censusFragment = CensusFragment.newInstance(gridId);
+//        CensusFragment censusFragment = CensusFragment.newInstance(gridId);
         PersonalFragment personalFragment = PersonalFragment.newInstance(gridId);
 
         fragments.add(homePageFragment);
         fragments.add(workFragment);
         fragments.add(infoFragment);
-        fragments.add(censusFragment);
+//        fragments.add(censusFragment);
         fragments.add(personalFragment);
     }
 

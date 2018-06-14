@@ -26,12 +26,14 @@ import com.google.gson.Gson;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.DepartmentEntity;
 import com.yatai.suningfiredepartment.entity.GridEntity;
+import com.yatai.suningfiredepartment.entity.HomeWorkCategoryEntity;
 import com.yatai.suningfiredepartment.entity.PeopleEntity;
 import com.yatai.suningfiredepartment.entity.PlaceEntity;
 import com.yatai.suningfiredepartment.util.ColorUtil;
 import com.yatai.suningfiredepartment.util.LngLat2LatLng;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
+import com.yatai.suningfiredepartment.view.adapter.HomeCategoryAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePeopleAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePlaceAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeRegionAdapter;
@@ -69,8 +71,12 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     RecyclerView mUnitRecyclerView;
     @BindView(R.id.sub_grid_place_recycler_view)
     RecyclerView mPlaceRecyclerView;
+    @BindView(R.id.sub_grid_work_recycler_view)
+    RecyclerView mWorkRecyclerView;
     @BindView(R.id.temp_sub_grid_unit)
     LinearLayout mUnitLayout;
+
+
     @BindView(R.id.temp_sub_grid_place)
     LinearLayout mPlaceLayout;
     @BindView(R.id.temp_sub_grid_region)
@@ -79,6 +85,8 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     RecyclerView mPeopleRecyclerView;
     @BindView(R.id.temp_sub_grid_people)
     LinearLayout mPeopleLayout;
+    @BindView(R.id.temp_sub_grid_work)
+    LinearLayout mWorkLayout;
 
 
     private String gridId;
@@ -97,6 +105,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     private HomeUnitAdapter mHomeUnitAdapter;
     private HomePlaceAdapter mHomePlaceAdapter;
     private HomePeopleAdapter mHomePeopleAdapter;
+    private HomeCategoryAdapter mHomeCategoryAdapter;
 
 
     private GridEntity mGridEntity;
@@ -104,6 +113,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     private List<DepartmentEntity> departmentList;
     private List<PeopleEntity> peopleList;
     private List<PlaceEntity> placeList;
+    private List<HomeWorkCategoryEntity> categoryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +149,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         childPolygons = new ArrayList<>();
         peopleList = new ArrayList<>();
         placeList = new ArrayList<>();
+        categoryList = new ArrayList<>();
 
         mContext = this;
 
@@ -181,6 +192,20 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         });
         mPeopleRecyclerView.setAdapter(mHomePeopleAdapter);
         mHomePeopleAdapter.setList(peopleList);
+
+        mWorkRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomeCategoryAdapter = new HomeCategoryAdapter(SubGridActivity.this);
+        mHomeCategoryAdapter.setListener(new HomeCategoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(SubGridActivity.this, SubWorkActivity.class);
+                intent.putExtra("gridId", gridId);
+                intent.putExtra("categoryId",categoryList.get(position).getId());
+                startActivity(intent);
+            }
+        });
+        mWorkRecyclerView.setAdapter(mHomeCategoryAdapter);
+        mHomeCategoryAdapter.setList(categoryList);
 
         initRecyclerViewData();
         mBackImg.setOnClickListener(new View.OnClickListener() {
@@ -349,6 +374,18 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                             mPeopleLayout.setVisibility(View.GONE);
                         }
 
+                        //工作台账
+                        JSONArray categoryArray = data.getJSONArray("taskCategory");
+                        categoryList.clear();
+                        if (categoryArray.length()>0){
+                            for (int i = 0; i<categoryArray.length(); i++){
+                                HomeWorkCategoryEntity workCategoryEntity = gson.fromJson(categoryArray.get(i).toString(),HomeWorkCategoryEntity.class);
+                                categoryList.add(workCategoryEntity);
+                            }
+                            mHomeCategoryAdapter.notifyDataSetChanged();
+                        }else{
+                            mWorkLayout.setVisibility(View.GONE);
+                        }
                     } else {
                         ToastUtil.show(mContext, jb.getString("message"));
                     }

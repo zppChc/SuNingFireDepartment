@@ -30,6 +30,7 @@ import com.sunfusheng.marqueeview.MarqueeView;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.DepartmentEntity;
 import com.yatai.suningfiredepartment.entity.GridEntity;
+import com.yatai.suningfiredepartment.entity.HomeWorkCategoryEntity;
 import com.yatai.suningfiredepartment.entity.InfoEntity;
 import com.yatai.suningfiredepartment.entity.PeopleEntity;
 import com.yatai.suningfiredepartment.entity.PlaceEntity;
@@ -39,6 +40,8 @@ import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.activity.FocusGroupActivity;
 import com.yatai.suningfiredepartment.view.activity.SubGridActivity;
+import com.yatai.suningfiredepartment.view.activity.SubWorkActivity;
+import com.yatai.suningfiredepartment.view.adapter.HomeCategoryAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePeopleAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePlaceAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeRegionAdapter;
@@ -79,6 +82,9 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     //重点人群
     @BindView(R.id.home_page_people_recycler_view)
     RecyclerView mPeopleRecyclerView;
+    //工作台账
+    @BindView(R.id.home_page_work_recycler_view)
+    RecyclerView mWorkRecyclerView;
 
     //相关网格 layout
     @BindView(R.id.temp_home_page_region)
@@ -92,6 +98,9 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     //重点人群 layout
     @BindView(R.id.temp_home_page_people)
     LinearLayout mPeopleLayout;
+    //工作台账 layout
+    @BindView(R.id.temp_home_page_work)
+    LinearLayout mWorkLayout;
 
 
     List<String> info;//滚动新闻
@@ -107,7 +116,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     HomeUnitAdapter mHomeUnitAdapter;
     HomePlaceAdapter mHomePlaceAdapter;
     HomePeopleAdapter mHomePeopleAdapter;
-
+    HomeCategoryAdapter mHomeCategoryAdapter;
 
 
     private FinalHttp mHttp;
@@ -117,6 +126,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     private List<DepartmentEntity> departmentList;
     private List<PeopleEntity> peopleList;
     private List<PlaceEntity> placeList;
+    private List<HomeWorkCategoryEntity> categoryList;
     private ProgressDialog mProgressDialog;
 
     public static HomePageFragment newInstance(String gridId) {
@@ -154,6 +164,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         departmentList = new ArrayList<>();
         peopleList = new ArrayList<>();
         placeList = new ArrayList<>();
+        categoryList = new ArrayList<>();
 
         info = new ArrayList<>();
         childPolygons = new ArrayList<>();
@@ -210,6 +221,20 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         mPeopleRecyclerView.setAdapter(mHomePeopleAdapter);
         mHomePeopleAdapter.setList(peopleList);
 
+        mWorkRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mHomeCategoryAdapter = new HomeCategoryAdapter(getContext());
+        mHomeCategoryAdapter.setListener(new HomeCategoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), SubWorkActivity.class);
+                intent.putExtra("gridId", gridId);
+                intent.putExtra("categoryId",categoryList.get(position).getId());
+                startActivity(intent);
+            }
+        });
+        mWorkRecyclerView.setAdapter(mHomeCategoryAdapter);
+        mHomeCategoryAdapter.setList(categoryList);
+
         initNewsData();
         initRecyclerViewData();
     }
@@ -224,7 +249,6 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
             mAMap = mMapView.getMap();
             setUpMap();
         }
-
 //        setUpMap();
     }
 
@@ -375,6 +399,18 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                             mHomePeopleAdapter.notifyDataSetChanged();
                         } else {
                             mPeopleLayout.setVisibility(View.GONE);
+                        }
+                        //工作台账
+                        JSONArray categoryArray = data.getJSONArray("taskCategory");
+                        categoryList.clear();
+                        if (categoryArray.length()>0){
+                            for (int i = 0; i<categoryArray.length(); i++){
+                                HomeWorkCategoryEntity workCategoryEntity = gson.fromJson(categoryArray.get(i).toString(),HomeWorkCategoryEntity.class);
+                                categoryList.add(workCategoryEntity);
+                            }
+                            mHomeCategoryAdapter.notifyDataSetChanged();
+                        }else{
+                            mWorkLayout.setVisibility(View.GONE);
                         }
                     } else {
                         ToastUtil.show(getContext(), jb.getString("message"));
