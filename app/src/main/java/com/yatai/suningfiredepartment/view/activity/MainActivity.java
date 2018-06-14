@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
@@ -33,6 +35,9 @@ public class MainActivity extends BaseActivity {
     ViewPager mainViewPager;
     @BindView(R.id.main_menu_tab)
     TabLayout mainMenuTab;
+    //记录用户首次点击返回键的时间
+    private long firstTime = 0;
+
 
     private String[] mMenus = {
             "首页",
@@ -58,6 +63,7 @@ public class MainActivity extends BaseActivity {
     private List<Fragment> fragments;
     private MainViewPagerAdapter mPagerAdapter;
     private String gridId;
+    private long exitTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,16 +139,25 @@ public class MainActivity extends BaseActivity {
         fragments.add(personalFragment);
     }
 
+    /**
+     * 当按返回键时
+     * @param keyCode
+     * @param event
+     * @return
+     */
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        long firstTime=0;
-        long secondTime = System.currentTimeMillis();
-        if (secondTime - firstTime > 2000) {
-            ToastUtil.show(MainActivity.this, "再按一次退出程序");
-            firstTime = secondTime;
-        } else{
-            finish();
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                ToastUtil.show(MainActivity.this,"再按一次退出程序");
+                exitTime = System.currentTimeMillis();
+                return false;
+            } else {
+                this.finish();
+                return true;
+            }
+        } else {
+            return super.onKeyDown(keyCode, event);
         }
     }
 }

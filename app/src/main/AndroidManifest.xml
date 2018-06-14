@@ -18,9 +18,9 @@
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
@@ -73,7 +73,7 @@
             android:theme="@style/ActivityTranslucentTheme"/>
         <!-- 友盟统计-->
         <meta-data android:value="5b206ad6a40fa310600006c1" android:name="UMENG_APPKEY"/>
-        <meta-data android:value="${UMENG_CHANNEL_VALUE}" android:name="UMENG_CHANNEL"/>
+        <meta-data android:value="YaTai" android:name="UMENG_CHANNEL"/>
     </application>
 
 </manifest>

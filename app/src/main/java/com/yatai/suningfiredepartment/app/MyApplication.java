@@ -6,6 +6,7 @@ import android.content.Context;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.umeng.commonsdk.UMConfigure;
+import com.yatai.suningfiredepartment.util.UmengUtil;
 
 public class MyApplication extends Application {
 
@@ -22,11 +23,14 @@ public class MyApplication extends Application {
         super.onCreate();
         instance = this;
         sContext=getApplicationContext();
-        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "");
+        initUM();
         initLogger();
     }
 
-
+    private void initUM(){
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "");
+        UmengUtil.initUmeng();
+    }
     private void initLogger(){
         Logger.addLogAdapter(new AndroidLogAdapter());
     }

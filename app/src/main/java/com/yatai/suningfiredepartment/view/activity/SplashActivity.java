@@ -23,6 +23,7 @@ import com.yatai.suningfiredepartment.app.MyApplication;
 import com.yatai.suningfiredepartment.util.AppUtil;
 import com.yatai.suningfiredepartment.util.FileUtil;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
+import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.widget.FixedImageView;
 
 import net.tsz.afinal.FinalHttp;
@@ -163,7 +164,7 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
                 if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
-                    finish();
+                    SplashActivity.this.finish();
                 }else{
                     validateToken(PreferenceUtils.getPerfString(MyApplication.getContext(),"token",""));
                 }
@@ -245,7 +246,7 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
     private void validateToken(String token){
         FinalHttp http = new FinalHttp();
         String url = getString(R.string.base_url)+"checkToken";
-        http.addHeader("","Bearer "+token);
+        http.addHeader("Authorization","Bearer "+token);
         http.get(url, new AjaxCallBack<String>() {
             @Override
             public void onSuccess(String s) {
@@ -255,7 +256,7 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
                     if (jb.getInt("code") == 200){
                         Intent intent = new Intent(SplashActivity.this,MainActivity.class);
                         startActivity(intent);
-                        finish();
+                        SplashActivity.this.finish();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -267,7 +268,7 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
                 super.onFailure(t, errorNo, strMsg);
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
-                finish();
+                SplashActivity.this.finish();
             }
         });
 

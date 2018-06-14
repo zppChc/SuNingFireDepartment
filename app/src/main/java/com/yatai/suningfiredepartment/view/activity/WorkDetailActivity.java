@@ -250,7 +250,7 @@ public class WorkDetailActivity extends AppCompatActivity{
                     }
                 });
 
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,160);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                 LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.MATCH_PARENT,1.0f);
                 LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.MATCH_PARENT,3.0f);
 
@@ -322,7 +322,7 @@ public class WorkDetailActivity extends AppCompatActivity{
     private void uploadPicture(String path){
         FinalHttp  http = new FinalHttp();
         String token = "Bearer " + PreferenceUtils.getPerfString(WorkDetailActivity.this, "token", "");
-        String url = getString(R.string.base_url) + "image";
+        String url = getString(R.string.base_url) + "image/task";
         http.addHeader("Authorization", token);
         AjaxParams params = new AjaxParams();
         try {
@@ -330,7 +330,6 @@ public class WorkDetailActivity extends AppCompatActivity{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        params.put("category","task");
         http.post(url, params, new AjaxCallBack<String>() {
             @Override
             public void onSuccess(String s) {
@@ -390,7 +389,7 @@ public class WorkDetailActivity extends AppCompatActivity{
                     sb.append("纬    度    : " + location.getLatitude() + "\n");
                     mLatLng.add(location.getLongitude());
                     mLatLng.add(location.getLatitude());
-                    ToastUtil.show(WorkDetailActivity.this,sb.toString());
+//                    ToastUtil.show(WorkDetailActivity.this,sb.toString());
                 } else {
                     //定位失败
                     sb.append("定位失败" + "\n");

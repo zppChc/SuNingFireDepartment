@@ -83,7 +83,7 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                WorkDetailFinishActivity.this.finish();
             }
         });
 
@@ -171,6 +171,6 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
+        WorkDetailFinishActivity.this.finish();
     }
 }

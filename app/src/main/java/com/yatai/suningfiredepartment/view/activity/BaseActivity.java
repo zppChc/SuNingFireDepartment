@@ -6,27 +6,23 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.yatai.suningfiredepartment.util.UmengUtil;
+
 public class BaseActivity extends AppCompatActivity {
-    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
+    protected void onResume() {
+        super.onResume();
+        UmengUtil.onResumeToActivity(this);
     }
 
-    protected void showProgressDialog(String message){
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(message);
-        progressDialog.show();
-    }
-
-    protected void dissmissProgressDialog(){
-        if(progressDialog != null && progressDialog.isShowing()){
-            progressDialog.dismiss();
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        UmengUtil.onPauseToActivity(this);
     }
 }

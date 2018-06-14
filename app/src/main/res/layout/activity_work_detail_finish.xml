@@ -27,6 +27,7 @@
                 android:src="@drawable/arrow_left"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10dp"
+                android:scaleType="fitCenter"
                 android:layout_marginLeft="10dp"/>
             <TextView
                 android:id="@+id/work_detail_finish_title_text_view"

@@ -107,6 +107,7 @@ public class LoginActivity extends BaseActivity  {
         PreferenceUtils.setPrefString(this,"gridId",gridId);
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
-        finish();
+        LoginActivity.this.finish();
     }
+
 }
