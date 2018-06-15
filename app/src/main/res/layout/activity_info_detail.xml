@@ -57,6 +57,7 @@
         android:paddingBottom="20dp"
         android:background="@color/white"
         android:editable="false"
-        android:textSize="15sp"/>
+        android:lineSpacingMultiplier="1.4"
+        android:textSize="17sp"/>
     </ScrollView>
 </RelativeLayout>

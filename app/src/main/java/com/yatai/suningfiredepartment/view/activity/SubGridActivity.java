@@ -58,7 +58,8 @@ import butterknife.ButterKnife;
  * 展示子网格信息，界面布局与首页相同
  */
 public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClickListener {
-
+    @BindView(R.id.sub_grid_name)
+    TextView mGridNameTv;
     @BindView(R.id.sub_grid_back_img)
     ImageView mBackImg;
     @BindView(R.id.sub_grid_work_tv)
@@ -90,6 +91,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
 
 
     private String gridId;
+    private String gridName;
     private FinalHttp mHttp;
     private Context mContext;
 
@@ -124,6 +126,8 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         ButterKnife.bind(this);
         Intent intent = getIntent();
         gridId = intent.getStringExtra("gridId");
+        gridName = intent.getStringExtra("gridName");
+        mGridNameTv.setText(gridName);
 //        ToastUtil.show(this, "GridId: " + gridId);
 
         //在activity执行onCreate时执行mapView.onCreate(saveInstanceState)，创建地图
@@ -231,11 +235,11 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         mUiSettings = mAMap.getUiSettings();
 
         //隐藏缩放按钮
-        mUiSettings.setZoomControlsEnabled(false);
+        mUiSettings.setZoomControlsEnabled(true);
         //缩放手势
-        mUiSettings.setZoomGesturesEnabled(false);
+        mUiSettings.setZoomGesturesEnabled(true);
         //滑动手势
-        mUiSettings.setScrollGesturesEnabled(false);
+        mUiSettings.setScrollGesturesEnabled(true);
     }
 
     /**
@@ -278,6 +282,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
             marker.remove();
         }
         marker = mAMap.addMarker(new MarkerOptions().position(latLng));
+        marker.setVisible(false);
         for (int i = 0; i < childPolygons.size(); i++) {
             boolean b1 = childPolygons.get(i).contains(latLng);
             if (b1) {

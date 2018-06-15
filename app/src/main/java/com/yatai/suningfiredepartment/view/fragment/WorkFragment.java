@@ -157,8 +157,9 @@ public class WorkFragment extends Fragment {
         });
 
         getCategoryData();
-        getAllWorkList();
+//        getAllWorkList();
     }
+
 
     private void getCategoryData() {
         String url = getString(R.string.base_url) + "taskCategory";

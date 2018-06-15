@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="18dp"
                 android:layout_marginBottom="5dp"
                 android:textSize="16sp"/>
@@ -65,7 +65,7 @@
                 android:id="@+id/temp_work_detail_work_tv"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
                 android:paddingLeft="15dp"
                 android:layout_below="@+id/work_detail_description_text_view"

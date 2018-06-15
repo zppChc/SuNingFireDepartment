@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
@@ -39,6 +40,7 @@ import com.yatai.suningfiredepartment.util.LngLat2LatLng;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.activity.FocusGroupActivity;
+import com.yatai.suningfiredepartment.view.activity.InfoListActivity;
 import com.yatai.suningfiredepartment.view.activity.SubGridActivity;
 import com.yatai.suningfiredepartment.view.activity.SubWorkActivity;
 import com.yatai.suningfiredepartment.view.adapter.HomeCategoryAdapter;
@@ -49,6 +51,7 @@ import com.yatai.suningfiredepartment.view.adapter.HomeUnitAdapter;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,7 +61,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
+import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,10 +69,14 @@ import butterknife.Unbinder;
 
 public class HomePageFragment extends Fragment implements AMap.OnMapClickListener {
 
+    @BindView(R.id.home_page_name)
+    TextView mPageNameTv;
     @BindView(R.id.map)
     MapView mMapView;
-    @BindView(R.id.marquee_new_view)
-    MarqueeView marqueeNewView;
+    @BindView(R.id.home_page_news_layout)
+    LinearLayout mNewsLayout;
+    @BindView(R.id.marquee_new_view_one)
+    MarqueeView marqueeNewViewOne;
     //相关网格 中网格
     @BindView(R.id.home_page_region_recycler_view)
     RecyclerView mRegionRecyclerView;
@@ -102,8 +109,9 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     @BindView(R.id.temp_home_page_work)
     LinearLayout mWorkLayout;
 
-
-    List<String> info;//滚动新闻
+    List<String> info;
+    List<String> infoOne;//滚动新闻
+    List<String> infoTwo;
     AMap mAMap;
     UiSettings mUiSettings;//定义一个UiSettings对象
     PolylineOptions polylineOption;
@@ -167,6 +175,8 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         categoryList = new ArrayList<>();
 
         info = new ArrayList<>();
+        infoOne = new ArrayList<>();
+        infoTwo = new ArrayList<>();
         childPolygons = new ArrayList<>();
 
         mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
@@ -178,8 +188,17 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
         String str = formatter.format(curDate);
-        info.add("欢迎使用  " + str);
-        marqueeNewView.startWithList(info, R.anim.anim_bottom_in, R.anim.anim_top_out);
+        info.add("欢迎使用 "+str);
+
+        marqueeNewViewOne.setOnItemClickListener(new MarqueeView.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, TextView textView) {
+                Intent intent = new Intent(getActivity(), InfoListActivity.class);
+                intent.putExtra("gridId",gridId);
+                startActivity(intent);
+            }
+        });
+        startNews(info);
 
         mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mHomeRegionAdapter = new HomeRegionAdapter(getContext());
@@ -229,6 +248,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                 Intent intent = new Intent(getActivity(), SubWorkActivity.class);
                 intent.putExtra("gridId", gridId);
                 intent.putExtra("categoryId",categoryList.get(position).getId());
+
                 startActivity(intent);
             }
         });
@@ -258,11 +278,11 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         mUiSettings = mAMap.getUiSettings();
 
         //隐藏缩放按钮
-        mUiSettings.setZoomControlsEnabled(false);
+        mUiSettings.setZoomControlsEnabled(true);
         //缩放手势
-        mUiSettings.setZoomGesturesEnabled(false);
+        mUiSettings.setZoomGesturesEnabled(true);
         //滑动手势
-        mUiSettings.setScrollGesturesEnabled(false);
+        mUiSettings.setScrollGesturesEnabled(true);
     }
 
 
@@ -272,12 +292,14 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
             marker.remove();
         }
         marker = mAMap.addMarker(new MarkerOptions().position(latLng));
+        marker.setVisible(false);
         for (int i = 0; i < childPolygons.size(); i++) {
             boolean b1 = childPolygons.get(i).contains(latLng);
             if (b1) {
                 Intent intent = new Intent(getActivity(), SubGridActivity.class);
                 String gridId = String.valueOf(childrenGridList.get(i).getId());
                 intent.putExtra("gridId", gridId);
+                intent.putExtra("gridName",childrenGridList.get(i).getName());
                 startActivity(intent);
                 break;
             }
@@ -291,6 +313,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        startNews(info);
     }
 
     @Override
@@ -335,6 +358,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                         //获取当前用户 grid 信息
                         JSONObject gridJb = data.getJSONObject("grid");
                         mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
+                        mPageNameTv.setText(mGridEntity.getName());
                         List<LatLng> bottomLatLng = LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形
                         addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(), bottomLatLng, 8);
@@ -453,7 +477,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                                 InfoEntity infoEntity = gson.fromJson(data.getJSONObject(i).toString(), InfoEntity.class);
                                 info.add(infoEntity.getTitle());
                             }
-                            marqueeNewView.startWithList(info, R.anim.anim_bottom_in, R.anim.anim_top_out);
+                            startNews(info);
                         }
                     } else {
                         ToastUtil.show(getContext(), jb.getString("message"));
@@ -495,5 +519,10 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         // 在地图上添加一个多边形（polygon）对象
         polygon = mAMap.addPolygon(polygonOptions);
         childPolygons.add(polygon);
+    }
+
+
+    private void startNews(List<String> list){
+        marqueeNewViewOne.startWithList(list, R.anim.anim_bottom_in, R.anim.anim_top_out);
     }
 }

@@ -202,8 +202,13 @@ public class WorkDetailActivity extends AppCompatActivity{
         mConfirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProgressDialog.show();
-                timer.schedule(task,2000,3000);
+                if (mPicList.size() == 1){
+                    ToastUtil.show(WorkDetailActivity.this,"请拍摄至少一张照片");
+                }else{
+                    mProgressDialog.show();
+                    timer.schedule(task,2000,3000);
+                }
+
             }
         });
     }
@@ -389,6 +394,9 @@ public class WorkDetailActivity extends AppCompatActivity{
                     sb.append("纬    度    : " + location.getLatitude() + "\n");
                     mLatLng.add(location.getLongitude());
                     mLatLng.add(location.getLatitude());
+                     //**************
+                    //定位失败也可以上传
+                    //**************
 //                    ToastUtil.show(WorkDetailActivity.this,sb.toString());
                 } else {
                     //定位失败
@@ -396,6 +404,7 @@ public class WorkDetailActivity extends AppCompatActivity{
                     sb.append("错误码:" + location.getErrorCode() + "\n");
                     sb.append("错误信息:" + location.getErrorInfo() + "\n");
                     sb.append("错误描述:" + location.getLocationDetail() + "\n");
+//                    ToastUtil.show(WorkDetailActivity.this,sb.toString());
                 }
             }
         }
@@ -407,6 +416,7 @@ public class WorkDetailActivity extends AppCompatActivity{
 //            Logger.i("Content : " + upLoadPicPath.get(i));
 //        }
         //目前没有增加 输入信息的校验。。。主要是不知道里怎么增加
+
         String url = getString(R.string.base_url)+"taskRecord";
         String token =PreferenceUtils.getPerfString(WorkDetailActivity.this, "token", "");
         mHttp.addHeader("Authorization", "Bearer " + token);
@@ -462,6 +472,7 @@ public class WorkDetailActivity extends AppCompatActivity{
         for (int i=0; i<list.size(); i++){
             templateDemo.setName(list.get(i).getName());
             templateDemo.setContent(list.get(i).getContent());
+            demoList.add(templateDemo);
         }
         return new Gson().toJson(demoList);
     }

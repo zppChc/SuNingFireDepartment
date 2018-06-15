@@ -1,5 +1,6 @@
 package com.yatai.suningfiredepartment.view.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -43,9 +44,11 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
     @BindView(R.id.work_finish_back)
     ImageView mBack;
 
+    ProgressDialog mProgressDialog;
+
     WorkDetailFinishPicAdapter mAdapter;
     FinalHttp mHttp;
-    List<String> imgs;
+    ArrayList<String> imgs;
     List<WorkTemplateEntity> mTemplates;
     Gson gson;
     int recordId;
@@ -77,8 +80,22 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mAdapter = new WorkDetailFinishPicAdapter(WorkDetailFinishActivity.this);
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setListener(new WorkDetailFinishPicAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(WorkDetailFinishActivity.this,ImageBrowseActivity.class);
+                intent.putStringArrayListExtra("images",imgs);
+                intent.putExtra("position",position);
+                startActivity(intent);
+            }
+        });
         mAdapter.setImgs(imgs);
 
+        mProgressDialog = new ProgressDialog(WorkDetailFinishActivity.this,ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog.setMessage("正在加载...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
 
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +103,6 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
                 WorkDetailFinishActivity.this.finish();
             }
         });
-
         getData(recordId);
     }
 
@@ -120,6 +136,7 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
                     } else {
                         ToastUtil.show(WorkDetailFinishActivity.this, jb.getString("message"));
                     }
+                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -128,6 +145,7 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
+                mProgressDialog.dismiss();
                 ToastUtil.show(WorkDetailFinishActivity.this, strMsg);
             }
         });

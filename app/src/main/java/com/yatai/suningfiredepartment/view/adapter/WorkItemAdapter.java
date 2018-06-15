@@ -48,6 +48,8 @@ public class WorkItemAdapter extends RecyclerView.Adapter<WorkItemAdapter.ViewHo
         holder.titleTv.setText(mList.get(position).getName());
         if (mList.get(position).getStatus() == 1){
             holder.flagTv.setText("已完成");
+            holder.flagTv.setTextColor(mContext.getResources().getColor(R.color.work_content_gary));
+            holder.flagView.setBackgroundColor(mContext.getResources().getColor(R.color.work_complete_blue));
         }
         if(mList.get(position).getStatus() == 0){
             holder.flagTv.setText("未完成");

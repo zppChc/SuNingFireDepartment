@@ -61,6 +61,7 @@ public class SubWorkActivity extends AppCompatActivity {
     private WorkItemAdapter mWorkItemAdapter;
     private ProgressDialog mProgressDialog;
     private int refreshFlag = 0;
+    private LinearLayoutManager categoryLLM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class SubWorkActivity extends AppCompatActivity {
         Intent intent = getIntent();
         gridId = intent.getStringExtra("gridId");
         categoryId = intent.getIntExtra("categoryId",0);
-        refreshFlag = categoryId;
+//        refreshFlag = categoryId;
         initView();
     }
 
@@ -102,7 +103,8 @@ public class SubWorkActivity extends AppCompatActivity {
             }
         });
 
-        workCategoryRecyclerView.setLayoutManager(new LinearLayoutManager(SubWorkActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        categoryLLM = new LinearLayoutManager(SubWorkActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        workCategoryRecyclerView.setLayoutManager(categoryLLM);
         workCategoryRecyclerView.setAdapter(mCategoryAdapter);
         mCategoryAdapter.setCategoryEntityList(categoryList);
 
@@ -152,13 +154,24 @@ public class SubWorkActivity extends AppCompatActivity {
             }
         });
 
+//        getCategoryData();
+//        if (refreshFlag == 0){
+//            getAllWorkList();
+//        }else{
+//            getWorkListByCategoryId(String.valueOf(categoryId));
+//        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getCategoryData();
         if (refreshFlag == 0){
             getAllWorkList();
         }else{
             getWorkListByCategoryId(String.valueOf(categoryId));
         }
-
     }
 
     private void getCategoryData() {
@@ -186,7 +199,23 @@ public class SubWorkActivity extends AppCompatActivity {
                                 categoryList.add(categoryEntity);
                             }
                             mCategoryAdapter.setCategoryEntityList(categoryList);
-                            mCategoryAdapter.setDefSelect(refreshFlag);
+                            if (categoryId == 0){
+                                refreshFlag = 0;
+                                mCategoryAdapter.setDefSelect(refreshFlag);
+                            }else{
+                                for (int i = 0;i<categoryList.size();i++){
+                                    if (Integer.valueOf(categoryList.get(i).getId())==categoryId){
+                                        refreshFlag = i;
+                                        mCategoryAdapter.setDefSelect(refreshFlag);
+                                    }
+                                }
+                            }
+
+                            for(int j = 0; j<categoryList.size(); j++) {
+                                if (Integer.valueOf(categoryList.get(j).getId()) == categoryId) {
+                                    categoryLLM.scrollToPositionWithOffset(j, 0);
+                                }
+                            }
                         } else {
                             mCategoryAdapter.setCategoryEntityList(categoryList);
                         }

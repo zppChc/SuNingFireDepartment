@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
@@ -100,6 +101,7 @@ public class PersonalFragment extends Fragment {
                         mIdCard.setText(idCard);
                         address = data.getString("address");
                         mAddress.setText(address);
+                        Glide.with(getContext()).load(data.getString("image")).into(mPortrait);
                     } else {
                         ToastUtil.show(getContext(), jb.getString("message"));
                     }

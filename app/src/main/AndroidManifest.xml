@@ -69,11 +69,23 @@
         <activity
             android:name=".view.activity.WorkDetailActivity"
             android:theme="@style/ActivityTranslucentTheme" />
-        <activity android:name=".view.activity.WorkDetailFinishActivity"
+        <activity
+            android:name=".view.activity.WorkDetailFinishActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
+        <!-- 友盟统计 -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5b206ad6a40fa310600006c1" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="YaTai" />
+
+        <activity
+            android:name=".view.activity.ImageBrowseActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
+        <activity android:name=".view.activity.InfoListActivity"
             android:theme="@style/ActivityTranslucentTheme"/>
-        <!-- 友盟统计-->
-        <meta-data android:value="5b206ad6a40fa310600006c1" android:name="UMENG_APPKEY"/>
-        <meta-data android:value="YaTai" android:name="UMENG_CHANNEL"/>
+
     </application>
 
 </manifest>

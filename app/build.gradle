@@ -10,8 +10,8 @@ android {
         versionName "0.1.0"
         multiDexEnabled true //突破应用方法数65535的一个限制
         /******* 友盟********/
-         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
-        /*******************/
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
+        /** *****************/
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -74,5 +74,8 @@ dependencies {
     implementation 'com.umeng.sdk:analytics:7.5.3'
     //apk 更新
     implementation 'com.github.a-voyager:AutoInstaller:v1.0'
+    //图片缩放？
+    implementation 'com.bm.photoview:library:1.4.1'
+
 
 }
