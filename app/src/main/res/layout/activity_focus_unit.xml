@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/personal_gray_bg"
+    tools:context=".view.activity.FocusPlaceActivity">
+    <include
+        android:id="@+id/focus_unit_title"
+        layout = "@layout/title_with_arrow"/>
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:layout_below="@+id/focus_unit_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/focus_group_refresh">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/focus_unit_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</RelativeLayout>

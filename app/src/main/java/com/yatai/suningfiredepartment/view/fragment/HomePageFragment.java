@@ -40,6 +40,7 @@ import com.yatai.suningfiredepartment.util.LngLat2LatLng;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.activity.FocusGroupActivity;
+import com.yatai.suningfiredepartment.view.activity.FocusPlaceActivity;
 import com.yatai.suningfiredepartment.view.activity.InfoListActivity;
 import com.yatai.suningfiredepartment.view.activity.SubGridActivity;
 import com.yatai.suningfiredepartment.view.activity.SubWorkActivity;
@@ -223,6 +224,16 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         //重点地点。。。。没有实体类，等接口中出现数据在进行更改
         mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mHomePlaceAdapter = new HomePlaceAdapter(getContext());
+        mHomePlaceAdapter.setListener(new HomePlaceAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), FocusPlaceActivity.class);
+                Gson gson = new Gson();
+                String placeStr = gson.toJson(placeList.get(position));
+                intent.putExtra("place",placeStr);
+                startActivity(intent);
+            }
+        });
         mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
         mHomePlaceAdapter.setList(placeList);
 

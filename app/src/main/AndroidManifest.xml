@@ -44,7 +44,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.LoginActivity"
+        <activity
+            android:name=".view.activity.LoginActivity"
             android:theme="@style/ActivityTranslucentTheme" />
 
         <!-- 高德地图api key -->
@@ -84,9 +85,11 @@
         <activity
             android:name=".view.activity.ImageBrowseActivity"
             android:theme="@style/ActivityTranslucentTheme" />
-        <activity android:name=".view.activity.InfoListActivity"
+        <activity
+            android:name=".view.activity.InfoListActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
+        <activity android:name=".view.activity.FocusPlaceActivity"
             android:theme="@style/ActivityTranslucentTheme"/>
-
     </application>
 
 </manifest>

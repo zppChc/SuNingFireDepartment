@@ -287,7 +287,6 @@ public class SubWorkActivity extends AppCompatActivity {
 
     private void getWorkListByCategoryId(int categoryId) {
         String url = getString(R.string.base_url) + "grid/" + gridId + "/task/" + categoryId;
-        Logger.i("Url: "+url);
         String token = "Bearer " + PreferenceUtils.getPerfString(SubWorkActivity.this, "token", "");
         mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {

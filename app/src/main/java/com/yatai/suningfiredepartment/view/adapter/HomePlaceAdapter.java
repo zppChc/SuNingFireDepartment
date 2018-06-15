@@ -29,6 +29,7 @@ public class HomePlaceAdapter extends RecyclerView.Adapter<HomePlaceAdapter.View
 
     private List<PlaceEntity> mList = new ArrayList<>();
     private Context mContext;
+    private OnItemClickListener mListener;
 
     public HomePlaceAdapter(Context context){
         this.mContext = context;
@@ -38,7 +39,7 @@ public class HomePlaceAdapter extends RecyclerView.Adapter<HomePlaceAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_image,parent,false);
-        return new ViewHolder(view);
+        return new ViewHolder(view,mListener);
     }
 
     @Override
@@ -57,15 +58,32 @@ public class HomePlaceAdapter extends RecyclerView.Adapter<HomePlaceAdapter.View
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    public void setListener(OnItemClickListener listener){
+        mListener = listener;
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.item_show)
         ImageView img;
         @BindView(R.id.item_name)
         TextView nameTv;
-        public ViewHolder(View itemView) {
+        OnItemClickListener mListener;
+        public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            mListener = listener;
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            mListener.onItemClick(view,getPosition());
+        }
+    }
+
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }
 
