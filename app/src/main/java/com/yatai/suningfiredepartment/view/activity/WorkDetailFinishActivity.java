@@ -39,9 +39,9 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
     LinearLayout mLinearLayout;
     @BindView(R.id.work_detail_finish_pic_recycler_view)
     RecyclerView mRecyclerView;
-    @BindView(R.id.work_detail_finish_title_text_view)
+    @BindView(R.id.title_name)
     TextView mTitleTextView;
-    @BindView(R.id.work_finish_back)
+    @BindView(R.id.title_image_back)
     ImageView mBack;
 
     ProgressDialog mProgressDialog;
@@ -132,11 +132,13 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
                                 imgs.add(imgArray.get(i).toString());
                             }
                             mAdapter.setImgs(imgs);
+                            mProgressDialog.dismiss();
                         }
                     } else {
                         ToastUtil.show(WorkDetailFinishActivity.this, jb.getString("message"));
+                        mProgressDialog.dismiss();
                     }
-                    mProgressDialog.dismiss();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

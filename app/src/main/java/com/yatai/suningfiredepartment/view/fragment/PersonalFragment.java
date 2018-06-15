@@ -17,6 +17,7 @@ import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.activity.LoginActivity;
+import com.yatai.suningfiredepartment.view.activity.MainActivity;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -145,9 +146,11 @@ public class PersonalFragment extends Fragment {
                 try {
                     JSONObject jb = new JSONObject(s);
                     if (jb.getInt("code") == 200){
+                        PreferenceUtils.clearPreference(getContext());
                         Intent intent = new Intent();
                         intent.setClass(getContext(), LoginActivity.class);
                         getContext().startActivity(intent);
+                        getActivity().finish();
                     }else{
                         ToastUtil.show(getContext(),jb.getString("message"));
                     }

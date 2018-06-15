@@ -28,6 +28,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -73,8 +74,10 @@ public class WorkDetailActivity extends AppCompatActivity{
 
     private static final int TAKE_PHOTO = 1;
 
-    @BindView(R.id.work_detail_title_text_view)
+    @BindView(R.id.title_name)
     TextView mTitleTv;
+    @BindView(R.id.title_image_back)
+    ImageView mImageBack;
     @BindView(R.id.work_detail_description_text_view)
     TextView mDescriptionTv;
     @BindView(R.id.temp_work_detail_work_tv)
@@ -158,6 +161,12 @@ public class WorkDetailActivity extends AppCompatActivity{
 
         mTitleTv.setText(mWorkItemEntity.getName());
         mDescriptionTv.setText("任务描述："+mWorkItemEntity.getDescription());
+        mImageBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WorkDetailActivity.this.finish();
+            }
+        });
 
         JSONObject jb = new JSONObject(workItem);
         JSONArray templateArray = jb.getJSONArray("template");

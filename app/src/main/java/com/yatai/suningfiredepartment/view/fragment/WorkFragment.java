@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -43,7 +44,8 @@ import butterknife.Unbinder;
 
 public class WorkFragment extends Fragment {
 
-
+    @BindView(R.id.title_name)
+    TextView mTitleView;
     @BindView(R.id.work_category_recycler_view)
     RecyclerView workCategoryRecyclerView;
     @BindView(R.id.work_recycler_view)
@@ -90,6 +92,8 @@ public class WorkFragment extends Fragment {
         categoryList = new ArrayList<>();
         workList = new ArrayList<>();
         mHttp = new FinalHttp();
+
+        mTitleView.setText("工 作");
 
         mProgressDialog = new ProgressDialog(getContext(), ProgressDialog.THEME_HOLO_DARK);
         mProgressDialog.setMessage("正在加载...");

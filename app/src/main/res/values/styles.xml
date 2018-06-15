@@ -11,7 +11,7 @@
     <style name="AppThemeLaunch" parent="AppTheme">
     </style>
 
-    <style name="AppTheme.Splash">
+    <style name="AppTheme.Splash" parent="TranslucentTheme">
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowBackground">@drawable/welcome</item>
     </style>
@@ -27,5 +27,73 @@
 
     <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="HomePageLinearLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">185dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="HomePageGrayView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">15dp</item>
+        <item name="android:background">@color/home_page_cut_line_gray</item>
+    </style>
+
+    <style name="HomePageRelativeLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
+
+    <style name="HomePageBlueFlagView">
+        <item name="android:layout_width">4dp</item>
+        <item name="android:layout_height">25dp</item>
+        <item name="android:background">@color/home_page_sub_title_blue_line</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="HomePageRecyclerViewDesc">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+
+    <style name="HomePageRecyclerView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">120dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+
+    <style name="TitleTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="TitleBackgroundPic">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:background">@drawable/title_bg</item>
+        <!--<item name="app:layout_constraintTop_toTopOf">parent</item>-->
+    </style>
+
+    <style name="ImageBack">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/arrow_left</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
     </style>
 </resources>

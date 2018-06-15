@@ -2,6 +2,7 @@ package com.yatai.suningfiredepartment.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +38,7 @@ public class LoginActivity extends BaseActivity  {
     TextView forgotPassword;
 
     private FinalHttp mHttp;
+    private long exitTime;
 
 
     @Override
@@ -108,6 +110,28 @@ public class LoginActivity extends BaseActivity  {
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
         LoginActivity.this.finish();
+    }
+
+    /**
+     * 当按返回键时
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                ToastUtil.show(LoginActivity.this,"再按一次退出程序");
+                exitTime = System.currentTimeMillis();
+                return false;
+            } else {
+                this.finish();
+                return true;
+            }
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
 }

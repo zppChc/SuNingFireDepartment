@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -42,15 +43,17 @@ import butterknife.ButterKnife;
  * 展示子网格工作页面，布局类似于 WorkFragment
  */
 public class SubWorkActivity extends AppCompatActivity {
-
+    private static final String TAG_ALL = "99999";
     @BindView(R.id.sub_work_category_recycler_view)
     RecyclerView workCategoryRecyclerView;
     @BindView(R.id.sub_work_recycler_view)
     RecyclerView workRecyclerView;
     @BindView(R.id.sub_work_refresh_layout)
     SmartRefreshLayout mRefreshLayout;
-    @BindView(R.id.sub_work_back_img)
+    @BindView(R.id.title_image_back)
     ImageView mBackImg;
+    @BindView(R.id.title_name)
+    TextView mTitleTv;
 
     private String gridId;
     private int categoryId;
@@ -71,7 +74,8 @@ public class SubWorkActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Intent intent = getIntent();
         gridId = intent.getStringExtra("gridId");
-        categoryId = intent.getIntExtra("categoryId",0);
+        categoryId = intent.getIntExtra("categoryId",Integer.valueOf(TAG_ALL));
+        Logger.i("categoryId : "+categoryId);
 //        refreshFlag = categoryId;
         initView();
     }
@@ -80,6 +84,8 @@ public class SubWorkActivity extends AppCompatActivity {
         categoryList = new ArrayList<>();
         workList = new ArrayList<>();
         mHttp = new FinalHttp();
+
+        mTitleTv.setText("工 作");
 
         mProgressDialog = new ProgressDialog(SubWorkActivity.this, ProgressDialog.THEME_HOLO_DARK);
         mProgressDialog.setMessage("正在加载...");
@@ -94,11 +100,12 @@ public class SubWorkActivity extends AppCompatActivity {
 //                ToastUtil.show(getContext(), "Position: "+ String.valueOf(position));
                 mProgressDialog.show();
                 refreshFlag = position;
+                categoryId = Integer.valueOf(categoryList.get(position).getId());
                 mCategoryAdapter.setDefSelect(position);
-                if (position == 0) {
+                if (categoryId == Integer.valueOf(TAG_ALL)) {
                     getAllWorkList();
                 } else {
-                    getWorkListByCategoryId(categoryList.get(position).getId());
+                    getWorkListByCategoryId(categoryId);
                 }
             }
         });
@@ -139,10 +146,10 @@ public class SubWorkActivity extends AppCompatActivity {
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                if (refreshFlag == 0) {
+                if (categoryId == Integer.valueOf(TAG_ALL)) {
                     getAllWorkList();
                 } else {
-                    getWorkListByCategoryId(categoryList.get(refreshFlag).getId());
+                    getWorkListByCategoryId(categoryId);
                 }
             }
         });
@@ -167,10 +174,10 @@ public class SubWorkActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getCategoryData();
-        if (refreshFlag == 0){
+        if (categoryId == Integer.valueOf(TAG_ALL)){
             getAllWorkList();
         }else{
-            getWorkListByCategoryId(String.valueOf(categoryId));
+            getWorkListByCategoryId(categoryId);
         }
     }
 
@@ -191,7 +198,7 @@ public class SubWorkActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         if (data.length() > 0) {
                             CategoryEntity temp = new CategoryEntity();
-                            temp.setId("99999");
+                            temp.setId(TAG_ALL);
                             temp.setName("全部");
                             categoryList.add(temp);
                             for (int i = 0; i < data.length(); i++) {
@@ -199,12 +206,12 @@ public class SubWorkActivity extends AppCompatActivity {
                                 categoryList.add(categoryEntity);
                             }
                             mCategoryAdapter.setCategoryEntityList(categoryList);
-                            if (categoryId == 0){
+                            if (categoryId == Integer.valueOf(TAG_ALL)){
                                 refreshFlag = 0;
                                 mCategoryAdapter.setDefSelect(refreshFlag);
                             }else{
                                 for (int i = 0;i<categoryList.size();i++){
-                                    if (Integer.valueOf(categoryList.get(i).getId())==categoryId){
+                                    if (categoryList.get(i).getId().equals(String.valueOf(categoryId))){
                                         refreshFlag = i;
                                         mCategoryAdapter.setDefSelect(refreshFlag);
                                     }
@@ -212,7 +219,7 @@ public class SubWorkActivity extends AppCompatActivity {
                             }
 
                             for(int j = 0; j<categoryList.size(); j++) {
-                                if (Integer.valueOf(categoryList.get(j).getId()) == categoryId) {
+                                if (categoryList.get(j).getId().equals(String.valueOf(categoryId))) {
                                     categoryLLM.scrollToPositionWithOffset(j, 0);
                                 }
                             }
@@ -278,8 +285,9 @@ public class SubWorkActivity extends AppCompatActivity {
         });
     }
 
-    private void getWorkListByCategoryId(String categoryId) {
+    private void getWorkListByCategoryId(int categoryId) {
         String url = getString(R.string.base_url) + "grid/" + gridId + "/task/" + categoryId;
+        Logger.i("Url: "+url);
         String token = "Bearer " + PreferenceUtils.getPerfString(SubWorkActivity.this, "token", "");
         mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {
@@ -300,6 +308,7 @@ public class SubWorkActivity extends AppCompatActivity {
                             mWorkItemAdapter.setList(workList);
                         } else {
                             mWorkItemAdapter.setList(workList);
+                            mWorkItemAdapter.notifyDataSetChanged();
                         }
                     } else {
                         ToastUtil.show(SubWorkActivity.this, jb.getString("message"));

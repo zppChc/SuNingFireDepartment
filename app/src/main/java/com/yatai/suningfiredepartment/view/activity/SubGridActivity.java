@@ -58,12 +58,10 @@ import butterknife.ButterKnife;
  * 展示子网格信息，界面布局与首页相同
  */
 public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClickListener {
-    @BindView(R.id.sub_grid_name)
+    @BindView(R.id.title_name)
     TextView mGridNameTv;
-    @BindView(R.id.sub_grid_back_img)
+    @BindView(R.id.title_image_back)
     ImageView mBackImg;
-    @BindView(R.id.sub_grid_work_tv)
-    TextView mWorkTv;
     @BindView(R.id.map)
     MapView mMapView;
     @BindView(R.id.sub_grid_region_recycler_view)
@@ -165,6 +163,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                 Intent intent = new Intent(SubGridActivity.this, SubGridActivity.class);
                 String gridId = String.valueOf(childrenGridList.get(position).getId());
                 intent.putExtra("gridId", gridId);
+                intent.putExtra("gridName",childrenGridList.get(position).getName());
                 startActivity(intent);
             }
         });
@@ -216,15 +215,6 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
             @Override
             public void onClick(View view) {
                 finish();
-            }
-        });
-
-        mWorkTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SubGridActivity.this, SubWorkActivity.class);
-                intent.putExtra("gridId", gridId);
-                startActivity(intent);
             }
         });
     }
@@ -289,6 +279,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                 Intent intent = new Intent(SubGridActivity.this, SubGridActivity.class);
                 String gridId = String.valueOf(childrenGridList.get(i).getId());
                 intent.putExtra("gridId", gridId);
+                intent.putExtra("gridName",childrenGridList.get(i).getName());
                 startActivity(intent);
                 break;
             }

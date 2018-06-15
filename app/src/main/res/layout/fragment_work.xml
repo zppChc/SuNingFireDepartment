@@ -6,33 +6,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_marginBottom="50dp">
+    <include android:id="@+id/work_title"
+        layout="@layout/title_without_arrow"/>
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/work_title">
-        <View
-            android:id="@+id/title_background"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="@drawable/title_bg"
-            app:layout_constraintTop_toTopOf="parent"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:layout_constraintBottom_toBottomOf="@+id/title_background">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="10sp"
-                android:text="工 作"
-                android:textSize="20sp"
-                android:textColor="@color/white"
-                android:gravity="center_vertical"/>
-        </RelativeLayout>
-    </android.support.constraint.ConstraintLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/work_category_recycler_view"
         android:layout_width="wrap_content"

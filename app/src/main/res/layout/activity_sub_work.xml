@@ -9,40 +9,8 @@
     android:layout_marginBottom="50dp"
     tools:context=".view.activity.SubWorkActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/sub_work_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <View
-            android:id="@+id/title_background"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="@drawable/title_bg"
-            app:layout_constraintTop_toTopOf="parent"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:layout_constraintBottom_toBottomOf="@+id/title_background">
-            <ImageView
-                android:id="@+id/sub_work_back_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow_left"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="10dp"
-                android:text="工 作"
-                android:textSize="20sp"
-                android:textColor="@color/white"
-                android:gravity="center_vertical"/>
-        </RelativeLayout>
-    </android.support.constraint.ConstraintLayout>
+    <include android:id="@+id/sub_work_title"
+        layout="@layout/title_with_arrow"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sub_work_category_recycler_view"
         android:layout_width="wrap_content"

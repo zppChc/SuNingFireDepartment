@@ -69,7 +69,7 @@ import butterknife.Unbinder;
 
 public class HomePageFragment extends Fragment implements AMap.OnMapClickListener {
 
-    @BindView(R.id.home_page_name)
+    @BindView(R.id.title_name)
     TextView mPageNameTv;
     @BindView(R.id.map)
     MapView mMapView;
@@ -208,6 +208,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                 Intent intent = new Intent(getActivity(), SubGridActivity.class);
                 String gridId = String.valueOf(childrenGridList.get(position).getId());
                 intent.putExtra("gridId", gridId);
+                intent.putExtra("gridName",childrenGridList.get(position).getName());
                 startActivity(intent);
             }
         });
@@ -248,7 +249,6 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                 Intent intent = new Intent(getActivity(), SubWorkActivity.class);
                 intent.putExtra("gridId", gridId);
                 intent.putExtra("categoryId",categoryList.get(position).getId());
-
                 startActivity(intent);
             }
         });

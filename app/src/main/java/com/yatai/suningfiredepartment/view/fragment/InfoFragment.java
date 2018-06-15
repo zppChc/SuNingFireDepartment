@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -38,6 +39,7 @@ import java.util.List;
 
 
 public class InfoFragment extends Fragment {
+    private TextView mTitleTv;
     private RecyclerView mCategoryRecyclerView;
     private RecyclerView mInfoRecyclerView;
     private SmartRefreshLayout mRefreshLayout;
@@ -68,6 +70,9 @@ public class InfoFragment extends Fragment {
     private void initView(View view) {
         categoryList = new ArrayList<>();
         infoList = new ArrayList<>();
+
+        mTitleTv = (TextView)view.findViewById(R.id.title_name);
+        mTitleTv.setText("资 讯");
 
         mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
         mProgressDialog.setMessage("正在加载...");

@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -33,8 +34,10 @@ import butterknife.OnClick;
 
 public class FocusGroupActivity extends AppCompatActivity {
 
-    @BindView(R.id.focus_group_back)
+    @BindView(R.id.title_image_back)
     ImageView mBackIv;
+    @BindView(R.id.title_name)
+    TextView mTitleNameTv;
     @BindView(R.id.focus_group_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.focus_group_refresh)
@@ -70,6 +73,7 @@ public class FocusGroupActivity extends AppCompatActivity {
         });
     }
     private void initView(){
+        mTitleNameTv.setText("重点人群");
         peopleList = new ArrayList<>();
         mHttp = new FinalHttp();
         mAdapter = new FocusGroupAdapter(this);

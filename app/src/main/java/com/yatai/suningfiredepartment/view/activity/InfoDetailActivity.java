@@ -21,9 +21,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class InfoDetailActivity extends AppCompatActivity {
-    @BindView(R.id.info_detail_back)
+    @BindView(R.id.title_image_back)
     ImageView mBackImageView;
-    @BindView(R.id.info_detail_title_tv)
+    @BindView(R.id.title_name)
     TextView mTitleTv;
     @BindView(R.id.info_detail_content)
     EditText mContent;
