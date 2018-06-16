@@ -20,6 +20,7 @@ import com.yatai.suningfiredepartment.view.fragment.HomePageFragment;
 import com.yatai.suningfiredepartment.view.fragment.InfoFragment;
 import com.yatai.suningfiredepartment.view.fragment.PersonalFragment;
 import com.yatai.suningfiredepartment.view.fragment.WorkFragment;
+import com.yatai.suningfiredepartment.view.widget.ViewPagerSlide;
 
 import net.tsz.afinal.FinalHttp;
 
@@ -32,7 +33,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivity {
 
     @BindView(R.id.main_view_pager)
-    ViewPager mainViewPager;
+    ViewPagerSlide mainViewPager;
     @BindView(R.id.main_menu_tab)
     TabLayout mainMenuTab;
     //记录用户首次点击返回键的时间

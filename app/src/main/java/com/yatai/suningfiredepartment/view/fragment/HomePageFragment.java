@@ -11,8 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.amap.api.maps2d.AMap;
@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.orhanobut.logger.Logger;
+import com.yatai.suningfiredepartment.view.widget.MapContainer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,6 +73,10 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
 
     @BindView(R.id.title_name)
     TextView mPageNameTv;
+    @BindView(R.id.scroll_view)
+    ScrollView mScrollView;
+    @BindView(R.id.map_container)
+    MapContainer mMapContainer;
     @BindView(R.id.map)
     MapView mMapView;
     @BindView(R.id.home_page_news_layout)
@@ -191,6 +196,8 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         String str = formatter.format(curDate);
         info.add("欢迎使用 "+str);
 
+        mMapContainer.setScrollView(mScrollView);
+
         marqueeNewViewOne.setOnItemClickListener(new MarqueeView.OnItemClickListener() {
             @Override
             public void onItemClick(int position, TextView textView) {
@@ -294,6 +301,8 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         mUiSettings.setZoomGesturesEnabled(true);
         //滑动手势
         mUiSettings.setScrollGesturesEnabled(true);
+        //所有手势
+        mUiSettings.setAllGesturesEnabled(true);
     }
 
 

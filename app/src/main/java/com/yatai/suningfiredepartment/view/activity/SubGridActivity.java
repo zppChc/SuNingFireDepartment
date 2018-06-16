@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.amap.api.maps2d.AMap;
@@ -38,6 +39,7 @@ import com.yatai.suningfiredepartment.view.adapter.HomePeopleAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePlaceAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeRegionAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeUnitAdapter;
+import com.yatai.suningfiredepartment.view.widget.MapContainer;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -58,6 +60,10 @@ import butterknife.ButterKnife;
  * 展示子网格信息，界面布局与首页相同
  */
 public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClickListener {
+    @BindView(R.id.map_container)
+    MapContainer mMapContainer;
+    @BindView(R.id.scroll_view)
+    ScrollView mScrollView;
     @BindView(R.id.title_name)
     TextView mGridNameTv;
     @BindView(R.id.title_image_back)
@@ -154,6 +160,8 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         categoryList = new ArrayList<>();
 
         mContext = this;
+
+        mMapContainer.setScrollView(mScrollView);
 
         mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
         mHomeRegionAdapter = new HomeRegionAdapter(SubGridActivity.this);
