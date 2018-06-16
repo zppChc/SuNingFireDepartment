@@ -177,9 +177,17 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         });
         mRegionRecyclerView.setAdapter(mHomeRegionAdapter);
         mHomeRegionAdapter.setGridList(childrenGridList);
-
         mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
         mHomeDepartmentAdapter = new HomeUnitAdapter(SubGridActivity.this);
+        mHomeDepartmentAdapter.setListener(new HomeUnitAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(SubGridActivity.this, DepartmentWorkActivity.class);
+                String departmentId = String.valueOf(departmentList.get(position).getId());
+                intent.putExtra("id",departmentId);
+                startActivity(intent);
+            }
+        });
         mUnitRecyclerView.setAdapter(mHomeDepartmentAdapter);
         mHomeDepartmentAdapter.setDepartmentList(departmentList);
 
