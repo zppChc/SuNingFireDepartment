@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -148,5 +149,17 @@ public class CommonUtil {
             return "";
         }
         return version;
+    }
+
+
+    /**
+     * 判断是否平板设备
+     * @param context
+     * @return true:平板,false:手机
+     */
+
+    public static boolean  isTabletDevice(Context context){
+        return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >=
+                Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }

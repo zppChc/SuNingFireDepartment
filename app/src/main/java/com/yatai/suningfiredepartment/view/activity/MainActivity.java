@@ -11,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.util.CommonUtil;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.adapter.MainViewPagerAdapter;
@@ -90,6 +92,12 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        if (CommonUtil.isTabletDevice(this)){
+            Logger.i("Main 此设备是手机");
+        }else{
+            Logger.i("Main 此设备是平板");
+        }
 //
 //        Intent intent = getIntent();
 //        String gridId = intent.getStringExtra("gridId");

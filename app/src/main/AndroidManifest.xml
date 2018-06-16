@@ -55,7 +55,9 @@
 
         <activity
             android:name=".view.activity.MainActivity"
-            android:theme="@style/TranslucentTheme" />
+            android:theme="@style/TranslucentTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="false"/>
         <activity
             android:name=".view.activity.FocusGroupActivity"
             android:theme="@style/ActivityTranslucentTheme" />
@@ -64,7 +66,9 @@
             android:theme="@style/ActivityTranslucentTheme" />
         <activity
             android:name=".view.activity.SubGridActivity"
-            android:theme="@style/ActivityTranslucentTheme" />
+            android:theme="@style/ActivityTranslucentTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="false"/>
         <activity
             android:name=".view.activity.SubWorkActivity"
             android:theme="@style/ActivityTranslucentTheme" />
@@ -88,7 +92,10 @@
         <activity
             android:name=".view.activity.InfoListActivity"
             android:theme="@style/ActivityTranslucentTheme" />
-        <activity android:name=".view.activity.FocusPlaceActivity"
+        <activity
+            android:name=".view.activity.FocusPlaceActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
+        <activity android:name=".view.activity.DepartmentWorkActivity"
             android:theme="@style/ActivityTranslucentTheme"/>
     </application>
 

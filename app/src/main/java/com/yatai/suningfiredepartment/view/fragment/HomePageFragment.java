@@ -2,6 +2,7 @@ package com.yatai.suningfiredepartment.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,6 +40,7 @@ import com.yatai.suningfiredepartment.util.ColorUtil;
 import com.yatai.suningfiredepartment.util.LngLat2LatLng;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
+import com.yatai.suningfiredepartment.view.activity.DepartmentWorkActivity;
 import com.yatai.suningfiredepartment.view.activity.FocusGroupActivity;
 import com.yatai.suningfiredepartment.view.activity.FocusPlaceActivity;
 import com.yatai.suningfiredepartment.view.activity.InfoListActivity;
@@ -168,12 +170,12 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
 
         //在activity执行onCreate时执行mapView.onCreate(saveInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
-        initMap();
 
         return view;
     }
 
     private void initView() {
+        initMap();
         childrenGridList = new ArrayList<>();
         departmentList = new ArrayList<>();
         peopleList = new ArrayList<>();
@@ -225,6 +227,15 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
 
         mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mHomeUnitAdapter = new HomeUnitAdapter(getContext());
+        mHomeUnitAdapter.setListener(new HomeUnitAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), DepartmentWorkActivity.class);
+                String departmentId = String.valueOf(departmentList.get(position).getId());
+                intent.putExtra("id",departmentId);
+                startActivity(intent);
+            }
+        });
         mUnitRecyclerView.setAdapter(mHomeUnitAdapter);
         mHomeUnitAdapter.setDepartmentList(departmentList);
 
@@ -348,6 +359,16 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         mMapView.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Logger.i("HomePage 竖屏");
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // port do nothing is ok
+            Logger.i("HomePage 横屏");
+        }
+    }
 
     @Override
     public void onDestroy() {

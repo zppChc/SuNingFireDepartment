@@ -84,7 +84,7 @@
                     android:id="@+id/home_page_region_recycler_view"
                     style="@style/HomePageRecyclerView"/>
             </LinearLayout>
-            <!-- 相关单位 -->
+            <!-- 相关部门 -->
             <LinearLayout
                 android:id="@+id/temp_home_page_unit"
                 style="@style/HomePageLinearLayout"
@@ -98,7 +98,7 @@
                         style="@style/HomePageBlueFlagView"/>
                     <TextView
                         style="@style/HomePageRecyclerViewDesc"
-                        android:text="相关单位"
+                        android:text="相关部门"
                         android:layout_toRightOf="@id/temp_home_page_cut_line_two"/>
                 </RelativeLayout>
                 <android.support.v7.widget.RecyclerView

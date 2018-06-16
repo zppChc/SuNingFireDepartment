@@ -108,7 +108,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
 
 
     private HomeRegionAdapter mHomeRegionAdapter;
-    private HomeUnitAdapter mHomeUnitAdapter;
+    private HomeUnitAdapter mHomeDepartmentAdapter;
     private HomePlaceAdapter mHomePlaceAdapter;
     private HomePeopleAdapter mHomePeopleAdapter;
     private HomeCategoryAdapter mHomeCategoryAdapter;
@@ -179,9 +179,9 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         mHomeRegionAdapter.setGridList(childrenGridList);
 
         mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeUnitAdapter = new HomeUnitAdapter(SubGridActivity.this);
-        mUnitRecyclerView.setAdapter(mHomeUnitAdapter);
-        mHomeUnitAdapter.setDepartmentList(departmentList);
+        mHomeDepartmentAdapter = new HomeUnitAdapter(SubGridActivity.this);
+        mUnitRecyclerView.setAdapter(mHomeDepartmentAdapter);
+        mHomeDepartmentAdapter.setDepartmentList(departmentList);
 
         //重点地点。。。。没有实体类，等接口中出现数据在进行更改
         mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
@@ -347,7 +347,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                                 DepartmentEntity departmentEntity = gson.fromJson(departmentArray.getJSONObject(i).toString(), DepartmentEntity.class);
                                 departmentList.add(departmentEntity);
                             }
-                            mHomeUnitAdapter.setDepartmentList(departmentList);
+                            mHomeDepartmentAdapter.setDepartmentList(departmentList);
                         } else {
                             mUnitLayout.setVisibility(View.GONE);
                         }
