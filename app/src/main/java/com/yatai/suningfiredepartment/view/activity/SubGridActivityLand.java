@@ -156,7 +156,7 @@ public class SubGridActivityLand extends AppCompatActivity implements AMap.OnMap
         mHomeRegionAdapter.setListener(new HomeRegionAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivityLand.this, SubGridActivity.class);
+                Intent intent = new Intent(SubGridActivityLand.this, SubGridActivityLand.class);
                 String gridId = String.valueOf(childrenGridList.get(position).getId());
                 intent.putExtra("gridId", gridId);
                 intent.putExtra("gridName",childrenGridList.get(position).getName());
@@ -247,7 +247,7 @@ public class SubGridActivityLand extends AppCompatActivity implements AMap.OnMap
         //竖屏
         if ( mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ) {
 
-            Intent intent = new Intent(SubGridActivityLand.this, SubGridActivityLand.class);
+            Intent intent = new Intent(SubGridActivityLand.this, SubGridActivity.class);
             intent.putExtra("gridId", gridId);
             intent.putExtra("gridName",gridName);
             startActivity(intent);

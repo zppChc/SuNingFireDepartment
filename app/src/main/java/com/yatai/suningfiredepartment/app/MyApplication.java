@@ -2,6 +2,7 @@ package com.yatai.suningfiredepartment.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
@@ -35,11 +36,14 @@ public class MyApplication extends Application {
         Logger.addLogAdapter(new AndroidLogAdapter());
     }
 
-    public static MyApplication getInstance(){
-        return  instance;
-    }
-
     public static Context getContext() {
         return sContext;
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
+    }
+
 }
