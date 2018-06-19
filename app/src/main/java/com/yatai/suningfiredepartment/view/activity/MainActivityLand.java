@@ -2,23 +2,20 @@ package com.yatai.suningfiredepartment.view.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
-import com.yatai.suningfiredepartment.util.CommonUtil;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.adapter.MainViewPagerAdapter;
-import com.yatai.suningfiredepartment.view.fragment.CensusFragment;
 import com.yatai.suningfiredepartment.view.fragment.HomePageFragment;
 import com.yatai.suningfiredepartment.view.fragment.HomePageFragmentLand;
 import com.yatai.suningfiredepartment.view.fragment.InfoFragment;
@@ -26,15 +23,13 @@ import com.yatai.suningfiredepartment.view.fragment.PersonalFragment;
 import com.yatai.suningfiredepartment.view.fragment.WorkFragment;
 import com.yatai.suningfiredepartment.view.widget.ViewPagerSlide;
 
-import net.tsz.afinal.FinalHttp;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity {
+public class MainActivityLand extends BaseActivity {
 
     @BindView(R.id.main_view_pager)
     ViewPagerSlide mainViewPager;
@@ -43,7 +38,9 @@ public class MainActivity extends BaseActivity {
     //记录用户首次点击返回键的时间
     private long firstTime = 0;
 
-//    private String[] mMenus = {
+
+
+    //    private String[] mMenus = {
 //            "首页",
 //            "工作",
 //            "资讯",
@@ -87,26 +84,30 @@ public class MainActivity extends BaseActivity {
     private String gridId;
     private long exitTime;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_land);
+
         ButterKnife.bind(this);
 
-
+        Configuration configuration = getResources().getConfiguration();
+        //0 是竖屏， 1 ,是横屏
+        int ori = configuration.getLayoutDirection();
+        Logger.i("On Create: ori : "+ ori);
 //
 //        Intent intent = getIntent();
 //        String gridId = intent.getStringExtra("gridId");
 
-        gridId = PreferenceUtils.getPerfString(MainActivity.this,"gridId","");
+        gridId = PreferenceUtils.getPerfString(MainActivityLand .this,"gridId","");
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         initFragments(gridId);
     }
-
     private void initFragments(String gridId){
         fragments = new ArrayList<>();
-        HomePageFragment homePageFragment = HomePageFragment.newInstance(gridId);
+        HomePageFragmentLand homePageFragment = HomePageFragmentLand.newInstance(gridId);
         WorkFragment workFragment = WorkFragment.newInstance(gridId);
         InfoFragment infoFragment = InfoFragment.newInstance(gridId);
 //        CensusFragment censusFragment = CensusFragment.newInstance(gridId);
@@ -166,27 +167,25 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Logger.i("Main 横屏");
-            Intent intent = new Intent(MainActivity.this,MainActivityLand.class);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // port do nothing is ok
+            Logger.i("Main 竖屏");
+            Intent intent = new Intent(MainActivityLand.this,MainActivity.class);
             startActivity(intent);
-            MainActivity.this.finish();
+            MainActivityLand.this.finish();
         }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Logger.i("Main 横屏");
-            Intent intent = new Intent(MainActivity.this,MainActivityLand.class);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // port do nothing is ok
+            Logger.i("Main 竖屏");
+            Intent intent = new Intent(MainActivityLand.this,MainActivity.class);
             startActivity(intent);
-            MainActivity.this.finish();
+            MainActivityLand.this.finish();
         }
-//        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            // port do nothing is ok
-//            Logger.i("Main 竖屏");
-//        }
     }
 
     /**
@@ -199,7 +198,7 @@ public class MainActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if ((System.currentTimeMillis() - exitTime) > 2000) {
-                ToastUtil.show(MainActivity.this,"再按一次退出程序");
+                ToastUtil.show(MainActivityLand.this,"再按一次退出程序");
                 exitTime = System.currentTimeMillis();
                 return false;
             } else {

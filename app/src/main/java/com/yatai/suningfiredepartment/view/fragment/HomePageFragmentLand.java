@@ -1,19 +1,22 @@
-package com.yatai.suningfiredepartment.view.activity;
+package com.yatai.suningfiredepartment.view.fragment;
 
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.AMapOptions;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
@@ -25,17 +28,25 @@ import com.amap.api.maps2d.model.Polygon;
 import com.amap.api.maps2d.model.PolygonOptions;
 import com.amap.api.maps2d.model.PolylineOptions;
 import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
+import com.sunfusheng.marqueeview.MarqueeView;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.DepartmentEntity;
 import com.yatai.suningfiredepartment.entity.GridEntity;
 import com.yatai.suningfiredepartment.entity.HomeWorkCategoryEntity;
+import com.yatai.suningfiredepartment.entity.InfoEntity;
 import com.yatai.suningfiredepartment.entity.PeopleEntity;
 import com.yatai.suningfiredepartment.entity.PlaceEntity;
 import com.yatai.suningfiredepartment.util.ColorUtil;
 import com.yatai.suningfiredepartment.util.LngLat2LatLng;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
+import com.yatai.suningfiredepartment.view.activity.DepartmentWorkActivity;
+import com.yatai.suningfiredepartment.view.activity.FocusGroupActivity;
+import com.yatai.suningfiredepartment.view.activity.FocusPlaceActivity;
+import com.yatai.suningfiredepartment.view.activity.InfoListActivity;
+import com.yatai.suningfiredepartment.view.activity.SubGridActivity;
+import com.yatai.suningfiredepartment.view.activity.SubGridActivityLand;
+import com.yatai.suningfiredepartment.view.activity.SubWorkActivity;
 import com.yatai.suningfiredepartment.view.adapter.HomeCategoryAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePeopleAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePlaceAdapter;
@@ -50,97 +61,227 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
-/**
- * @author chc
- * 2018.6.4
- * 展示子网格信息，界面布局与首页相同
- */
-public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClickListener {
-    @BindView(R.id.map_container)
-    MapContainer mMapContainer;
-    @BindView(R.id.scroll_view)
-    ScrollView mScrollView;
+public class HomePageFragmentLand extends Fragment implements AMap.OnMapClickListener  {
+
     @BindView(R.id.title_name)
-    TextView mGridNameTv;
-    @BindView(R.id.title_image_back)
-    ImageView mBackImg;
+    TextView mPageNameTv;
     @BindView(R.id.map)
     MapView mMapView;
-    @BindView(R.id.sub_grid_region_recycler_view)
+    @BindView(R.id.marquee_new_view_one)
+    MarqueeView marqueeNewViewOne;
+    //相关网格 中网格
+    @BindView(R.id.home_page_region_recycler_view)
     RecyclerView mRegionRecyclerView;
-    @BindView(R.id.sub_grid_unit_recycler_view)
+    //相关单位
+    @BindView(R.id.home_page_unit_recycler_view)
     RecyclerView mUnitRecyclerView;
-    @BindView(R.id.sub_grid_place_recycler_view)
+    //工作台账
+    @BindView(R.id.home_page_place_recycler_view)
     RecyclerView mPlaceRecyclerView;
-    @BindView(R.id.sub_grid_work_recycler_view)
-    RecyclerView mWorkRecyclerView;
-    @BindView(R.id.temp_sub_grid_unit)
-    LinearLayout mUnitLayout;
-
-
-    @BindView(R.id.temp_sub_grid_place)
-    LinearLayout mPlaceLayout;
-    @BindView(R.id.temp_sub_grid_region)
-    LinearLayout mRegionLayout;
-    @BindView(R.id.sub_grid_people_recycler_view)
+    //重点人群
+    @BindView(R.id.home_page_people_recycler_view)
     RecyclerView mPeopleRecyclerView;
-    @BindView(R.id.temp_sub_grid_people)
+    //工作台账
+    @BindView(R.id.home_page_work_recycler_view)
+    RecyclerView mWorkRecyclerView;
+
+    //相关网格 layout
+    @BindView(R.id.temp_home_page_region)
+    LinearLayout mRegionLayout;
+    //相关单位 layout
+    @BindView(R.id.temp_home_page_unit)
+    LinearLayout mUnitLayout;
+    //重点区域
+    @BindView(R.id.temp_home_page_place)
+    LinearLayout mPlaceLayout;
+    //重点人群 layout
+    @BindView(R.id.temp_home_page_people)
     LinearLayout mPeopleLayout;
-    @BindView(R.id.temp_sub_grid_work)
+    //工作台账 layout
+    @BindView(R.id.temp_home_page_work)
     LinearLayout mWorkLayout;
 
+    List<String> info;
+    List<String> infoOne;//滚动新闻
+    List<String> infoTwo;
+    AMap mAMap;
+    UiSettings mUiSettings;//定义一个UiSettings对象
+    PolylineOptions polylineOption;
+    Marker marker;
+    Polygon polygon;
+    List<Polygon> childPolygons;
+    Unbinder mUnbinder;
 
-    private String gridId;
-    private String gridName;
+    HomeRegionAdapter mHomeRegionAdapter;
+    HomeUnitAdapter mHomeUnitAdapter;
+    HomePlaceAdapter mHomePlaceAdapter;
+    HomePeopleAdapter mHomePeopleAdapter;
+    HomeCategoryAdapter mHomeCategoryAdapter;
+
+
     private FinalHttp mHttp;
-    private Context mContext;
-
-    private AMap mAMap;
-    private UiSettings mUiSettings;//定义一个UiSettings对象
-    private PolylineOptions polylineOption;
-    private Marker marker;
-    private Polygon polygon;
-    private List<Polygon> childPolygons;
-
-
-    private HomeRegionAdapter mHomeRegionAdapter;
-    private HomeUnitAdapter mHomeDepartmentAdapter;
-    private HomePlaceAdapter mHomePlaceAdapter;
-    private HomePeopleAdapter mHomePeopleAdapter;
-    private HomeCategoryAdapter mHomeCategoryAdapter;
-
-
+    private String gridId;
     private GridEntity mGridEntity;
     private List<GridEntity> childrenGridList;
     private List<DepartmentEntity> departmentList;
     private List<PeopleEntity> peopleList;
     private List<PlaceEntity> placeList;
     private List<HomeWorkCategoryEntity> categoryList;
+    private ProgressDialog mProgressDialog;
+
+
+    public static HomePageFragmentLand newInstance(String gridId){
+        Bundle args = new Bundle();
+        args.putString("gridId", gridId);
+        HomePageFragmentLand fragment = new HomePageFragmentLand();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        setContentView(R.layout.activity_sub_gird);
+        //接收传来的数据getArguments
+        Bundle data = getArguments();
+        gridId = data.getString("gridId");
+    }
 
-        ButterKnife.bind(this);
-        Intent intent = getIntent();
-        gridId = intent.getStringExtra("gridId");
-        gridName = intent.getStringExtra("gridName");
-        mGridNameTv.setText(gridName);
-//        ToastUtil.show(this, "GridId: " + gridId);
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home_page_land,container,false);
+        mUnbinder = ButterKnife.bind(this, view);
+        initView();
 
         //在activity执行onCreate时执行mapView.onCreate(saveInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
-        initMap();
-        initView();
+
+        return view;
     }
+
+    private void initView() {
+        initMap();
+        childrenGridList = new ArrayList<>();
+        departmentList = new ArrayList<>();
+        peopleList = new ArrayList<>();
+        placeList = new ArrayList<>();
+        categoryList = new ArrayList<>();
+
+        info = new ArrayList<>();
+        infoOne = new ArrayList<>();
+        infoTwo = new ArrayList<>();
+        childPolygons = new ArrayList<>();
+
+        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog.setMessage("正在加载...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+        info.add("欢迎使用 "+str);
+
+
+        marqueeNewViewOne.setOnItemClickListener(new MarqueeView.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, TextView textView) {
+                Intent intent = new Intent(getActivity(), InfoListActivity.class);
+                intent.putExtra("gridId",gridId);
+                startActivity(intent);
+            }
+        });
+        startNews(info);
+
+        mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mHomeRegionAdapter = new HomeRegionAdapter(getContext());
+        mHomeRegionAdapter.setListener(new HomeRegionAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), SubGridActivityLand.class);
+                String gridId = String.valueOf(childrenGridList.get(position).getId());
+                intent.putExtra("gridId", gridId);
+                intent.putExtra("gridName",childrenGridList.get(position).getName());
+                startActivity(intent);
+            }
+        });
+        mRegionRecyclerView.setAdapter(mHomeRegionAdapter);
+        mHomeRegionAdapter.setGridList(childrenGridList);
+
+        mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mHomeUnitAdapter = new HomeUnitAdapter(getContext());
+        mHomeUnitAdapter.setListener(new HomeUnitAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), DepartmentWorkActivity.class);
+                String departmentId = String.valueOf(departmentList.get(position).getId());
+                intent.putExtra("id",departmentId);
+                startActivity(intent);
+            }
+        });
+        mUnitRecyclerView.setAdapter(mHomeUnitAdapter);
+        mHomeUnitAdapter.setDepartmentList(departmentList);
+
+        //重点地点。。。。没有实体类，等接口中出现数据在进行更改
+        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mHomePlaceAdapter = new HomePlaceAdapter(getContext());
+        mHomePlaceAdapter.setListener(new HomePlaceAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), FocusPlaceActivity.class);
+                Gson gson = new Gson();
+                String placeStr = gson.toJson(placeList.get(position));
+                intent.putExtra("place",placeStr);
+                startActivity(intent);
+            }
+        });
+        mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
+        mHomePlaceAdapter.setList(placeList);
+
+        mPeopleRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mHomePeopleAdapter =  new HomePeopleAdapter(getContext());
+        mHomePeopleAdapter.setListener(new HomePeopleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity().getApplicationContext(),FocusGroupActivity.class);
+                Gson gson =new Gson();
+                String peopleStr = gson.toJson(peopleList.get(position));
+                intent.putExtra("people",peopleStr);
+                startActivity(intent);
+            }
+        });
+        mPeopleRecyclerView.setAdapter(mHomePeopleAdapter);
+        mHomePeopleAdapter.setList(peopleList);
+
+        mWorkRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mHomeCategoryAdapter = new HomeCategoryAdapter(getContext());
+        mHomeCategoryAdapter.setListener(new HomeCategoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), SubWorkActivity.class);
+                intent.putExtra("gridId", gridId);
+                intent.putExtra("categoryId",categoryList.get(position).getId());
+                startActivity(intent);
+            }
+        });
+        mWorkRecyclerView.setAdapter(mHomeCategoryAdapter);
+        mHomeCategoryAdapter.setList(categoryList);
+
+        initNewsData();
+        initRecyclerViewData();
+    }
+
 
     private void initMap() {
         if (mAMap == null) {
@@ -151,90 +292,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
             mAMap = mMapView.getMap();
             setUpMap();
         }
-    }
-
-    private void initView() {
-        childrenGridList = new ArrayList<>();
-        departmentList = new ArrayList<>();
-        childPolygons = new ArrayList<>();
-        peopleList = new ArrayList<>();
-        placeList = new ArrayList<>();
-        categoryList = new ArrayList<>();
-
-        mContext = this;
-
-        mMapContainer.setScrollView(mScrollView);
-
-        mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeRegionAdapter = new HomeRegionAdapter(SubGridActivity.this);
-        mHomeRegionAdapter.setListener(new HomeRegionAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this, SubGridActivity.class);
-                String gridId = String.valueOf(childrenGridList.get(position).getId());
-                intent.putExtra("gridId", gridId);
-                intent.putExtra("gridName",childrenGridList.get(position).getName());
-                startActivity(intent);
-            }
-        });
-        mRegionRecyclerView.setAdapter(mHomeRegionAdapter);
-        mHomeRegionAdapter.setGridList(childrenGridList);
-        mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeDepartmentAdapter = new HomeUnitAdapter(SubGridActivity.this);
-        mHomeDepartmentAdapter.setListener(new HomeUnitAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this, DepartmentWorkActivity.class);
-                String departmentId = String.valueOf(departmentList.get(position).getId());
-                intent.putExtra("id",departmentId);
-                startActivity(intent);
-            }
-        });
-        mUnitRecyclerView.setAdapter(mHomeDepartmentAdapter);
-        mHomeDepartmentAdapter.setDepartmentList(departmentList);
-
-        //重点地点。。。。没有实体类，等接口中出现数据在进行更改
-        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomePlaceAdapter = new HomePlaceAdapter(SubGridActivity.this);
-        mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
-        mHomePlaceAdapter.setList(placeList);
-
-        mPeopleRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomePeopleAdapter = new HomePeopleAdapter(SubGridActivity.this);
-        mHomePeopleAdapter.setListener(new HomePeopleAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this,FocusGroupActivity.class);
-                Gson gson =new Gson();
-                String peopleStr = gson.toJson(peopleList.get(position));
-                intent.putExtra("people",peopleStr);
-                startActivity(intent);
-            }
-        });
-        mPeopleRecyclerView.setAdapter(mHomePeopleAdapter);
-        mHomePeopleAdapter.setList(peopleList);
-
-        mWorkRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeCategoryAdapter = new HomeCategoryAdapter(SubGridActivity.this);
-        mHomeCategoryAdapter.setListener(new HomeCategoryAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this, SubWorkActivity.class);
-                intent.putExtra("gridId", gridId);
-                intent.putExtra("categoryId",categoryList.get(position).getId());
-                startActivity(intent);
-            }
-        });
-        mWorkRecyclerView.setAdapter(mHomeCategoryAdapter);
-        mHomeCategoryAdapter.setList(categoryList);
-
-        initRecyclerViewData();
-        mBackImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+//        setUpMap();
     }
 
     private void setUpMap() {
@@ -248,6 +306,28 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         mUiSettings.setZoomGesturesEnabled(true);
         //滑动手势
         mUiSettings.setScrollGesturesEnabled(true);
+        //所有手势
+        mUiSettings.setAllGesturesEnabled(true);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if (marker != null) {
+            marker.remove();
+        }
+        marker = mAMap.addMarker(new MarkerOptions().position(latLng));
+        marker.setVisible(false);
+        for (int i = 0; i < childPolygons.size(); i++) {
+            boolean b1 = childPolygons.get(i).contains(latLng);
+            if (b1) {
+                Intent intent = new Intent(getActivity(), SubGridActivityLand.class);
+                String gridId = String.valueOf(childrenGridList.get(i).getId());
+                intent.putExtra("gridId", gridId);
+                intent.putExtra("gridName",childrenGridList.get(i).getName());
+                startActivity(intent);
+                break;
+            }
+        }
     }
 
     /**
@@ -257,16 +337,9 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        int mCurrentOrientation = getResources().getConfiguration().orientation;
-        //横屏
-        if ( mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE ) {
-            Intent intent = new Intent(SubGridActivity.this, SubGridActivityLand.class);
-            intent.putExtra("gridId", gridId);
-            intent.putExtra("gridName",gridName);
-            startActivity(intent);
-            finish();
-        }
+        startNews(info);
     }
+
 
     @Override
     public void onPause() {
@@ -281,54 +354,20 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        int mCurrentOrientation = getResources().getConfiguration().orientation;
-        //横屏
-        if ( mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE ) {
-            Intent intent = new Intent(SubGridActivity.this, SubGridActivityLand.class);
-            intent.putExtra("gridId", gridId);
-            intent.putExtra("gridName",gridName);
-            startActivity(intent);
-            finish();
-        }
-    }
-
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    public void onDestroyView() {
+        super.onDestroyView();
+//        mUnbinder.unbind();
     }
 
-    @Override
-    public void onMapClick(LatLng latLng) {
-        if (marker != null) {
-            marker.remove();
-        }
-        marker = mAMap.addMarker(new MarkerOptions().position(latLng));
-        marker.setVisible(false);
-        for (int i = 0; i < childPolygons.size(); i++) {
-            boolean b1 = childPolygons.get(i).contains(latLng);
-            if (b1) {
-                Intent intent = new Intent(SubGridActivity.this, SubGridActivity.class);
-                String gridId = String.valueOf(childrenGridList.get(i).getId());
-                intent.putExtra("gridId", gridId);
-                intent.putExtra("gridName",childrenGridList.get(i).getName());
-                startActivity(intent);
-                break;
-            }
-        }
-    }
 
     private void initRecyclerViewData() {
-        String token = PreferenceUtils.getPerfString(mContext, "token", "");
+        String token = PreferenceUtils.getPerfString(getContext(), "token", "");
         String url = getString(R.string.base_url) + "grid/" + gridId;
         mHttp = new FinalHttp();
         mHttp.addHeader("Authorization", "Bearer " + token);
@@ -344,6 +383,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                         //获取当前用户 grid 信息
                         JSONObject gridJb = data.getJSONObject("grid");
                         mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
+                        mPageNameTv.setText(mGridEntity.getName());
                         List<LatLng> bottomLatLng = LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形
                         addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(), bottomLatLng, 8);
@@ -371,7 +411,6 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                             mRegionLayout.setVisibility(View.GONE);
                         }
 
-
                         //获取相关部门信息
                         JSONArray departmentArray = data.getJSONArray("department");
                         departmentList.clear();
@@ -380,7 +419,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                                 DepartmentEntity departmentEntity = gson.fromJson(departmentArray.getJSONObject(i).toString(), DepartmentEntity.class);
                                 departmentList.add(departmentEntity);
                             }
-                            mHomeDepartmentAdapter.setDepartmentList(departmentList);
+                            mHomeUnitAdapter.setDepartmentList(departmentList);
                         } else {
                             mUnitLayout.setVisibility(View.GONE);
                         }
@@ -410,7 +449,6 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                         } else {
                             mPeopleLayout.setVisibility(View.GONE);
                         }
-
                         //工作台账
                         JSONArray categoryArray = data.getJSONArray("taskCategory");
                         categoryList.clear();
@@ -424,7 +462,50 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                             mWorkLayout.setVisibility(View.GONE);
                         }
                     } else {
-                        ToastUtil.show(mContext, jb.getString("message"));
+                        ToastUtil.show(getContext(), jb.getString("message"));
+                    }
+                    mProgressDialog.dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                ToastUtil.show(getContext(), strMsg);
+                mProgressDialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * 获取新闻信息
+     */
+    private void initNewsData() {
+        String token = PreferenceUtils.getPerfString(getContext(), "token", "");
+        String url = getString(R.string.base_url) + "infoListRecent";
+        mHttp = new FinalHttp();
+        mHttp.addHeader("Authorization", "Bearer " + token);
+        mHttp.get(url, new AjaxCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                try {
+                    JSONObject jb = new JSONObject(s);
+                    if (jb.getInt("code") == 200) {
+                        JSONArray data = jb.getJSONArray("data");
+                        if (data.length() > 0) {
+                            info.clear();
+                            Gson gson = new Gson();
+                            for (int i = 0; i < data.length(); i++) {
+                                InfoEntity infoEntity = gson.fromJson(data.getJSONObject(i).toString(), InfoEntity.class);
+                                info.add(infoEntity.getTitle());
+                            }
+                            startNews(info);
+                        }
+                    } else {
+                        ToastUtil.show(getContext(), jb.getString("message"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -434,10 +515,13 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                ToastUtil.show(mContext, strMsg);
+                ToastUtil.show(getContext(), strMsg);
             }
         });
     }
+
+
+    // 绘制区域
 
     /**
      * @param strokeColor 边界颜色
@@ -460,5 +544,10 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         // 在地图上添加一个多边形（polygon）对象
         polygon = mAMap.addPolygon(polygonOptions);
         childPolygons.add(polygon);
+    }
+
+
+    private void startNews(List<String> list){
+        marqueeNewViewOne.startWithList(list, R.anim.anim_bottom_in, R.anim.anim_top_out);
     }
 }

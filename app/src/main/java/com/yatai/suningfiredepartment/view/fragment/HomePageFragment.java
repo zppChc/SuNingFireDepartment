@@ -17,6 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.AMapOptions;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
@@ -64,7 +65,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.view.widget.MapContainer;
 
 import butterknife.BindView;
@@ -81,8 +81,6 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     MapContainer mMapContainer;
     @BindView(R.id.map)
     MapView mMapView;
-    @BindView(R.id.home_page_news_layout)
-    LinearLayout mNewsLayout;
     @BindView(R.id.marquee_new_view_one)
     MarqueeView marqueeNewViewOne;
     //相关网格 中网格
@@ -314,6 +312,8 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         mUiSettings.setScrollGesturesEnabled(true);
         //所有手势
         mUiSettings.setAllGesturesEnabled(true);
+        //设置放缩图标在右下
+        mUiSettings.setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_BUTTOM);
     }
 
 
@@ -359,16 +359,6 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         mMapView.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Logger.i("HomePage 竖屏");
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // port do nothing is ok
-            Logger.i("HomePage 横屏");
-        }
-    }
 
     @Override
     public void onDestroy() {

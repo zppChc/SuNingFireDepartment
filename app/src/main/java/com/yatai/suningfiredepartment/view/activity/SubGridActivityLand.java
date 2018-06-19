@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.amap.api.maps2d.AMap;
@@ -25,7 +24,6 @@ import com.amap.api.maps2d.model.Polygon;
 import com.amap.api.maps2d.model.PolygonOptions;
 import com.amap.api.maps2d.model.PolylineOptions;
 import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.DepartmentEntity;
 import com.yatai.suningfiredepartment.entity.GridEntity;
@@ -41,7 +39,6 @@ import com.yatai.suningfiredepartment.view.adapter.HomePeopleAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomePlaceAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeRegionAdapter;
 import com.yatai.suningfiredepartment.view.adapter.HomeUnitAdapter;
-import com.yatai.suningfiredepartment.view.widget.MapContainer;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -56,16 +53,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * @author chc
- * 2018.6.4
- * 展示子网格信息，界面布局与首页相同
- */
-public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClickListener {
-    @BindView(R.id.map_container)
-    MapContainer mMapContainer;
-    @BindView(R.id.scroll_view)
-    ScrollView mScrollView;
+public class SubGridActivityLand extends AppCompatActivity implements AMap.OnMapClickListener {
     @BindView(R.id.title_name)
     TextView mGridNameTv;
     @BindView(R.id.title_image_back)
@@ -127,7 +115,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        setContentView(R.layout.activity_sub_gird);
+        setContentView(R.layout.activity_sub_grid_land);
 
         ButterKnife.bind(this);
         Intent intent = getIntent();
@@ -163,14 +151,12 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
 
         mContext = this;
 
-        mMapContainer.setScrollView(mScrollView);
-
-        mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeRegionAdapter = new HomeRegionAdapter(SubGridActivity.this);
+        mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivityLand.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomeRegionAdapter = new HomeRegionAdapter(SubGridActivityLand.this);
         mHomeRegionAdapter.setListener(new HomeRegionAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this, SubGridActivity.class);
+                Intent intent = new Intent(SubGridActivityLand.this, SubGridActivity.class);
                 String gridId = String.valueOf(childrenGridList.get(position).getId());
                 intent.putExtra("gridId", gridId);
                 intent.putExtra("gridName",childrenGridList.get(position).getName());
@@ -179,12 +165,12 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         });
         mRegionRecyclerView.setAdapter(mHomeRegionAdapter);
         mHomeRegionAdapter.setGridList(childrenGridList);
-        mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeDepartmentAdapter = new HomeUnitAdapter(SubGridActivity.this);
+        mUnitRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivityLand.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomeDepartmentAdapter = new HomeUnitAdapter(SubGridActivityLand.this);
         mHomeDepartmentAdapter.setListener(new HomeUnitAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this, DepartmentWorkActivity.class);
+                Intent intent = new Intent(SubGridActivityLand.this, DepartmentWorkActivity.class);
                 String departmentId = String.valueOf(departmentList.get(position).getId());
                 intent.putExtra("id",departmentId);
                 startActivity(intent);
@@ -194,17 +180,17 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         mHomeDepartmentAdapter.setDepartmentList(departmentList);
 
         //重点地点。。。。没有实体类，等接口中出现数据在进行更改
-        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomePlaceAdapter = new HomePlaceAdapter(SubGridActivity.this);
+        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivityLand.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomePlaceAdapter = new HomePlaceAdapter(SubGridActivityLand.this);
         mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
         mHomePlaceAdapter.setList(placeList);
 
-        mPeopleRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomePeopleAdapter = new HomePeopleAdapter(SubGridActivity.this);
+        mPeopleRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivityLand.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomePeopleAdapter = new HomePeopleAdapter(SubGridActivityLand.this);
         mHomePeopleAdapter.setListener(new HomePeopleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this,FocusGroupActivity.class);
+                Intent intent = new Intent(SubGridActivityLand.this,FocusGroupActivity.class);
                 Gson gson =new Gson();
                 String peopleStr = gson.toJson(peopleList.get(position));
                 intent.putExtra("people",peopleStr);
@@ -214,12 +200,12 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         mPeopleRecyclerView.setAdapter(mHomePeopleAdapter);
         mHomePeopleAdapter.setList(peopleList);
 
-        mWorkRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomeCategoryAdapter = new HomeCategoryAdapter(SubGridActivity.this);
+        mWorkRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivityLand.this, LinearLayoutManager.HORIZONTAL, false));
+        mHomeCategoryAdapter = new HomeCategoryAdapter(SubGridActivityLand.this);
         mHomeCategoryAdapter.setListener(new HomeCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this, SubWorkActivity.class);
+                Intent intent = new Intent(SubGridActivityLand.this, SubWorkActivity.class);
                 intent.putExtra("gridId", gridId);
                 intent.putExtra("categoryId",categoryList.get(position).getId());
                 startActivity(intent);
@@ -258,9 +244,10 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         super.onResume();
         mMapView.onResume();
         int mCurrentOrientation = getResources().getConfiguration().orientation;
-        //横屏
-        if ( mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE ) {
-            Intent intent = new Intent(SubGridActivity.this, SubGridActivityLand.class);
+        //竖屏
+        if ( mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ) {
+
+            Intent intent = new Intent(SubGridActivityLand.this, SubGridActivityLand.class);
             intent.putExtra("gridId", gridId);
             intent.putExtra("gridName",gridName);
             startActivity(intent);
@@ -284,9 +271,10 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         int mCurrentOrientation = getResources().getConfiguration().orientation;
-        //横屏
-        if ( mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE ) {
-            Intent intent = new Intent(SubGridActivity.this, SubGridActivityLand.class);
+        //竖屏
+        if ( mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT ) {
+
+            Intent intent = new Intent(SubGridActivityLand.this, SubGridActivityLand.class);
             intent.putExtra("gridId", gridId);
             intent.putExtra("gridName",gridName);
             startActivity(intent);
@@ -317,7 +305,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         for (int i = 0; i < childPolygons.size(); i++) {
             boolean b1 = childPolygons.get(i).contains(latLng);
             if (b1) {
-                Intent intent = new Intent(SubGridActivity.this, SubGridActivity.class);
+                Intent intent = new Intent(SubGridActivityLand.this, SubGridActivity.class);
                 String gridId = String.valueOf(childrenGridList.get(i).getId());
                 intent.putExtra("gridId", gridId);
                 intent.putExtra("gridName",childrenGridList.get(i).getName());

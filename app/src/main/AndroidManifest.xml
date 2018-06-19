@@ -55,9 +55,14 @@
 
         <activity
             android:name=".view.activity.MainActivity"
-            android:theme="@style/TranslucentTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:hardwareAccelerated="false"/>
+            android:hardwareAccelerated="false"
+            android:theme="@style/TranslucentTheme" />
+
+        <activity android:name=".view.activity.MainActivityLand"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:hardwareAccelerated="false"
+            android:theme="@style/TranslucentTheme"/>
         <activity
             android:name=".view.activity.FocusGroupActivity"
             android:theme="@style/ActivityTranslucentTheme" />
@@ -66,9 +71,14 @@
             android:theme="@style/ActivityTranslucentTheme" />
         <activity
             android:name=".view.activity.SubGridActivity"
-            android:theme="@style/ActivityTranslucentTheme"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:hardwareAccelerated="false"/>
+            android:hardwareAccelerated="false"
+            android:theme="@style/ActivityTranslucentTheme" />
+
+        <activity android:name=".view.activity.SubGridActivityLand"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="false"
+            android:theme="@style/ActivityTranslucentTheme" />
         <activity
             android:name=".view.activity.SubWorkActivity"
             android:theme="@style/ActivityTranslucentTheme" />
@@ -95,8 +105,10 @@
         <activity
             android:name=".view.activity.FocusPlaceActivity"
             android:theme="@style/ActivityTranslucentTheme" />
-        <activity android:name=".view.activity.DepartmentWorkActivity"
-            android:theme="@style/ActivityTranslucentTheme"/>
+        <activity
+            android:name=".view.activity.DepartmentWorkActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
+
     </application>
 
 </manifest>

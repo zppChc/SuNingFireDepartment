@@ -41,7 +41,7 @@ public class FocusPlaceActivity extends AppCompatActivity {
     TextView mTitleName;
     @BindView(R.id.focus_unit_recycler_view)
     RecyclerView mRecyclerView;
-    @BindView(R.id.focus_group_refresh)
+        @BindView(R.id.focus_group_refresh)
     SmartRefreshLayout mRefresh;
 
     FocusPlaceAdapter mAdapter;
