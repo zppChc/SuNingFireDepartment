@@ -3,9 +3,11 @@ package com.yatai.suningfiredepartment.view.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +49,7 @@ public class WorkCalendarAdapter extends RecyclerView.Adapter<WorkCalendarAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         if (mList.get(position).getDay() == 0){
             holder.day.setVisibility(View.GONE);
             holder.desc.setVisibility(View.GONE);

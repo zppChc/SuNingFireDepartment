@@ -120,7 +120,13 @@ public class WorkCalendarFragment extends Fragment {
         workCalendarList = new ArrayList<>();
         mHttp = new FinalHttp();
 
-        mBack.setVisibility(View.GONE);
+        mBack.setVisibility(View.VISIBLE);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finish();
+            }
+        });
         yearMonthTv.setText(""+getYear()+"年"+getMonth()+"月");
 
         yearMonthTv.setOnClickListener(new View.OnClickListener() {
