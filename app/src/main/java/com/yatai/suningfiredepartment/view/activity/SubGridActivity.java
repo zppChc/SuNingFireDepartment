@@ -62,10 +62,6 @@ import butterknife.ButterKnife;
  * 展示子网格信息，界面布局与首页相同
  */
 public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClickListener {
-    @BindView(R.id.map_container)
-    MapContainer mMapContainer;
-    @BindView(R.id.scroll_view)
-    ScrollView mScrollView;
     @BindView(R.id.title_name)
     TextView mGridNameTv;
     @BindView(R.id.title_image_back)
@@ -98,6 +94,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
 
     private String gridId;
     private String gridName;
+    private int gridLevel;
     private FinalHttp mHttp;
     private Context mContext;
 
@@ -133,8 +130,21 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         Intent intent = getIntent();
         gridId = intent.getStringExtra("gridId");
         gridName = intent.getStringExtra("gridName");
-        mGridNameTv.setText(gridName);
-//        ToastUtil.show(this, "GridId: " + gridId);
+        gridLevel = intent.getIntExtra("gridLevel",0);
+        switch (gridLevel){
+            case 1:
+                mGridNameTv.setText(gridName+"(大网格)");
+                break;
+            case 2:
+                mGridNameTv.setText(gridName+"(中网格)");
+                break;
+            case 3:
+                mGridNameTv.setText(gridName+"(小网格)");
+                break;
+            default:
+                mGridNameTv.setText(gridName);
+                break;
+        }
 
         //在activity执行onCreate时执行mapView.onCreate(saveInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
@@ -163,7 +173,6 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
 
         mContext = this;
 
-        mMapContainer.setScrollView(mScrollView);
 
         mRegionRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
         mHomeRegionAdapter = new HomeRegionAdapter(SubGridActivity.this);
@@ -174,6 +183,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                 String gridId = String.valueOf(childrenGridList.get(position).getId());
                 intent.putExtra("gridId", gridId);
                 intent.putExtra("gridName",childrenGridList.get(position).getName());
+                intent.putExtra("gridLevel",childrenGridList.get(position).getGrid_level());
                 startActivity(intent);
             }
         });
@@ -243,11 +253,11 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         mUiSettings = mAMap.getUiSettings();
 
         //隐藏缩放按钮
-        mUiSettings.setZoomControlsEnabled(true);
+        mUiSettings.setZoomControlsEnabled(false);
         //缩放手势
-        mUiSettings.setZoomGesturesEnabled(true);
+        mUiSettings.setZoomGesturesEnabled(false);
         //滑动手势
-        mUiSettings.setScrollGesturesEnabled(true);
+        mUiSettings.setScrollGesturesEnabled(false);
     }
 
     /**
@@ -263,6 +273,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
             Intent intent = new Intent(SubGridActivity.this, SubGridActivityLand.class);
             intent.putExtra("gridId", gridId);
             intent.putExtra("gridName",gridName);
+            intent.putExtra("gridLevel",gridLevel);
             startActivity(intent);
             finish();
         }
@@ -289,6 +300,7 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
             Intent intent = new Intent(SubGridActivity.this, SubGridActivityLand.class);
             intent.putExtra("gridId", gridId);
             intent.putExtra("gridName",gridName);
+            intent.putExtra("gridLevel",gridLevel);
             startActivity(intent);
             finish();
         }
@@ -344,6 +356,20 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                         //获取当前用户 grid 信息
                         JSONObject gridJb = data.getJSONObject("grid");
                         mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
+                        switch (mGridEntity.getGrid_level()){
+                            case 1:
+                                mGridNameTv.setText(mGridEntity.getName()+"(大网格)");
+                                break;
+                            case 2:
+                                mGridNameTv.setText(mGridEntity.getName()+"(中网格)");
+                                break;
+                            case 3:
+                                mGridNameTv.setText(mGridEntity.getName()+"(小网格)");
+                                break;
+                            default:
+                                mGridNameTv.setText(mGridEntity.getName());
+                                break;
+                        }
                         List<LatLng> bottomLatLng = LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形
                         addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(), bottomLatLng, 8);

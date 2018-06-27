@@ -23,6 +23,7 @@ import com.yatai.suningfiredepartment.view.fragment.HomePageFragment;
 import com.yatai.suningfiredepartment.view.fragment.HomePageFragmentLand;
 import com.yatai.suningfiredepartment.view.fragment.InfoFragment;
 import com.yatai.suningfiredepartment.view.fragment.PersonalFragment;
+import com.yatai.suningfiredepartment.view.fragment.WorkCalendarFragment;
 import com.yatai.suningfiredepartment.view.fragment.WorkFragment;
 import com.yatai.suningfiredepartment.view.widget.ViewPagerSlide;
 
@@ -108,6 +109,7 @@ public class MainActivity extends BaseActivity {
         fragments = new ArrayList<>();
         HomePageFragment homePageFragment = HomePageFragment.newInstance(gridId);
         WorkFragment workFragment = WorkFragment.newInstance(gridId);
+//        WorkCalendarFragment workFragment  = WorkCalendarFragment.newInstance(gridId,0);
         InfoFragment infoFragment = InfoFragment.newInstance(gridId);
 //        CensusFragment censusFragment = CensusFragment.newInstance(gridId);
         PersonalFragment personalFragment = PersonalFragment.newInstance(gridId);
@@ -203,7 +205,7 @@ public class MainActivity extends BaseActivity {
                 exitTime = System.currentTimeMillis();
                 return false;
             } else {
-                this.finish();
+                MainActivity.this.finish();
                 return true;
             }
         } else {

@@ -75,10 +75,6 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
 
     @BindView(R.id.title_name)
     TextView mPageNameTv;
-    @BindView(R.id.scroll_view)
-    ScrollView mScrollView;
-    @BindView(R.id.map_container)
-    MapContainer mMapContainer;
     @BindView(R.id.map)
     MapView mMapView;
     @BindView(R.id.marquee_new_view_one)
@@ -196,7 +192,6 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         String str = formatter.format(curDate);
         info.add("欢迎使用 "+str);
 
-        mMapContainer.setScrollView(mScrollView);
 
         marqueeNewViewOne.setOnItemClickListener(new MarqueeView.OnItemClickListener() {
             @Override
@@ -217,6 +212,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                 String gridId = String.valueOf(childrenGridList.get(position).getId());
                 intent.putExtra("gridId", gridId);
                 intent.putExtra("gridName",childrenGridList.get(position).getName());
+                intent.putExtra("gridLevel",childrenGridList.get(position).getGrid_level());
                 startActivity(intent);
             }
         });
@@ -305,15 +301,15 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         mUiSettings = mAMap.getUiSettings();
 
         //隐藏缩放按钮
-        mUiSettings.setZoomControlsEnabled(true);
+        mUiSettings.setZoomControlsEnabled(false);
         //缩放手势
-        mUiSettings.setZoomGesturesEnabled(true);
+        mUiSettings.setZoomGesturesEnabled(false);
         //滑动手势
-        mUiSettings.setScrollGesturesEnabled(true);
+        mUiSettings.setScrollGesturesEnabled(false);
         //所有手势
-        mUiSettings.setAllGesturesEnabled(true);
+        mUiSettings.setAllGesturesEnabled(false);
         //设置放缩图标在右下
-        mUiSettings.setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_BUTTOM);
+        mUiSettings.setZoomPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);
     }
 
 
@@ -389,7 +385,20 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                         //获取当前用户 grid 信息
                         JSONObject gridJb = data.getJSONObject("grid");
                         mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
-                        mPageNameTv.setText(mGridEntity.getName());
+                        switch (mGridEntity.getGrid_level()){
+                            case 1:
+                                mPageNameTv.setText(mGridEntity.getName()+"(大网格)");
+                                break;
+                            case 2:
+                                mPageNameTv.setText(mGridEntity.getName()+"(中网格)");
+                                break;
+                            case 3:
+                                mPageNameTv.setText(mGridEntity.getName()+"(小网格)");
+                                break;
+                            default:
+                                mPageNameTv.setText(mGridEntity.getName());
+                                break;
+                        }
                         List<LatLng> bottomLatLng = LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形
                         addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(), bottomLatLng, 8);

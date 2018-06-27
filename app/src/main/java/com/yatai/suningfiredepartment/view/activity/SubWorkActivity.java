@@ -1,6 +1,7 @@
 package com.yatai.suningfiredepartment.view.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -52,6 +53,8 @@ public class SubWorkActivity extends AppCompatActivity {
     SmartRefreshLayout mRefreshLayout;
     @BindView(R.id.title_image_back)
     ImageView mBackImg;
+    @BindView(R.id.work_calendar)
+    TextView mWorkCalendarTv;
     @BindView(R.id.title_name)
     TextView mTitleTv;
 
@@ -64,6 +67,7 @@ public class SubWorkActivity extends AppCompatActivity {
     private WorkItemAdapter mWorkItemAdapter;
     private ProgressDialog mProgressDialog;
     private int refreshFlag = 0;
+    private Context mContext;
     private LinearLayoutManager categoryLLM;
 
     @Override
@@ -84,16 +88,27 @@ public class SubWorkActivity extends AppCompatActivity {
         categoryList = new ArrayList<>();
         workList = new ArrayList<>();
         mHttp = new FinalHttp();
+        mContext = this;
 
         mTitleTv.setText("工 作");
+        mWorkCalendarTv.setVisibility(View.VISIBLE);
+        mWorkCalendarTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, SubWorkCalendarActivity.class);
+                intent.putExtra("gridId",gridId);
+                intent.putExtra("categoryId",0);
+                startActivity(intent);
+            }
+        });
 
-        mProgressDialog = new ProgressDialog(SubWorkActivity.this, ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog = new ProgressDialog(mContext, ProgressDialog.THEME_HOLO_DARK);
         mProgressDialog.setMessage("正在加载...");
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
 
-        mCategoryAdapter = new WorkCategoryAdapter(SubWorkActivity.this);
+        mCategoryAdapter = new WorkCategoryAdapter(mContext);
         mCategoryAdapter.setClickListener(new WorkCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -110,12 +125,12 @@ public class SubWorkActivity extends AppCompatActivity {
             }
         });
 
-        categoryLLM = new LinearLayoutManager(SubWorkActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        categoryLLM = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         workCategoryRecyclerView.setLayoutManager(categoryLLM);
         workCategoryRecyclerView.setAdapter(mCategoryAdapter);
         mCategoryAdapter.setCategoryEntityList(categoryList);
 
-        mWorkItemAdapter = new WorkItemAdapter(SubWorkActivity.this);
+        mWorkItemAdapter = new WorkItemAdapter(mContext);
         mWorkItemAdapter.setListener(new WorkItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -123,19 +138,21 @@ public class SubWorkActivity extends AppCompatActivity {
                 String workItemDetail = gson.toJson(workList.get(position));
                 //工作状态为未完成，跳转到一个未完成界面
                 if (workList.get(position).getStatus() == 0) {
-                    Intent intent = new Intent(SubWorkActivity.this, WorkDetailActivity.class);
-                    intent.putExtra("workItem", workItemDetail);
-                    startActivity(intent);
+                    if (gridId.equals(PreferenceUtils.getPerfString(mContext,"gridId",""))){
+                        Intent intent = new Intent(mContext, WorkDetailActivity.class);
+                        intent.putExtra("workItem", workItemDetail);
+                        startActivity(intent);
+                    }
                 } else {
-                    //跳转到 查看单个任务界面
-                    Intent intent = new Intent(SubWorkActivity.this, WorkDetailFinishActivity.class);
-                    intent.putExtra("workItem", workItemDetail);
-                    //从workItem 中获取ID,可以用来查询单个数据
-                    startActivity(intent);
+                        //跳转到 查看单个任务界面
+                        Intent intent = new Intent(mContext, WorkDetailFinishActivity.class);
+                        intent.putExtra("workItem", workItemDetail);
+                        //从workItem 中获取ID,可以用来查询单个数据
+                        startActivity(intent);
                 }
             }
         });
-        workRecyclerView.setLayoutManager(new LinearLayoutManager(SubWorkActivity.this, LinearLayoutManager.VERTICAL, false));
+        workRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         workRecyclerView.setAdapter(mWorkItemAdapter);
 
         mRefreshLayout.setOnLoadMoreListener(new OnRefreshLoadMoreListener() {
@@ -183,7 +200,7 @@ public class SubWorkActivity extends AppCompatActivity {
 
     private void getCategoryData() {
         String url = getString(R.string.base_url) + "taskCategory";
-        String token = "Bearer " + PreferenceUtils.getPerfString(SubWorkActivity.this, "token", "");
+        String token = "Bearer " + PreferenceUtils.getPerfString(mContext, "token", "");
         mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {
             @Override
@@ -227,7 +244,7 @@ public class SubWorkActivity extends AppCompatActivity {
                             mCategoryAdapter.setCategoryEntityList(categoryList);
                         }
                     } else {
-                        ToastUtil.show(SubWorkActivity.this, jb.getString("message"));
+                        ToastUtil.show(mContext, jb.getString("message"));
                         mCategoryAdapter.setCategoryEntityList(categoryList);
                     }
                 } catch (JSONException e) {
@@ -238,14 +255,14 @@ public class SubWorkActivity extends AppCompatActivity {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                ToastUtil.show(SubWorkActivity.this, strMsg);
+                ToastUtil.show(mContext, strMsg);
             }
         });
     }
 
     private void getAllWorkList() {
         String url = getString(R.string.base_url) + "grid/" + gridId + "/task";
-        String token = "Bearer " + PreferenceUtils.getPerfString(SubWorkActivity.this, "token", "");
+        String token = "Bearer " + PreferenceUtils.getPerfString(mContext, "token", "");
         mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {
             @Override
@@ -267,7 +284,7 @@ public class SubWorkActivity extends AppCompatActivity {
                             mWorkItemAdapter.setList(workList);
                         }
                     } else {
-                        ToastUtil.show(SubWorkActivity.this, jb.getString("message"));
+                        ToastUtil.show(mContext, jb.getString("message"));
                         mWorkItemAdapter.setList(workList);
                     }
                     mProgressDialog.dismiss();
@@ -279,7 +296,7 @@ public class SubWorkActivity extends AppCompatActivity {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                ToastUtil.show(SubWorkActivity.this, strMsg);
+                ToastUtil.show(mContext, strMsg);
                 mProgressDialog.dismiss();
             }
         });
@@ -287,7 +304,7 @@ public class SubWorkActivity extends AppCompatActivity {
 
     private void getWorkListByCategoryId(int categoryId) {
         String url = getString(R.string.base_url) + "grid/" + gridId + "/task/" + categoryId;
-        String token = "Bearer " + PreferenceUtils.getPerfString(SubWorkActivity.this, "token", "");
+        String token = "Bearer " + PreferenceUtils.getPerfString(mContext, "token", "");
         mHttp.addHeader("Authorization", token);
         mHttp.get(url, new AjaxCallBack<String>() {
             @Override
@@ -310,7 +327,7 @@ public class SubWorkActivity extends AppCompatActivity {
                             mWorkItemAdapter.notifyDataSetChanged();
                         }
                     } else {
-                        ToastUtil.show(SubWorkActivity.this, jb.getString("message"));
+                        ToastUtil.show(mContext, jb.getString("message"));
                         mWorkItemAdapter.setList(workList);
                     }
                     mProgressDialog.dismiss();
@@ -322,7 +339,7 @@ public class SubWorkActivity extends AppCompatActivity {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                ToastUtil.show(SubWorkActivity.this, strMsg);
+                ToastUtil.show(mContext, strMsg);
                 mProgressDialog.dismiss();
             }
         });

@@ -103,91 +103,14 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
     }
 
     private void delaySplash(){
-        List<String> picList = FileUtil.getAllAD();
-        if (picList.size() > 0){
-            Random random = new Random();
-            int index = random.nextInt(picList.size());
-            int imgIndex = PreferenceUtils.getPrefInt(this,"splash_img_index",0);
-            Logger.i("当前的imageIndex= "+imgIndex);
-            if (index == imgIndex){
-                if (index >= picList.size()){
-                    index --;
-                }else if (imgIndex==0){
-                    if (index +1 <picList.size()){
-                        index++;
-                    }
-                }
-            }
-            PreferenceUtils.setPrefInt(this,"splash_img_index",index);
-            Logger.i("当前的picList.size =" + picList.size() + " index = " +index);
-            File file = new File(picList.get(index));
-            try{
-                InputStream fis = new FileInputStream(file);
-                splashImg.setImageDrawable(InputStream2Drawable(fis));
-                animWelcomeImage();
-                fis.close();
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
-            }catch (IOException e){
-
-            }
-
-        }else{
             //动画完成后启动 登陆页面 或者 根据需求进行更改
-            if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
-                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                startActivity(intent);
-                SplashActivity.this.finish();
-            }else{
-                validateToken(PreferenceUtils.getPerfString(MyApplication.getContext(),"token",""));
-            }
-//            try{
-//                AssetManager assetManager = this.getAssets();
-//                InputStream in  = assetManager.open("welcome_default2.jpg");
-//                splashImg.setImageDrawable(InputStream2Drawable(in));
-//                animWelcomeImage();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+        if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
+            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+            startActivity(intent);
+            SplashActivity.this.finish();
+        }else{
+            validateToken(PreferenceUtils.getPerfString(MyApplication.getContext(),"token",""));
         }
-    }
-
-    public Drawable InputStream2Drawable(InputStream is){
-        Drawable drawable = BitmapDrawable.createFromStream(is,"splashImg");
-        return drawable;
-    }
-
-    private void animWelcomeImage(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(splashImg,"translationX", -100F);
-        animator.setDuration(1500L).start();
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                //动画完成后启动 登陆页面 或者 根据需求进行更改
-                if (PreferenceUtils.getPerfString(MyApplication.getContext(),"token","").isEmpty()) {
-                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    SplashActivity.this.finish();
-                }else{
-                    validateToken(PreferenceUtils.getPerfString(MyApplication.getContext(),"token",""));
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
     }
 
     @Override
@@ -203,7 +126,6 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
             setContentView(R.layout.activity_splash);
             ButterKnife.bind(SplashActivity.this);
             delaySplash();
-            String deviceId = AppUtil.getDeviceId(this);
         }
     }
 

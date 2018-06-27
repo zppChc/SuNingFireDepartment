@@ -17,4 +17,6 @@
     <string name="personal_modify_info">修改个人信息</string>
     <string name="personal_modify_password">修改密码</string>
     <string name="personal_logout">退出登录</string>
+
+    <string name="work_calendar">工作日历</string>
 </resources>

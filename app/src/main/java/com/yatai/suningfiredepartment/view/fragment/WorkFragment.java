@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -23,6 +24,7 @@ import com.yatai.suningfiredepartment.entity.CategoryEntity;
 import com.yatai.suningfiredepartment.entity.WorkItemEntity;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
+import com.yatai.suningfiredepartment.view.activity.SubWorkCalendarActivity;
 import com.yatai.suningfiredepartment.view.activity.WorkDetailActivity;
 import com.yatai.suningfiredepartment.view.activity.WorkDetailFinishActivity;
 import com.yatai.suningfiredepartment.view.adapter.WorkCategoryAdapter;
@@ -44,6 +46,10 @@ import butterknife.Unbinder;
 
 public class WorkFragment extends Fragment {
 
+    @BindView(R.id.title_image_back)
+    ImageView mImageBack;
+    @BindView(R.id.work_calendar)
+    TextView mWorkCalendarTv;
     @BindView(R.id.title_name)
     TextView mTitleView;
     @BindView(R.id.work_category_recycler_view)
@@ -94,6 +100,18 @@ public class WorkFragment extends Fragment {
         mHttp = new FinalHttp();
 
         mTitleView.setText("工 作");
+        mImageBack.setVisibility(View.GONE);
+        mWorkCalendarTv.setVisibility(View.VISIBLE);
+
+        mWorkCalendarTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SubWorkCalendarActivity.class);
+                intent.putExtra("gridId",gridId);
+                intent.putExtra("categoryId",0);
+                startActivity(intent);
+            }
+        });
 
         mProgressDialog = new ProgressDialog(getContext(), ProgressDialog.THEME_HOLO_DARK);
         mProgressDialog.setMessage("正在加载...");
@@ -129,9 +147,11 @@ public class WorkFragment extends Fragment {
                 String workItemDetail = gson.toJson(workList.get(position));
                 //工作状态为未完成，跳转到一个未完成界面
                 if (workList.get(position).getStatus() == 0) {
-                    Intent intent = new Intent(getActivity(), WorkDetailActivity.class);
-                    intent.putExtra("workItem", workItemDetail);
-                    startActivity(intent);
+                    if (gridId.equals(PreferenceUtils.getPerfString(getContext(),"gridId",""))) {
+                        Intent intent = new Intent(getActivity(), WorkDetailActivity.class);
+                        intent.putExtra("workItem", workItemDetail);
+                        startActivity(intent);
+                    }
                 } else {
                     //跳转到 查看单个任务界面
                     Intent intent = new Intent(getActivity(), WorkDetailFinishActivity.class);

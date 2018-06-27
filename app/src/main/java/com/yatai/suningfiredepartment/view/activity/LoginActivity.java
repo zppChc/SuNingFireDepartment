@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
@@ -46,6 +47,7 @@ public class LoginActivity extends BaseActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(LoginActivity.this);
+        Logger.i("Login Activity");
         mHttp =new FinalHttp();
     }
 
@@ -112,6 +114,7 @@ public class LoginActivity extends BaseActivity  {
         LoginActivity.this.finish();
     }
 
+
     /**
      * 当按返回键时
      * @param keyCode
@@ -126,7 +129,7 @@ public class LoginActivity extends BaseActivity  {
                 exitTime = System.currentTimeMillis();
                 return false;
             } else {
-                this.finish();
+                LoginActivity.this.finish();
                 return true;
             }
         } else {

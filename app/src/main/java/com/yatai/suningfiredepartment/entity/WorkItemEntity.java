@@ -24,6 +24,8 @@ public class WorkItemEntity implements Parcelable{
 
     private int status;
 
+    private String image;
+
     protected WorkItemEntity(Parcel in) {
         id = in.readInt();
         name = in.readString();
@@ -34,6 +36,7 @@ public class WorkItemEntity implements Parcelable{
         description = in.readString();
         record_id = in.readInt();
         status = in.readInt();
+        image = in.readString();
     }
 
     public static final Creator<WorkItemEntity> CREATOR = new Creator<WorkItemEntity>() {
@@ -120,6 +123,14 @@ public class WorkItemEntity implements Parcelable{
         this.status = status;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -136,5 +147,6 @@ public class WorkItemEntity implements Parcelable{
         parcel.writeString(description);
         parcel.writeInt(record_id);
         parcel.writeInt(status);
+        parcel.writeString(image);
     }
 }
