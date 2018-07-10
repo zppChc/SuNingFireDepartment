@@ -9,6 +9,7 @@ import android.view.View;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.view.fragment.InfoFragment;
 import com.yatai.suningfiredepartment.view.fragment.WorkCalendarFragment;
+import com.yatai.suningfiredepartment.view.fragment.WorkTableFragment;
 
 public class SubWorkCalendarActivity extends AppCompatActivity {
     String gridId;
@@ -27,5 +28,11 @@ public class SubWorkCalendarActivity extends AppCompatActivity {
             mFragmentContainer = WorkCalendarFragment.newInstance(gridId,categoryId);
             fm.beginTransaction().add(R.id.fragment_container,mFragmentContainer).commit();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
     }
 }

@@ -64,6 +64,8 @@ import butterknife.ButterKnife;
 public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClickListener {
     @BindView(R.id.title_name)
     TextView mGridNameTv;
+    @BindView(R.id.grid_num)
+    TextView mGridNum;
     @BindView(R.id.title_image_back)
     ImageView mBackImg;
     @BindView(R.id.map)
@@ -131,20 +133,21 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         gridId = intent.getStringExtra("gridId");
         gridName = intent.getStringExtra("gridName");
         gridLevel = intent.getIntExtra("gridLevel",0);
-        switch (gridLevel){
-            case 1:
-                mGridNameTv.setText(gridName+"(大网格)");
-                break;
-            case 2:
-                mGridNameTv.setText(gridName+"(中网格)");
-                break;
-            case 3:
-                mGridNameTv.setText(gridName+"(小网格)");
-                break;
-            default:
-                mGridNameTv.setText(gridName);
-                break;
-        }
+        mGridNameTv.setText(gridName);
+//        switch (gridLevel){
+//            case 1:
+//                mGridNameTv.setText(gridName+"(大网格)");
+//                break;
+//            case 2:
+//                mGridNameTv.setText(gridName+"(中网格)");
+//                break;
+//            case 3:
+//                mGridNameTv.setText(gridName+"(小网格)");
+//                break;
+//            default:
+//                mGridNameTv.setText(gridName);
+//                break;
+//        }
 
         //在activity执行onCreate时执行mapView.onCreate(saveInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
@@ -356,20 +359,23 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                         //获取当前用户 grid 信息
                         JSONObject gridJb = data.getJSONObject("grid");
                         mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
+                        mGridNameTv.setText(mGridEntity.getName());
                         switch (mGridEntity.getGrid_level()){
                             case 1:
-                                mGridNameTv.setText(mGridEntity.getName()+"(大网格)");
+                                mGridNum.setText("大网格  ");
                                 break;
                             case 2:
-                                mGridNameTv.setText(mGridEntity.getName()+"(中网格)");
+                                mGridNum.setText("中网格  ");
                                 break;
                             case 3:
-                                mGridNameTv.setText(mGridEntity.getName()+"(小网格)");
+                                mGridNum.setText("小网格  ");
                                 break;
                             default:
-                                mGridNameTv.setText(mGridEntity.getName());
+                                mGridNum.setText("");
                                 break;
                         }
+                        mGridNum.append(getString(R.string.grid_start)+data.getString("childrenGridCount")+getString(R.string.grid_end));
+                        mGridNum.setVisibility(View.VISIBLE);
                         List<LatLng> bottomLatLng = LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形
                         addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(), bottomLatLng, 8);

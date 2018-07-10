@@ -19,6 +19,13 @@
             android:id="@+id/title_name"
             style="@style/TitleTextView"/>
         <TextView
+            android:id="@+id/grid_num"
+            android:layout_marginLeft="2dp"
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/title_name"
+            android:textSize="14sp"
+            style="@style/TitleTextView"/>
+        <TextView
             android:id="@+id/work_calendar"
             style="@style/TitleTextView"
             android:layout_alignParentEnd="true"

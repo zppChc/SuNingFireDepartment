@@ -75,6 +75,8 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
 
     @BindView(R.id.title_name)
     TextView mPageNameTv;
+    @BindView(R.id.grid_num)
+    TextView mGridNum;
     @BindView(R.id.map)
     MapView mMapView;
     @BindView(R.id.marquee_new_view_one)
@@ -385,20 +387,23 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                         //获取当前用户 grid 信息
                         JSONObject gridJb = data.getJSONObject("grid");
                         mGridEntity = gson.fromJson(gridJb.toString(), GridEntity.class);
+                        mPageNameTv.setText(mGridEntity.getName());
                         switch (mGridEntity.getGrid_level()){
                             case 1:
-                                mPageNameTv.setText(mGridEntity.getName()+"(大网格)");
+                                mGridNum.setText("大网格  ");
                                 break;
                             case 2:
-                                mPageNameTv.setText(mGridEntity.getName()+"(中网格)");
+                                mGridNum.setText("中网格  ");
                                 break;
                             case 3:
-                                mPageNameTv.setText(mGridEntity.getName()+"(小网格)");
+                                mGridNum.setText("小网格  ");
                                 break;
                             default:
-                                mPageNameTv.setText(mGridEntity.getName());
+                                mGridNum.setText("");
                                 break;
                         }
+                        mGridNum.append(getString(R.string.grid_start)+data.getString("childrenGridCount")+getString(R.string.grid_end));
+                        mGridNum.setVisibility(View.VISIBLE);
                         List<LatLng> bottomLatLng = LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形
                         addArea(ColorUtil.randomStrokeRgb(), ColorUtil.transparentColor(), bottomLatLng, 8);

@@ -109,8 +109,10 @@
         <activity
             android:name=".view.activity.DepartmentWorkActivity"
             android:theme="@style/ActivityTranslucentTheme" />
-        <activity android:name=".view.activity.SubWorkCalendarActivity"
-            android:theme="@style/ActivityTranslucentTheme"/>
+        <activity
+            android:name=".view.activity.SubWorkCalendarActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
+        <activity android:name=".view.activity.SubWorkScheduleActivity"></activity>
     </application>
 
 </manifest>

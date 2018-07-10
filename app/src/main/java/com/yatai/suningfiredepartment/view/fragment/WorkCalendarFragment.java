@@ -110,8 +110,7 @@ public class WorkCalendarFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_work_calendar, container, false);
         unbinder = ButterKnife.bind(this, view);
         initView(view);
-        currentMonth = getMonth();
-        currentYear = getYear();
+
         return view;
     }
 
@@ -127,7 +126,9 @@ public class WorkCalendarFragment extends Fragment {
                 getActivity().finish();
             }
         });
-        yearMonthTv.setText(""+getYear()+"年"+getMonth()+"月");
+        currentMonth = getMonth()+1;
+        currentYear = getYear();
+        yearMonthTv.setText(""+currentYear+"年"+currentMonth+"月");
 
         yearMonthTv.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -76,6 +76,10 @@ dependencies {
     implementation 'com.github.a-voyager:AutoInstaller:v1.0'
     //图片缩放？
     implementation 'com.bm.photoview:library:1.4.1'
+    //牛逼的表格插件,太牛逼了，但是此项目中没用到
+    implementation 'com.github.huangyanbin:SmartTable:2.2.0'
+    //可以自定义表头的表格
+    implementation 'com.kelin.scrollablepanel:library:1.2.0'
 
 
 }

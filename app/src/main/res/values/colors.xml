@@ -38,4 +38,6 @@
     <color name="work_detail_gray">#999999</color>
     <color name="category_text_blue">#0d98fd</color>
     <color name="category_text_black">#666666</color>
+
+    <color name="text_gray_666666">#666666</color>
 </resources>

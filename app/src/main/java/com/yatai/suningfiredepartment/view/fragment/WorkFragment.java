@@ -29,6 +29,7 @@ import com.yatai.suningfiredepartment.view.activity.WorkDetailActivity;
 import com.yatai.suningfiredepartment.view.activity.WorkDetailFinishActivity;
 import com.yatai.suningfiredepartment.view.adapter.WorkCategoryAdapter;
 import com.yatai.suningfiredepartment.view.adapter.WorkItemAdapter;
+import com.yatai.suningfiredepartment.view.widget.BottomDialogView;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -103,13 +104,18 @@ public class WorkFragment extends Fragment {
         mImageBack.setVisibility(View.GONE);
         mWorkCalendarTv.setVisibility(View.VISIBLE);
 
+
+
         mWorkCalendarTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SubWorkCalendarActivity.class);
-                intent.putExtra("gridId",gridId);
-                intent.putExtra("categoryId",0);
-                startActivity(intent);
+                View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.item_work_dialog,null);
+                BottomDialogView bottomDialogView = new BottomDialogView(getContext(),dialogView,false,false,gridId,0);
+                bottomDialogView.show();
+//                Intent intent = new Intent(getActivity(), SubWorkCalendarActivity.class);
+//                intent.putExtra("gridId",gridId);
+//                intent.putExtra("categoryId",0);
+//                startActivity(intent);
             }
         });
 
