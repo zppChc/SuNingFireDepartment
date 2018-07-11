@@ -138,7 +138,7 @@ public class HomePageFragmentLand extends Fragment implements AMap.OnMapClickLis
     private List<PeopleEntity> peopleList;
     private List<PlaceEntity> placeList;
     private List<HomeWorkCategoryEntity> categoryList;
-    private ProgressDialog mProgressDialog;
+//    private ProgressDialog mProgressDialog;
 
 
     public static HomePageFragmentLand newInstance(String gridId){
@@ -183,12 +183,12 @@ public class HomePageFragmentLand extends Fragment implements AMap.OnMapClickLis
         infoOne = new ArrayList<>();
         infoTwo = new ArrayList<>();
         childPolygons = new ArrayList<>();
-
-        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
-        mProgressDialog.setMessage("正在加载...");
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
+//
+//        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+//        mProgressDialog.setMessage("正在加载...");
+//        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//        mProgressDialog.setCancelable(false);
+//        mProgressDialog.show();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
@@ -490,7 +490,7 @@ public class HomePageFragmentLand extends Fragment implements AMap.OnMapClickLis
                     } else {
                         ToastUtil.show(getContext(), jb.getString("message"));
                     }
-                    mProgressDialog.dismiss();
+//                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -500,7 +500,7 @@ public class HomePageFragmentLand extends Fragment implements AMap.OnMapClickLis
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 ToastUtil.show(getContext(), strMsg);
-                mProgressDialog.dismiss();
+//                mProgressDialog.dismiss();
             }
         });
     }

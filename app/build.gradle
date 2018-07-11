@@ -80,6 +80,7 @@ dependencies {
     implementation 'com.github.huangyanbin:SmartTable:2.2.0'
     //可以自定义表头的表格
     implementation 'com.kelin.scrollablepanel:library:1.2.0'
-
+    //Fragment 相应 返回键
+    implementation 'com.github.ikidou:FragmentBackHandler:2.1'
 
 }

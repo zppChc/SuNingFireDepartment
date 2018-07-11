@@ -18,9 +18,10 @@
     <string name="personal_modify_password">修改密码</string>
     <string name="personal_logout">退出登录</string>
 
-    <string name="work_calendar">日历</string>
-    <string name="work_schedule">进度表</string>
+    <string name="work_bar">工作进度</string>
+    <string name="work_calendar">工作日历</string>
+    <string name="work_schedule">工作进度表</string>
 
-    <string name="grid_start">子网格数</string>
-    <string name="grid_end"></string>
+    <string name="grid_start">包括</string>
+    <string name="grid_end">个子网格</string>
 </resources>

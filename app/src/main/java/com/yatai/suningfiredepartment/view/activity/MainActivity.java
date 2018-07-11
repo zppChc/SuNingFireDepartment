@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ikidou.fragmentBackHandler.BackHandlerHelper;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.util.CommonUtil;
@@ -210,6 +211,13 @@ public class MainActivity extends BaseActivity {
             }
         } else {
             return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!BackHandlerHelper.handleBackPress(this)) {
+            super.onBackPressed();
         }
     }
 }

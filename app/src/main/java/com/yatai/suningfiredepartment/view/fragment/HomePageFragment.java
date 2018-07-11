@@ -28,6 +28,7 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.Polygon;
 import com.amap.api.maps2d.model.PolygonOptions;
 import com.amap.api.maps2d.model.PolylineOptions;
+import com.github.ikidou.fragmentBackHandler.BackHandlerHelper;
 import com.google.gson.Gson;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.yatai.suningfiredepartment.R;
@@ -71,7 +72,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class HomePageFragment extends Fragment implements AMap.OnMapClickListener {
+public class HomePageFragment extends Fragment implements AMap.OnMapClickListener{
 
     @BindView(R.id.title_name)
     TextView mPageNameTv;
@@ -139,7 +140,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     private List<PeopleEntity> peopleList;
     private List<PlaceEntity> placeList;
     private List<HomeWorkCategoryEntity> categoryList;
-    private ProgressDialog mProgressDialog;
+//    private ProgressDialog mProgressDialog;
 
     public static HomePageFragment newInstance(String gridId) {
         Bundle args = new Bundle();
@@ -183,11 +184,11 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         infoTwo = new ArrayList<>();
         childPolygons = new ArrayList<>();
 
-        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
-        mProgressDialog.setMessage("正在加载...");
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
+//        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+//        mProgressDialog.setMessage("正在加载...");
+//        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//        mProgressDialog.setCancelable(false);
+//        mProgressDialog.show();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
@@ -377,6 +378,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
         String token = PreferenceUtils.getPerfString(getContext(), "token", "");
         String url = getString(R.string.base_url) + "grid/" + gridId;
         mHttp = new FinalHttp();
+        mHttp.configTimeout(10000);
         mHttp.addHeader("Authorization", "Bearer " + token);
         mHttp.get(url, new AjaxCallBack<String>() {
             @Override
@@ -490,7 +492,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
                     } else {
                         ToastUtil.show(getContext(), jb.getString("message"));
                     }
-                    mProgressDialog.dismiss();
+//                    mProgressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -500,7 +502,7 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 ToastUtil.show(getContext(), strMsg);
-                mProgressDialog.dismiss();
+//                mProgressDialog.dismiss();
             }
         });
     }
@@ -576,4 +578,5 @@ public class HomePageFragment extends Fragment implements AMap.OnMapClickListene
     private void startNews(List<String> list){
         marqueeNewViewOne.startWithList(list, R.anim.anim_bottom_in, R.anim.anim_top_out);
     }
+
 }
