@@ -30,11 +30,11 @@ public class BottomDialogView extends Dialog {
     private int categoryId;
 
     //这里的view其实可以替换直接传layout过来的 因为各种原因没传(lan)
-    public BottomDialogView(Context context,View view,boolean isCancelable,boolean isBackCancelable,String gridId, int categoryId) {
+    public BottomDialogView(Context context,boolean isCancelable,boolean isBackCancelable,String gridId, int categoryId) {
         super(context, R.style.MyDialog);
 
         this.context = context;
-        this.view = view;
+        this.view = LayoutInflater.from(context).inflate(R.layout.item_work_dialog,null);
         this.iscancelable = isCancelable;
         this.isBackCancelable = isBackCancelable;
         this.gridId =gridId;

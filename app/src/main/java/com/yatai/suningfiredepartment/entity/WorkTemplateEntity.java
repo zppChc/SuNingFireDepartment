@@ -3,9 +3,12 @@ package com.yatai.suningfiredepartment.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class WorkTemplateEntity implements Parcelable{
-    private String name;
+import com.google.gson.annotations.SerializedName;
 
+public class WorkTemplateEntity implements Parcelable{
+    @SerializedName("name")
+    private String name;
+    @SerializedName("type")
     private String type;
 
     private String content;

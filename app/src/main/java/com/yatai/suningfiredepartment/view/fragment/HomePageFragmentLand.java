@@ -299,6 +299,8 @@ public class HomePageFragmentLand extends Fragment implements AMap.OnMapClickLis
     }
 
     private void setUpMap() {
+        LatLng latLng = new LatLng(38.423343,115.829381);//构造一个位置
+        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
         mAMap.setOnMapClickListener(this);
         //UiSettings 主要是对地图上的控件的管理，比如指南针、logo位置（不能隐藏）.....
         mUiSettings = mAMap.getUiSettings();
@@ -403,7 +405,10 @@ public class HomePageFragmentLand extends Fragment implements AMap.OnMapClickLis
                                 mGridNum.setText("");
                                 break;
                         }
-                        mGridNum.append(getString(R.string.grid_start)+data.getString("childrenGridCount")+getString(R.string.grid_end));
+                        String childrenCount = data.getString("childrenGridCount");
+                        if (Integer.valueOf(childrenCount) != 0) {
+                            mGridNum.append(getString(R.string.grid_start) + data.getString("childrenGridCount") + getString(R.string.grid_end));
+                        }
                         mGridNum.setVisibility(View.VISIBLE);
                         List<LatLng> bottomLatLng = LngLat2LatLng.convertLngLat2LatLng(mGridEntity.getPolygon());
                         // 绘制一个长方形

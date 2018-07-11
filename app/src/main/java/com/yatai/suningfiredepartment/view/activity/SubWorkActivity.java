@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.adapter.WorkCategoryAdapter;
 import com.yatai.suningfiredepartment.view.adapter.WorkItemAdapter;
+import com.yatai.suningfiredepartment.view.widget.BottomDialogView;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -57,6 +59,8 @@ public class SubWorkActivity extends AppCompatActivity {
     TextView mWorkCalendarTv;
     @BindView(R.id.title_name)
     TextView mTitleTv;
+    @BindView(R.id.grid_num)
+    TextView mGridNum;
 
     private String gridId;
     private int categoryId;
@@ -90,15 +94,18 @@ public class SubWorkActivity extends AppCompatActivity {
         mHttp = new FinalHttp();
         mContext = this;
 
+        mGridNum.setVisibility(View.GONE);
         mTitleTv.setText("工 作");
         mWorkCalendarTv.setVisibility(View.VISIBLE);
         mWorkCalendarTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, SubWorkCalendarActivity.class);
-                intent.putExtra("gridId",gridId);
-                intent.putExtra("categoryId",0);
-                startActivity(intent);
+                BottomDialogView bottomDialogView = new BottomDialogView(mContext,false,false,gridId,0);
+                bottomDialogView.show();
+//                Intent intent = new Intent(mContext, SubWorkCalendarActivity.class);
+//                intent.putExtra("gridId",gridId);
+//                intent.putExtra("categoryId",0);
+//                startActivity(intent);
             }
         });
 
@@ -146,7 +153,7 @@ public class SubWorkActivity extends AppCompatActivity {
                 } else {
                         //跳转到 查看单个任务界面
                         Intent intent = new Intent(mContext, WorkDetailFinishActivity.class);
-                        intent.putExtra("workItem", workItemDetail);
+                        intent.putExtra("workItem", workList.get(position).getId());
                         //从workItem 中获取ID,可以用来查询单个数据
                         startActivity(intent);
                 }

@@ -35,8 +35,6 @@ import java.util.Random;
 
 
 public class WorkTableFragment extends Fragment {
-    public static final SimpleDateFormat DAY_UI_MONTH_DAY_FORMAT = new SimpleDateFormat("MM-dd");
-    public static final SimpleDateFormat WEEK_FORMAT = new SimpleDateFormat("EEE", Locale.US);
 
     WorkTableAdapter mPanelAdapter;
     ScrollablePanel scrollablePanel;
@@ -84,7 +82,7 @@ public class WorkTableFragment extends Fragment {
             }
         });
         mTitle=(TextView)view.findViewById(R.id.title_name);
-        mTitle.setText("进度表");
+        mTitle.setText("进度表("+year+")");
         return view;
     }
 
@@ -114,9 +112,6 @@ public class WorkTableFragment extends Fragment {
                         for (int i = 0; i<date.length();i++){
                             dateList.add(date.getString(i));
                         }
-                        Logger.i(data.getString("date"));
-//                        Logger.i("Date size : "+date.length());
-                        Logger.i("Fragment Date Size: " + dateList.size());
                         mPanelAdapter.setDateList(dateList);
                         JSONArray record = data.getJSONArray("record");
                         List<RecordEntity> list = new ArrayList<>();
@@ -126,6 +121,7 @@ public class WorkTableFragment extends Fragment {
                             list.add(recordEntity);
                         }
                         recordList=splitList(list,categoryList.size());
+                        Logger.i("RecordList : "+ recordList.size());
                         mPanelAdapter.setRecordList(recordList);
                         scrollablePanel.setPanelAdapter(mPanelAdapter);
                     }else{

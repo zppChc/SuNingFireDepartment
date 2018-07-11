@@ -21,6 +21,6 @@
     <string name="work_calendar">日历</string>
     <string name="work_schedule">进度表</string>
 
-    <string name="grid_start">包含</string>
-    <string name="grid_end">个子网格</string>
+    <string name="grid_start">子网格数</string>
+    <string name="grid_end"></string>
 </resources>

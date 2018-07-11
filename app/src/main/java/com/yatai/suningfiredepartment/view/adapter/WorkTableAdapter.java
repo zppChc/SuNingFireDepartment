@@ -1,7 +1,9 @@
 package com.yatai.suningfiredepartment.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,8 @@ import com.kelin.scrollablepanel.library.PanelAdapter;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.entity.RecordEntity;
+import com.yatai.suningfiredepartment.view.activity.DepartmentWorkActivity;
+import com.yatai.suningfiredepartment.view.activity.WorkDetailFinishActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,13 +123,20 @@ public class WorkTableAdapter extends PanelAdapter {
             if (recordInfo.getRecordId()!=0) {
                 Glide.with(mContext).load(recordInfo.getImage()).into(viewHolder.image);
                 viewHolder.itemView.setClickable(true);
+                viewHolder.image.setVisibility(View.VISIBLE);
             } else{
                 viewHolder.itemView.setClickable(false);
+                viewHolder.image.setVisibility(View.GONE);
             }
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "name:" + recordInfo.getRecordId(), Toast.LENGTH_SHORT).show();
+                    if (recordInfo.getRecordId()!=0){
+                        Intent intent = new Intent(mContext, WorkDetailFinishActivity.class);
+                        intent.putExtra("workItem", recordInfo.getRecordId());
+                        //从workItem 中获取ID,可以用来查询单个数据
+                        mContext.startActivity(intent);
+                    }
                 }
             });
         }
@@ -171,7 +182,6 @@ public class WorkTableAdapter extends PanelAdapter {
 
     public void setDateList(List<String> dateList) {
         this.dateList = dateList;
-        Logger.i("Adapter DataList Size : "+ this.dateList.size());
     }
 
     public void setCategoryList(List<String> categoryList) {

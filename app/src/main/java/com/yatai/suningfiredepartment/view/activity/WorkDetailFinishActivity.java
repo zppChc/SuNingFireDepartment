@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,11 +63,8 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        String workItem = intent.getStringExtra("workItem");
-        gson = new Gson();
-        WorkItemEntity workItemEntity = gson.fromJson(workItem, WorkItemEntity.class);
-        recordId = workItemEntity.getRecord_id();
-        title = workItemEntity.getName();
+        recordId = intent.getIntExtra("workItem",0);
+        com.orhanobut.logger.Logger.i("WorkItem: "+ recordId);
         initView();
     }
 
@@ -74,8 +72,7 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
         mHttp = new FinalHttp();
         imgs = new ArrayList<>();
         mTemplates = new ArrayList<>();
-
-        mTitleTextView.setText(title);
+        gson = new Gson();
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mAdapter = new WorkDetailFinishPicAdapter(WorkDetailFinishActivity.this);
@@ -118,6 +115,8 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
                     JSONObject jb = new JSONObject(s);
                     if (jb.getInt("code") == 200) {
                         JSONObject data = jb.getJSONObject("data");
+                        title = data.getString("task_name");
+                        mTitleTextView.setText(title);
                         JSONArray content = data.getJSONArray("content");
                         if (content.length() > 0) {
                             for (int i = 0; i < content.length(); i++) {

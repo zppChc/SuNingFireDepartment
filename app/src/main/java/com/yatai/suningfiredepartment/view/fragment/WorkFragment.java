@@ -109,8 +109,7 @@ public class WorkFragment extends Fragment {
         mWorkCalendarTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.item_work_dialog,null);
-                BottomDialogView bottomDialogView = new BottomDialogView(getContext(),dialogView,false,false,gridId,0);
+                BottomDialogView bottomDialogView = new BottomDialogView(getContext(),false,false,gridId,0);
                 bottomDialogView.show();
 //                Intent intent = new Intent(getActivity(), SubWorkCalendarActivity.class);
 //                intent.putExtra("gridId",gridId);
@@ -161,7 +160,7 @@ public class WorkFragment extends Fragment {
                 } else {
                     //跳转到 查看单个任务界面
                     Intent intent = new Intent(getActivity(), WorkDetailFinishActivity.class);
-                    intent.putExtra("workItem", workItemDetail);
+                    intent.putExtra("workItem", workList.get(position).getId());
                     //从workItem 中获取ID,可以用来查询单个数据
                     startActivity(intent);
                 }
