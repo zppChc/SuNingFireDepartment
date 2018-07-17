@@ -8,8 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppThemeLaunch" parent="AppTheme">
-    </style>
+    <style name="AppThemeLaunch" parent="AppTheme"></style>
 
     <style name="AppTheme.Splash" parent="TranslucentTheme">
         <item name="android:windowFullscreen">false</item>
@@ -21,9 +20,9 @@
         <item name="colorControlActivated">#f0f0f0</item>
     </style>
 
-    <style name="TranslucentTheme" parent="AppTheme"/>
-    
-    <style name="ActivityTranslucentTheme" parent="AppTheme"/>
+    <style name="TranslucentTheme" parent="AppTheme" />
+
+    <style name="ActivityTranslucentTheme" parent="AppTheme" />
 
     <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textSize">13sp</item>
@@ -71,7 +70,6 @@
     </style>
 
 
-
     <style name="TitleBackgroundPic">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">70dp</item>
@@ -112,7 +110,7 @@
     </style>
 
     <declare-styleable name="MyImageView">
-        <attr name="ratio" format="float"/>
+        <attr name="ratio" format="float" />
     </declare-styleable>
 
     <style name="MyDialog" parent="@android:style/Theme.Holo.Dialog">
@@ -127,5 +125,17 @@
         <!--背景透明-->
         <item name="android:windowBackground">@android:color/transparent</item>
         <!-- 还可以加入一些弹出和退出的动画 (lan)-->>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 </resources>

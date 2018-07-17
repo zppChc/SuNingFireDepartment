@@ -6,8 +6,6 @@
     <color name="white">#FFFFFF</color>
 
 
-
-
     <color name="textGray">#CDC9C9</color>
     <color name="blue">#0000EE</color>
     <color name="black">#000000</color>
@@ -24,7 +22,7 @@
     <color name="personal_black_two">#333333</color>
 
     <color name="cut_off_line">#f0f0f0</color>
-    
+
     <color name="work_complete_blue">#0d98fd</color>
     <color name="work_execute_red">#ff6666</color>
     <color name="work_not_started">#999999</color>
@@ -40,4 +38,8 @@
     <color name="category_text_black">#666666</color>
 
     <color name="text_gray_666666">#666666</color>
+
+    <color name="black_overlay">#66000000</color>
+
+    <color name="obtain_button_blue">#0d98fd</color>
 </resources>

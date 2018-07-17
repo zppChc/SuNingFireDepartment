@@ -44,11 +44,12 @@
         android:layout_marginRight="40dp"
         android:layout_marginTop="20dp"
         android:theme="@style/MyEditText"
-        android:textSize="16sp"
-        android:hint="@string/user_name"
         android:gravity="center"
         android:cursorVisible="false"
-        android:textColorHint="@color/textGray"/>
+        android:textColorHint="@color/textGray"
+        android:textSize="16sp"
+        android:hint="@string/user_name"
+       />
 
     <EditText
         android:id="@+id/login_password_ed"
@@ -86,6 +87,15 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:layout_marginTop="30dp">
+
+        <TextView
+            android:id="@+id/login_forgot_password"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/forgot_password"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/login_use_message"
             android:layout_width="0dp"
@@ -93,13 +103,6 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="@string/message_login"/>
-        <TextView
-            android:id="@+id/login_forgot_password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:text="@string/forgot_password"/>
     </LinearLayout>
 
 

@@ -24,4 +24,8 @@
 
     <string name="grid_start">包括</string>
     <string name="grid_end">个子网格</string>
+
+    <string name="title_activity_message_login">MessageLoginActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

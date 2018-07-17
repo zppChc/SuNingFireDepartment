@@ -64,6 +64,9 @@ public class LoginActivity extends BaseActivity  {
                 }
                 break;
             case R.id.login_use_message:
+                Intent intent = new Intent(LoginActivity.this,LoginMessageActivity.class);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.login_forgot_password:
                 break;
