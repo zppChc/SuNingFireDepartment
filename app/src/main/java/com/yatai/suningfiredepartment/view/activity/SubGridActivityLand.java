@@ -202,6 +202,16 @@ public class SubGridActivityLand extends AppCompatActivity implements AMap.OnMap
         //重点地点。。。。没有实体类，等接口中出现数据在进行更改
         mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivityLand.this, LinearLayoutManager.HORIZONTAL, false));
         mHomePlaceAdapter = new HomePlaceAdapter(SubGridActivityLand.this);
+        mHomePlaceAdapter.setListener(new HomePlaceAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getApplicationContext(), FocusPlaceActivity.class);
+                Gson gson = new Gson();
+                String placeStr = gson.toJson(placeList.get(position));
+                intent.putExtra("place",placeStr);
+                startActivity(intent);
+            }
+        });
         mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
         mHomePlaceAdapter.setList(placeList);
 

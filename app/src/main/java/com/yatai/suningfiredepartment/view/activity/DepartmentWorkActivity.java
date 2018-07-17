@@ -127,7 +127,7 @@ public class DepartmentWorkActivity extends AppCompatActivity {
                 } else {
                     //跳转到 查看单个任务界面
                     Intent intent = new Intent(DepartmentWorkActivity.this, WorkDetailFinishActivity.class);
-                    intent.putExtra("workItem", workList.get(position).getId());
+                    intent.putExtra("workItem", workList.get(position).getRecord_id());
                     //从workItem 中获取ID,可以用来查询单个数据
                     startActivity(intent);
                 }

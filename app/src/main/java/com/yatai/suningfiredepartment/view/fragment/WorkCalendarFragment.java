@@ -211,7 +211,7 @@ public class WorkCalendarFragment extends Fragment {
                         }
                     }else{
                         Intent intent = new Intent(getActivity(), WorkDetailFinishActivity.class);
-                        intent.putExtra("workItem", workCalendarList.get(position).getTask().getId());
+                        intent.putExtra("workItem", workCalendarList.get(position).getTask().getRecord_id());
                         startActivity(intent);
                     }
                 }

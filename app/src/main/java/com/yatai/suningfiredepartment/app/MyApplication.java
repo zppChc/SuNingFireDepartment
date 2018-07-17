@@ -9,6 +9,8 @@ import com.orhanobut.logger.Logger;
 import com.umeng.commonsdk.UMConfigure;
 import com.yatai.suningfiredepartment.util.UmengUtil;
 
+import cn.jpush.android.api.JPushInterface;
+
 public class MyApplication extends Application {
 
     private static MyApplication instance;
@@ -26,6 +28,10 @@ public class MyApplication extends Application {
         sContext=getApplicationContext();
         initUM();
         initLogger();
+        JPushInterface.init(this);
+        JPushInterface.setDebugMode(true);
+
+
     }
 
     private void initUM(){
