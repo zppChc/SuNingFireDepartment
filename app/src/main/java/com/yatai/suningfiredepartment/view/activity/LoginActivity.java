@@ -90,7 +90,7 @@ public class LoginActivity extends BaseActivity  {
                         String gridId = data.getString("grid_id");
                         loginSuccess(token,gridId);
                     }else{
-                        ToastUtil.show(getApplicationContext(),jb.getString("message"));
+                        ToastUtil.show(LoginActivity.this,jb.getString("message"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

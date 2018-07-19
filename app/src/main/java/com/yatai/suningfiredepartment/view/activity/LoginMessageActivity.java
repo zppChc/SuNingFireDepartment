@@ -9,10 +9,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.widget.CountDownButton;
 
 import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +33,7 @@ public class LoginMessageActivity extends AppCompatActivity {
     @BindView(R.id.obtain_code_button)
     CountDownButton obtainButton;
     @BindView(R.id.message_login_button)
-    Button LoginButton;
+    Button loginButton;
 
     FinalHttp mHttp;
     @BindView(R.id.title_name)
@@ -45,8 +51,8 @@ public class LoginMessageActivity extends AppCompatActivity {
     private void initView() {
         mHttp = new FinalHttp();
         titleName.setText("短信登陆");
-        LoginButton.setEnabled(false);
-        LoginButton.setBackground(getResources().getDrawable(R.drawable.login_button_gray));
+        loginButton.setEnabled(false);
+        loginButton.setBackground(getResources().getDrawable(R.drawable.login_button_gray));
     }
 
 
@@ -67,6 +73,8 @@ public class LoginMessageActivity extends AppCompatActivity {
 
                 break;
             case R.id.message_login_button:
+                loginButton.setEnabled(false);
+                loginButton.setBackground(getResources().getDrawable(R.drawable.login_button_gray));
                 login();
                 break;
         }
@@ -90,11 +98,87 @@ public class LoginMessageActivity extends AppCompatActivity {
 
     //获取验证码
     private void getMessageCode(String tele) {
+        String url = getString(R.string.base_url)+"sendCode";
+        AjaxParams params =new AjaxParams();
+        params.put("mobile",tele);
+        mHttp.post(url, params, new AjaxCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                try {
+                    JSONObject jb = new JSONObject(s);
+                    if (jb.getInt("code") == 200){
+                        ToastUtil.show(LoginMessageActivity.this,"发送成功");
+                        loginButton.setEnabled(true);
+                        loginButton.setBackground(getResources().getDrawable(R.drawable.login_button_bg));
+                    }else{
+                        ToastUtil.show(LoginMessageActivity.this,jb.getString("message"));
+                        loginButton.setEnabled(false);
+                        loginButton.setBackground(getResources().getDrawable(R.drawable.login_button_gray));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                loginButton.setEnabled(false);
+                loginButton.setBackground(getResources().getDrawable(R.drawable.login_button_gray));
+                ToastUtil.show(LoginMessageActivity.this,strMsg);
+            }
+        });
 
     }
 
     private void login() {
+        String tele = teleCode.getText().toString();
+        String identify = identifyCode.getText().toString();
 
+        String url = getString(R.string.base_url)+"verifyCode";
+
+        AjaxParams params = new AjaxParams();
+        params.put("mobile",tele);
+        params.put("code",identify);
+
+        mHttp.post(url, params, new AjaxCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                try {
+                    JSONObject jb = new JSONObject(s);
+                    if (jb.getInt("code") == 200){
+                        JSONObject data = jb.getJSONObject("data");
+                        String token = data.getString("token");
+                        String gridId = data.getString("grid_id");
+                        loginSuccess(token,gridId);
+                    }else{
+                        ToastUtil.show(LoginMessageActivity.this,jb.getString("message"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                loginFailed();
+            }
+        });
+    }
+
+    public void loginFailed() {
+        ToastUtil.show(this,"手机号或密码错误，请重新输入");
+    }
+
+    public void loginSuccess(String token,String gridId) {
+        PreferenceUtils.setPrefString(this,"token",token);
+        PreferenceUtils.setPrefString(this,"gridId",gridId);
+        Intent intent = new Intent(LoginMessageActivity.this,MainActivity.class);
+        startActivity(intent);
+        LoginMessageActivity.this.finish();
     }
 
 
