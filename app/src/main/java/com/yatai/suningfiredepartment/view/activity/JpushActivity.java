@@ -42,8 +42,9 @@ public class JpushActivity extends AppCompatActivity {
     EditText mContent;
     private String infoId;
     private FinalHttp mHttp;
-
-
+    String title = null;
+    String extras = null;
+    String content = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,36 +52,34 @@ public class JpushActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setContentView(R.layout.activity_jpush);
         ButterKnife.bind(this);
-        TextView tv = new TextView(this);
-        tv.setText("用户自定义打开的Activity");
         Intent intent = getIntent();
-        String title = null;
-        String content = null;
-        String extras = null;
+
         if (null != intent) {
             Bundle bundle = getIntent().getExtras();
+//            for (String key: bundle.keySet()){
+//                Logger.i("Bundle Content : "+"Key=" + key + ", content=" +bundle.getString(key));
+//            }
             if (bundle != null) {
 //                title = bundle.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE);
                 title = bundle.getString(JPushInterface.EXTRA_ALERT);
                 extras=bundle.getString(JPushInterface.EXTRA_EXTRA);
+                Logger.i("Bundle extras =" + extras);
             }
         }
         registerMessageReceiver();  // used for receive msg
         initView();
-        if (extras!=null && !extras.equals("")) {
-            JSONObject nofination = null;
-            try {
-                nofination = new JSONObject(extras);
-                Logger.i("JPush Extras : "+ extras);
-                if (!nofination.getString("info_id").equals("")) {
-                    getInfoDetail(nofination.getString("info_id"));
-                } else {
-                    mTitleTv.setText(title);
-                    mContent.setText(nofination.getString("content"));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        try {
+            JSONObject nofination = new JSONObject(extras);
+            Logger.i("JPush Extras : "+ extras);
+            if (!nofination.getString("info_id").equals("0")) {
+                getInfoDetail(nofination.getString("info_id"));
+            } else {
+                mTitleTv.setText(title);
+                content= nofination.getString("content");
+                mContent.setText(content);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

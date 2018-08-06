@@ -65,9 +65,7 @@
 
         <activity
             android:name=".view.activity.SplashActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Splash">
+            android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -82,7 +80,7 @@
         <!-- 高德地图api key -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="0ca1b8d786fccd6fe32e612451c61e0f" />
+            android:value="a55a7743a246b24a3f9da5636bf6e6b5" />
 
         <activity
             android:name=".view.activity.MainActivity"
@@ -93,6 +91,7 @@
             android:name=".view.activity.MainActivityLand"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:hardwareAccelerated="false"
+            android:launchMode="singleTask"
             android:theme="@style/TranslucentTheme" />
         <activity
             android:name=".view.activity.FocusGroupActivity"
@@ -163,10 +162,10 @@
 
         <activity
             android:name=".view.activity.JpushActivity"
-            android:theme="@style/ActivityTranslucentTheme" />
-        <activity android:name=".view.activity.LoginMessageActivity"
             android:theme="@style/ActivityTranslucentTheme"
             android:launchMode="singleTask"/>
+        <activity android:name=".view.activity.LoginMessageActivity"
+            android:theme="@style/ActivityTranslucentTheme"/>
     </application>
 
 </manifest>

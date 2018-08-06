@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -175,8 +176,15 @@ public class WorkDetailActivity extends AppCompatActivity{
             mTemplateList.add(templateEntity);
         }
         dynamicAdd(mTemplateList);
-
-        mPicRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        Configuration configuration = getResources().getConfiguration();
+        //0 是竖屏， 1 ,是横屏
+        int ori = configuration.orientation;
+        Logger.i("Ori : " + ori);
+        if (ori == Configuration.ORIENTATION_PORTRAIT) {
+            mPicRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }else if (ori == Configuration.ORIENTATION_LANDSCAPE){
+            mPicRecyclerView.setLayoutManager(new GridLayoutManager(this, 8));
+        }
         mPicAdapter = new WorkDetailPicAdapter(this);
         mPicAdapter.setListener(new WorkDetailPicAdapter.OnItemClickListener() {
             @Override

@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,6 +16,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.orhanobut.logger.Logger;
@@ -71,6 +73,10 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Configuration configuration = getResources().getConfiguration();
+        //1 是竖屏， 2,是横屏
+        int ori = configuration.orientation;
+        setTheme(ori == Configuration.ORIENTATION_PORTRAIT ? R.style.AppThemeSplash : R.style.AppThemeSplashLand);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 //        setContentView(R.layout.activity_splash);
         initStatus();
@@ -184,8 +190,17 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
                 try {
                     JSONObject jb = new JSONObject(s);
                     if (jb.getInt("code") == 200){
-                        Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-                        startActivity(intent);
+                        Configuration configuration = getResources().getConfiguration();
+                        //0 是竖屏， 1 ,是横屏
+                        int ori = configuration.orientation;
+                        if(ori == Configuration.ORIENTATION_PORTRAIT) {
+                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }else if (ori == Configuration.ORIENTATION_LANDSCAPE ){
+                            Intent intent = new Intent(SplashActivity.this, MainActivityLand.class);
+                            startActivity(intent);
+                        }
+
                         SplashActivity.this.finish();
                     }
                 } catch (JSONException e) {
@@ -202,5 +217,15 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
             }
         });
 
+    }
+
+    public Drawable InputStream2Drawable(InputStream is) {
+        Drawable drawable = BitmapDrawable.createFromStream(is, "splashImg");
+        return drawable;
+    }
+
+    private void animWelcomeImage() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(splashImg, "translationX", -100F);
+        animator.setDuration(1500L).start();
     }
 }

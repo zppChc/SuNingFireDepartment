@@ -2,6 +2,7 @@ package com.yatai.suningfiredepartment.view.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -74,7 +75,15 @@ public class WorkDetailFinishActivity extends AppCompatActivity {
         mTemplates = new ArrayList<>();
         gson = new Gson();
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        Configuration configuration = getResources().getConfiguration();
+        //0 是竖屏， 1 ,是横屏
+        int ori = configuration.orientation;
+        com.orhanobut.logger.Logger.i("Ori : " + ori);
+        if (ori == Configuration.ORIENTATION_PORTRAIT) {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }else if (ori == Configuration.ORIENTATION_LANDSCAPE){
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 8));
+        }
         mAdapter = new WorkDetailFinishPicAdapter(WorkDetailFinishActivity.this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setListener(new WorkDetailFinishPicAdapter.OnItemClickListener() {

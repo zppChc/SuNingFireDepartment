@@ -410,4 +410,9 @@ public class MainActivity extends BaseActivity {
         intent.setDataAndType(data, "application/vnd.android.package-archive");
         startActivity(intent);
     }
+
+    private void getFlag(){
+
+    }
+
 }

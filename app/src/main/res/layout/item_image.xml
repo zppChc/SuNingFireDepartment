@@ -22,7 +22,7 @@
         android:singleLine="true"
         android:ellipsize="middle"
         android:width="80dp"
-        android:textSize="13sp"
+        android:textSize="12sp"
         android:layout_marginBottom="2dp"
         android:textColor="@color/personal_black_one"/>
 </LinearLayout>
