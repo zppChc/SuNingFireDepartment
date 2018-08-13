@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.util.NetUtil;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.util.Validator;
@@ -49,6 +50,8 @@ public class LoginActivity extends BaseActivity  {
         ButterKnife.bind(LoginActivity.this);
         Logger.i("Login Activity");
         mHttp =new FinalHttp();
+
+
     }
 
     @OnClick({R.id.login_button, R.id.login_use_message, R.id.login_forgot_password})
@@ -78,31 +81,35 @@ public class LoginActivity extends BaseActivity  {
         AjaxParams params=new AjaxParams();
         params.put("mobile",mobile);
         params.put("password",password);
-        mHttp.post(url, params, new AjaxCallBack<String>() {
-            @Override
-            public void onSuccess(String s) {
-                super.onSuccess(s);
-                try {
-                    JSONObject jb = new JSONObject(s);
-                    if (jb.getInt("code") == 200){
-                        JSONObject data = jb.getJSONObject("data");
-                        String token = data.getString("token");
-                        String gridId = data.getString("grid_id");
-                        loginSuccess(token,gridId);
-                    }else{
-                        ToastUtil.show(LoginActivity.this,jb.getString("message"));
+        if(!NetUtil.isConnected(LoginActivity.this)){
+            ToastUtil.show(LoginActivity.this,"请连接网络");
+        }else {
+            mHttp.post(url, params, new AjaxCallBack<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    super.onSuccess(s);
+                    try {
+                        JSONObject jb = new JSONObject(s);
+                        if (jb.getInt("code") == 200) {
+                            JSONObject data = jb.getJSONObject("data");
+                            String token = data.getString("token");
+                            String gridId = data.getString("grid_id");
+                            loginSuccess(token, gridId);
+                        } else {
+                            ToastUtil.show(LoginActivity.this, jb.getString("message"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable t, int errorNo, String strMsg) {
-                super.onFailure(t, errorNo, strMsg);
-                loginFailed();
-            }
-        });
+                @Override
+                public void onFailure(Throwable t, int errorNo, String strMsg) {
+                    super.onFailure(t, errorNo, strMsg);
+                    loginFailed();
+                }
+            });
+        }
     }
 
     public void loginFailed() {

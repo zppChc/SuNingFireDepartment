@@ -33,6 +33,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 重点单位
+ */
 public class FocusPlaceActivity extends AppCompatActivity {
 
     @BindView(R.id.title_image_back)
@@ -47,8 +50,7 @@ public class FocusPlaceActivity extends AppCompatActivity {
     FocusPlaceAdapter mAdapter;
     List<PlaceEntity> placeList;
     LinearLayoutManager mLayoutManager;
-    int placeId;
-    int gridId;
+    String gridId;
     FinalHttp mHttp;
 
     @Override
@@ -59,13 +61,8 @@ public class FocusPlaceActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        Gson gson = new Gson();
-        PlaceEntity peopleEntity = gson.fromJson(intent.getStringExtra("place"),PlaceEntity.class);
-        placeId = peopleEntity.getId();
-        gridId = peopleEntity.getGrid_id();
-
-        Logger.d("People Id : ", String.valueOf(placeId));
-
+        gridId = intent.getStringExtra("gridId");
+        Logger.i("GridId : " + gridId);
         initView();
     }
     private void initView(){
@@ -107,11 +104,11 @@ public class FocusPlaceActivity extends AppCompatActivity {
                                 placeList.add(peopleEntity);
                             }
                             mAdapter.setList(placeList);
-                            for(int j = 0; j<placeList.size(); j++){
-                                if (placeList.get(j).getId() ==placeId){
-                                    mLayoutManager.scrollToPositionWithOffset(j, 0);
-                                }
-                            }
+//                            for(int j = 0; j<placeList.size(); j++){
+//                                if (placeList.get(j).getId() ==placeId){
+//                                    mLayoutManager.scrollToPositionWithOffset(j, 0);
+//                                }
+//                            }
                         }
                     }else{
                         ToastUtil.show(FocusPlaceActivity.this,jb.getString("message"));

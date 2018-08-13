@@ -12,10 +12,11 @@
         android:id="@+id/title_image_back"
         app:layout_constraintBottom_toBottomOf="@+id/title_background"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginBottom="8dp"
+        android:layout_marginRight="50dp"
         android:scaleType="fitXY"
         style="@style/ImageBack"/>
     <RelativeLayout
+        android:id="@+id/temp_title_rl"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:layout_constraintBottom_toTopOf="@+id/grid_num">

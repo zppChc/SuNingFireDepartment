@@ -25,6 +25,7 @@ import com.github.ikidou.fragmentBackHandler.BackHandlerHelper;
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.util.CommonUtil;
+import com.yatai.suningfiredepartment.util.NetUtil;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.adapter.MainViewPagerAdapter;
@@ -121,6 +122,10 @@ public class MainActivity extends BaseActivity {
             nowVersion = packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+        }
+
+        if(!NetUtil.isConnected(MainActivity.this)){
+            ToastUtil.show(MainActivity.this,"请连接网络");
         }
 
         checkUpdate();

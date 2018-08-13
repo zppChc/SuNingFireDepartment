@@ -32,6 +32,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 重点人群
+ */
 public class FocusGroupActivity extends AppCompatActivity {
 
     @BindView(R.id.title_image_back)
@@ -46,9 +49,9 @@ public class FocusGroupActivity extends AppCompatActivity {
     FocusGroupAdapter mAdapter;
     List<PeopleEntity> peopleList;
     LinearLayoutManager mLayoutManager;
-    int peopleId;
-    int gridId;
+    String gridId;
     FinalHttp mHttp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,12 +60,7 @@ public class FocusGroupActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        Gson gson = new Gson();
-        PeopleEntity peopleEntity = gson.fromJson(intent.getStringExtra("people"),PeopleEntity.class);
-        peopleId = peopleEntity.getId();
-        gridId = peopleEntity.getGrid_id();
-
-        Logger.d("People Id : ", String.valueOf(peopleId));
+        gridId = intent.getStringExtra("gridId");
         initView();
 
         mBackIv.setOnClickListener(new View.OnClickListener() {
@@ -104,11 +102,11 @@ public class FocusGroupActivity extends AppCompatActivity {
                                 peopleList.add(peopleEntity);
                             }
                             mAdapter.setList(peopleList);
-                            for(int j = 0; j<peopleList.size(); j++){
-                                if (peopleList.get(j).getId() ==peopleId){
-                                    mLayoutManager.scrollToPositionWithOffset(j, 0);
-                                }
-                            }
+//                            for(int j = 0; j<peopleList.size(); j++){
+//                                if (peopleList.get(j).getId() ==peopleId){
+//                                    mLayoutManager.scrollToPositionWithOffset(j, 0);
+//                                }
+//                            }
                         }
                     }else{
                         ToastUtil.show(FocusGroupActivity.this,jb.getString("message"));

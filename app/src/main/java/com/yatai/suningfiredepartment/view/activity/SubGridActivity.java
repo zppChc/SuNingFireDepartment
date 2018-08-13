@@ -74,22 +74,22 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
     RecyclerView mRegionRecyclerView;
     @BindView(R.id.sub_grid_unit_recycler_view)
     RecyclerView mUnitRecyclerView;
-    @BindView(R.id.sub_grid_place_recycler_view)
-    RecyclerView mPlaceRecyclerView;
+//    @BindView(R.id.sub_grid_place_recycler_view)//重点单位
+//    RecyclerView mPlaceRecyclerView;
     @BindView(R.id.sub_grid_work_recycler_view)
     RecyclerView mWorkRecyclerView;
     @BindView(R.id.temp_sub_grid_unit)
     LinearLayout mUnitLayout;
 
 
-    @BindView(R.id.temp_sub_grid_place)
-    LinearLayout mPlaceLayout;
+//    @BindView(R.id.temp_sub_grid_place)//重点单位
+//    LinearLayout mPlaceLayout;
     @BindView(R.id.temp_sub_grid_region)
     LinearLayout mRegionLayout;
-    @BindView(R.id.sub_grid_people_recycler_view)
-    RecyclerView mPeopleRecyclerView;
-    @BindView(R.id.temp_sub_grid_people)
-    LinearLayout mPeopleLayout;
+//    @BindView(R.id.sub_grid_people_recycler_view)
+//    RecyclerView mPeopleRecyclerView;
+//    @BindView(R.id.temp_sub_grid_people)//重点人群
+//    LinearLayout mPeopleLayout;
     @BindView(R.id.temp_sub_grid_work)
     LinearLayout mWorkLayout;
 
@@ -110,16 +110,16 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
 
     private HomeRegionAdapter mHomeRegionAdapter;
     private HomeUnitAdapter mHomeDepartmentAdapter;
-    private HomePlaceAdapter mHomePlaceAdapter;
-    private HomePeopleAdapter mHomePeopleAdapter;
+//    private HomePlaceAdapter mHomePlaceAdapter;
+//    private HomePeopleAdapter mHomePeopleAdapter;
     private HomeCategoryAdapter mHomeCategoryAdapter;
 
 
     private GridEntity mGridEntity;
     private List<GridEntity> childrenGridList;
     private List<DepartmentEntity> departmentList;
-    private List<PeopleEntity> peopleList;
-    private List<PlaceEntity> placeList;
+//    private List<PeopleEntity> peopleList;
+//    private List<PlaceEntity> placeList;
     private List<HomeWorkCategoryEntity> categoryList;
 
     @Override
@@ -170,8 +170,8 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         childrenGridList = new ArrayList<>();
         departmentList = new ArrayList<>();
         childPolygons = new ArrayList<>();
-        peopleList = new ArrayList<>();
-        placeList = new ArrayList<>();
+//        peopleList = new ArrayList<>();
+//        placeList = new ArrayList<>();
         categoryList = new ArrayList<>();
 
         mContext = this;
@@ -207,45 +207,66 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
         mHomeDepartmentAdapter.setDepartmentList(departmentList);
 
         //重点地点。。。。没有实体类，等接口中出现数据在进行更改
-        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomePlaceAdapter = new HomePlaceAdapter(SubGridActivity.this);
-        mHomePlaceAdapter.setListener(new HomePlaceAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getApplicationContext(), FocusPlaceActivity.class);
-                Gson gson = new Gson();
-                String placeStr = gson.toJson(placeList.get(position));
-                intent.putExtra("place",placeStr);
-                startActivity(intent);
-            }
-        });
-        mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
-        mHomePlaceAdapter.setList(placeList);
-
-        mPeopleRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        mHomePeopleAdapter = new HomePeopleAdapter(SubGridActivity.this);
-        mHomePeopleAdapter.setListener(new HomePeopleAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this,FocusGroupActivity.class);
-                Gson gson =new Gson();
-                String peopleStr = gson.toJson(peopleList.get(position));
-                intent.putExtra("people",peopleStr);
-                startActivity(intent);
-            }
-        });
-        mPeopleRecyclerView.setAdapter(mHomePeopleAdapter);
-        mHomePeopleAdapter.setList(peopleList);
+//        mPlaceRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
+//        mHomePlaceAdapter = new HomePlaceAdapter(SubGridActivity.this);
+//        mHomePlaceAdapter.setListener(new HomePlaceAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, int position) {
+//                Intent intent = new Intent(getApplicationContext(), FocusPlaceActivity.class);
+//                Gson gson = new Gson();
+//                String placeStr = gson.toJson(placeList.get(position));
+//                intent.putExtra("place",placeStr);
+//                startActivity(intent);
+//            }
+//        });
+//        mPlaceRecyclerView.setAdapter(mHomePlaceAdapter);
+//        mHomePlaceAdapter.setList(placeList);
+//
+//        mPeopleRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
+//        mHomePeopleAdapter = new HomePeopleAdapter(SubGridActivity.this);
+//        mHomePeopleAdapter.setListener(new HomePeopleAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, int position) {
+//                Intent intent = new Intent(SubGridActivity.this,FocusGroupActivity.class);
+//                Gson gson =new Gson();
+//                String peopleStr = gson.toJson(peopleList.get(position));
+//                intent.putExtra("people",peopleStr);
+//                startActivity(intent);
+//            }
+//        });
+//        mPeopleRecyclerView.setAdapter(mHomePeopleAdapter);
+//        mHomePeopleAdapter.setList(peopleList);
 
         mWorkRecyclerView.setLayoutManager(new LinearLayoutManager(SubGridActivity.this, LinearLayoutManager.HORIZONTAL, false));
         mHomeCategoryAdapter = new HomeCategoryAdapter(SubGridActivity.this);
         mHomeCategoryAdapter.setListener(new HomeCategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(SubGridActivity.this, SubWorkActivity.class);
-                intent.putExtra("gridId", gridId);
-                intent.putExtra("categoryId",categoryList.get(position).getId());
-                startActivity(intent);
+                switch (categoryList.get(position).getType()){
+                    //消防公约
+                    case 1:
+                        Intent intentDocument = new Intent(SubGridActivity.this,DocumentActivity.class);
+                        intentDocument.putExtra("documentId",categoryList.get(position).getId());
+                        startActivity(intentDocument);
+                        break;
+                    case 2://重点人群
+                        Intent intentPeople = new Intent(SubGridActivity.this,FocusGroupActivity.class);
+                        Gson gson =new Gson();
+                        intentPeople.putExtra("gridId",gridId);
+                        startActivity(intentPeople);
+                        break;
+                    case 3://重点单位
+                        Intent intentPlace = new Intent(SubGridActivity.this,FocusPlaceActivity.class);
+                        intentPlace.putExtra("gridId",gridId);
+                        startActivity(intentPlace);
+                        break;
+                    case 4://任务
+                        Intent intentCategory = new Intent(SubGridActivity.this, SubWorkActivity.class);
+                        intentCategory.putExtra("gridId", gridId);
+                        intentCategory.putExtra("categoryId",categoryList.get(position).getId());
+                        startActivity(intentCategory);
+                        break;
+                }
             }
         });
         mWorkRecyclerView.setAdapter(mHomeCategoryAdapter);
@@ -432,35 +453,60 @@ public class SubGridActivity extends AppCompatActivity implements AMap.OnMapClic
                             mUnitLayout.setVisibility(View.GONE);
                         }
 
-                        //重点区域
-                        JSONArray importantPlaceArray = data.getJSONArray("importantPlace");
-                        placeList.clear();
-                        if (importantPlaceArray.length() > 0) {
-                            for (int i  =0; i<importantPlaceArray.length(); i++){
-                                PlaceEntity placeEntity  = gson.fromJson(importantPlaceArray.getJSONObject(i).toString(),PlaceEntity.class);
-                                placeList.add(placeEntity);
-                            }
-                            mHomePlaceAdapter.notifyDataSetChanged();
-                        } else {
-                            mPlaceLayout.setVisibility(View.GONE);
-                        }
-
-                        //重点人群
-                        JSONArray importantPersonArray = data.getJSONArray("importantPerson");
-                        peopleList.clear();
-                        if (importantPersonArray.length() > 0) {
-                            for (int i = 0; i<importantPersonArray.length(); i++){
-                                PeopleEntity peopleEntity = gson.fromJson(importantPersonArray.get(i).toString(),PeopleEntity.class);
-                                peopleList.add(peopleEntity);
-                            }
-                            mHomePeopleAdapter.notifyDataSetChanged();
-                        } else {
-                            mPeopleLayout.setVisibility(View.GONE);
-                        }
+//                        //重点区域
+//                        JSONArray importantPlaceArray = data.getJSONArray("importantPlace");
+//                        placeList.clear();
+//                        if (importantPlaceArray.length() > 0) {
+//                            for (int i  =0; i<importantPlaceArray.length(); i++){
+//                                PlaceEntity placeEntity  = gson.fromJson(importantPlaceArray.getJSONObject(i).toString(),PlaceEntity.class);
+//                                placeList.add(placeEntity);
+//                            }
+//                            mHomePlaceAdapter.notifyDataSetChanged();
+//                        } else {
+//                            mPlaceLayout.setVisibility(View.GONE);
+//                        }
+//
+//                        //重点人群
+//                        JSONArray importantPersonArray = data.getJSONArray("importantPerson");
+//                        peopleList.clear();
+//                        if (importantPersonArray.length() > 0) {
+//                            for (int i = 0; i<importantPersonArray.length(); i++){
+//                                PeopleEntity peopleEntity = gson.fromJson(importantPersonArray.get(i).toString(),PeopleEntity.class);
+//                                peopleList.add(peopleEntity);
+//                            }
+//                            mHomePeopleAdapter.notifyDataSetChanged();
+//                        } else {
+//                            mPeopleLayout.setVisibility(View.GONE);
+//                        }
 
                         //工作台账
-                        JSONArray categoryArray = data.getJSONArray("taskCategory");
+                        /**
+                         * 在此处 将  消防公约 重点人群 重点单位 添加到分类的adapter 中 ， 并在 adapter中进行区分
+                         */
+                        //工作台账
                         categoryList.clear();
+                        //消防公约
+                        JSONArray documentArray = data.getJSONArray("documents");
+                        HomeWorkCategoryEntity isHasDocuments= gson.fromJson(documentArray.get(0).toString(),HomeWorkCategoryEntity.class);
+                        if (isHasDocuments.getId() != 0){
+                            for (int i=0; i<documentArray.length(); i++){
+                                HomeWorkCategoryEntity documentEntity=gson.fromJson(documentArray.get(i).toString(),HomeWorkCategoryEntity.class);
+                                categoryList.add(documentEntity);
+                            }
+                        }
+                        //重点单位
+                        String importantPlace = data.getString("importantPlaceItem");
+                        HomeWorkCategoryEntity importantPlaceItem = gson.fromJson(importantPlace,HomeWorkCategoryEntity.class);
+                        if (importantPlaceItem.getId() == 1){
+                            categoryList.add(importantPlaceItem);
+                        }
+                        //重点人群
+                        String importantPeople = data.getString("importantPersonItem");
+                        HomeWorkCategoryEntity importantPeopleItem = gson.fromJson(importantPeople,HomeWorkCategoryEntity.class);
+                        if (importantPeopleItem.getId()==1){
+                            categoryList.add(importantPeopleItem);
+                        }
+                        JSONArray categoryArray = data.getJSONArray("taskCategory");
                         if (categoryArray.length()>0){
                             for (int i = 0; i<categoryArray.length(); i++){
                                 HomeWorkCategoryEntity workCategoryEntity = gson.fromJson(categoryArray.get(i).toString(),HomeWorkCategoryEntity.class);

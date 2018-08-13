@@ -103,51 +103,51 @@
                     style="@style/HomePageRecyclerView"/>
             </LinearLayout>
             <!-- 重点单位 -->
-            <LinearLayout
-                android:id="@+id/temp_home_page_place"
-                style="@style/HomePageLinearLayout"
-                app:layout_constraintTop_toBottomOf="@+id/temp_home_page_unit">
-                <View
-                    style="@style/HomePageGrayView"/>
-                <RelativeLayout
-                    style="@style/HomePageRelativeLayout">
-                    <View
-                        android:id="@+id/temp_home_page_cut_line_three"
-                        style="@style/HomePageBlueFlagView"/>
-                    <TextView
-                        android:text="重点单位"
-                        android:layout_toRightOf="@id/temp_home_page_cut_line_three"
-                        style="@style/HomePageRecyclerViewDesc"/>
-                </RelativeLayout>
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/home_page_place_recycler_view"
-                    style="@style/HomePageRecyclerView"/>
-            </LinearLayout>
+            <!--<LinearLayout-->
+                <!--android:id="@+id/temp_home_page_place"-->
+                <!--style="@style/HomePageLinearLayout"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/temp_home_page_unit">-->
+                <!--<View-->
+                    <!--style="@style/HomePageGrayView"/>-->
+                <!--<RelativeLayout-->
+                    <!--style="@style/HomePageRelativeLayout">-->
+                    <!--<View-->
+                        <!--android:id="@+id/temp_home_page_cut_line_three"-->
+                        <!--style="@style/HomePageBlueFlagView"/>-->
+                    <!--<TextView-->
+                        <!--android:text="重点单位"-->
+                        <!--android:layout_toRightOf="@id/temp_home_page_cut_line_three"-->
+                        <!--style="@style/HomePageRecyclerViewDesc"/>-->
+                <!--</RelativeLayout>-->
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/home_page_place_recycler_view"-->
+                    <!--style="@style/HomePageRecyclerView"/>-->
+            <!--</LinearLayout>-->
             <!-- 重点人群 -->
-            <LinearLayout
-                android:id="@+id/temp_home_page_people"
-                app:layout_constraintTop_toBottomOf="@+id/temp_home_page_place"
-                style="@style/HomePageLinearLayout">
-                <View
-                    style="@style/HomePageGrayView"/>
-                <RelativeLayout
-                    style="@style/HomePageRelativeLayout">
-                    <View
-                        android:id="@+id/temp_home_page_cut_line_four"
-                        style="@style/HomePageBlueFlagView"/>
-                    <TextView
-                        android:text="重点人群"
-                        android:layout_toRightOf="@id/temp_home_page_cut_line_four"
-                        style="@style/HomePageRecyclerViewDesc"/>
-                </RelativeLayout>
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/home_page_people_recycler_view"
-                    style="@style/HomePageRecyclerView"/>
-            </LinearLayout>
+            <!--<LinearLayout-->
+                <!--android:id="@+id/temp_home_page_people"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/temp_home_page_place"-->
+                <!--style="@style/HomePageLinearLayout">-->
+                <!--<View-->
+                    <!--style="@style/HomePageGrayView"/>-->
+                <!--<RelativeLayout-->
+                    <!--style="@style/HomePageRelativeLayout">-->
+                    <!--<View-->
+                        <!--android:id="@+id/temp_home_page_cut_line_four"-->
+                        <!--style="@style/HomePageBlueFlagView"/>-->
+                    <!--<TextView-->
+                        <!--android:text="重点人群"-->
+                        <!--android:layout_toRightOf="@id/temp_home_page_cut_line_four"-->
+                        <!--style="@style/HomePageRecyclerViewDesc"/>-->
+                <!--</RelativeLayout>-->
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/home_page_people_recycler_view"-->
+                    <!--style="@style/HomePageRecyclerView"/>-->
+            <!--</LinearLayout>-->
             <!-- 工作台账 -->
             <LinearLayout
                 android:id="@+id/temp_home_page_work"
-                app:layout_constraintTop_toBottomOf="@+id/temp_home_page_people"
+                app:layout_constraintTop_toBottomOf="@+id/temp_home_page_unit"
                 style="@style/HomePageLinearLayout">
                 <View
                     style="@style/HomePageGrayView"/>

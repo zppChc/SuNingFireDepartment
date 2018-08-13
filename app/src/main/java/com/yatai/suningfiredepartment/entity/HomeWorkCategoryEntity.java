@@ -7,11 +7,27 @@ public class HomeWorkCategoryEntity implements Parcelable{
     private int id;
     private String name;
     private String image;
+    private int type;
+
 
     protected HomeWorkCategoryEntity(Parcel in) {
         id = in.readInt();
         name = in.readString();
         image = in.readString();
+        type = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(image);
+        dest.writeInt(type);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<HomeWorkCategoryEntity> CREATOR = new Creator<HomeWorkCategoryEntity>() {
@@ -50,15 +66,11 @@ public class HomeWorkCategoryEntity implements Parcelable{
         this.image = image;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getType() {
+        return type;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeString(name);
-        parcel.writeString(image);
+    public void setType(int type) {
+        this.type = type;
     }
 }

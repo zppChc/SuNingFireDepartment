@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.util.NetUtil;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.adapter.MainViewPagerAdapter;
@@ -125,6 +126,10 @@ public class MainActivityLand extends BaseActivity {
             nowVersion = packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+        }
+
+        if(!NetUtil.isConnected(MainActivityLand.this)){
+            ToastUtil.show(MainActivityLand.this,"请连接网络");
         }
 
 //        checkUpdate();
