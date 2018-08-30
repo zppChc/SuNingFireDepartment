@@ -166,7 +166,10 @@
         <activity
             android:name=".view.activity.LoginMessageActivity"
             android:theme="@style/ActivityTranslucentTheme" />
-        <activity android:name=".view.activity.DocumentActivity"
+        <activity
+            android:name=".view.activity.DocumentActivity"
+            android:theme="@style/ActivityTranslucentTheme" />
+        <activity android:name=".view.activity.ModifyPassword"
             android:theme="@style/ActivityTranslucentTheme" />
     </application>
 

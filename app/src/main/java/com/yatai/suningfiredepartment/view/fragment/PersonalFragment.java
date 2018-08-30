@@ -12,12 +12,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.orhanobut.logger.Logger;
 import com.yatai.suningfiredepartment.R;
 import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.activity.LoginActivity;
-import com.yatai.suningfiredepartment.view.activity.MainActivity;
+import com.yatai.suningfiredepartment.view.activity.ModifyPassword;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -71,7 +70,7 @@ public class PersonalFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        mProgressDialog = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+        mProgressDialog = new ProgressDialog(getContext(), ProgressDialog.THEME_HOLO_DARK);
         mProgressDialog.setMessage("正在加载...");
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setCancelable(false);
@@ -134,8 +133,8 @@ public class PersonalFragment extends Fragment {
         unbinder.unbind();
     }
 
-    private void logout(){
-        mHttp=new FinalHttp();
+    private void logout() {
+        mHttp = new FinalHttp();
         String url = getString(R.string.base_url) + "logout";
         String token = "Bearer " + PreferenceUtils.getPerfString(getContext(), "token", "");
         mHttp.addHeader("Authorization", token);
@@ -145,14 +144,14 @@ public class PersonalFragment extends Fragment {
                 super.onSuccess(s);
                 try {
                     JSONObject jb = new JSONObject(s);
-                    if (jb.getInt("code") == 200){
+                    if (jb.getInt("code") == 200) {
                         PreferenceUtils.clearPreference(getContext());
                         Intent intent = new Intent();
                         intent.setClass(getContext(), LoginActivity.class);
                         getContext().startActivity(intent);
                         getActivity().finish();
-                    }else{
-                        ToastUtil.show(getContext(),jb.getString("message"));
+                    } else {
+                        ToastUtil.show(getContext(), jb.getString("message"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -162,8 +161,21 @@ public class PersonalFragment extends Fragment {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                ToastUtil.show(getContext(),strMsg);
+                ToastUtil.show(getContext(), strMsg);
             }
         });
+    }
+
+    @OnClick({R.id.personal_info_modify, R.id.personal_password_modify})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.personal_info_modify:
+                break;
+            case R.id.personal_password_modify:
+                Intent intent = new Intent(getActivity(), ModifyPassword.class);
+                intent.putExtra("mobile",mPhone.getText());
+                startActivity(intent);
+                break;
+        }
     }
 }
