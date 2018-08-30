@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yatai.suningfiredepartment.R;
+import com.yatai.suningfiredepartment.util.PreferenceUtils;
 import com.yatai.suningfiredepartment.util.ToastUtil;
 import com.yatai.suningfiredepartment.view.widget.CountDownButton;
 
@@ -85,7 +86,7 @@ public class ModifyPassword extends AppCompatActivity {
                     if (etPasswordOne.getText().toString().equals("") || etPasswordTwo.getText().toString().equals("")) {
                         ToastUtil.show(ModifyPassword.this, "密码不能为空");
                     } else {
-                        if (!etPasswordOne.getText().equals(etPasswordTwo.getText())) {
+                        if (!etPasswordOne.getText().toString().equals(etPasswordTwo.getText().toString())) {
                             ToastUtil.show(ModifyPassword.this, "两次输入密码不一致请重新输入");
                         } else {
                             postModifyPassword(identifyCode.getText().toString(),etPasswordOne.getText().toString(),etPasswordTwo.getText().toString());
@@ -100,10 +101,10 @@ public class ModifyPassword extends AppCompatActivity {
 
     //获取验证码
     private void getMessageCode(String tele) {
-        String url = getString(R.string.base_url)+"sendCode";
-        AjaxParams params =new AjaxParams();
-        params.put("mobile",tele);
-        mHttp.post(url, params, new AjaxCallBack<String>() {
+        String token = "Bearer " + PreferenceUtils.getPerfString(this, "token", "");
+        mHttp.addHeader("Authorization", token);
+        String url = getString(R.string.base_url)+"sendResetPasswordCode";
+        mHttp.get(url, new AjaxCallBack<String>() {
             @Override
             public void onSuccess(String s) {
                 super.onSuccess(s);
@@ -134,7 +135,9 @@ public class ModifyPassword extends AppCompatActivity {
     }
 
     private void postModifyPassword(String code, String password1, String password2){
-        String url = getString(R.string.base_url)+"sendCode";
+        String token = "Bearer " + PreferenceUtils.getPerfString(this, "token", "");
+        mHttp.addHeader("Authorization", token);
+        String url = getString(R.string.base_url)+"resetPassword";
         AjaxParams params =new AjaxParams();
         params.put("code",code);
         params.put("password1",password1);
